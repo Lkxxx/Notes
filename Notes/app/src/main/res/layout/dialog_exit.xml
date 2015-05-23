@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#eee"
+    android:theme="@style/AlertDialog.AppCompat.Light">
+
+    <TextView
+        android:id="@+id/tv_dialog_title"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="提示"
+
+
+        android:textSize="20sp"
+        android:textColor="#ff5b5b5b"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:id="@+id/dialog_text"
+        android:textColor="#ff5b5b5b"
+        android:layout_marginTop="25dp"
+        android:layout_marginLeft="15dp"
+        android:text="确认退出？"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:orientation="horizontal"
+        android:layout_marginBottom="20dp">
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/dialog_button1"
+
+        android:text="取消"
+        android:alpha="30"
+        android:textColor="@color/lightseagreen"/>
+    <Button
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginEnd="10dp"
+        android:id="@+id/dialog_button2"
+        android:text="确认"
+        android:alpha="1"
+        android:textColor="@color/lightseagreen"/>
+    </LinearLayout>
+
+</LinearLayout>

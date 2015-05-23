@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+     <!--   <item name="android:statusBarColor">@color/background_statusBar</item>
+        <item name="android:toolbarStyle">@style/MyToolBar</item>
+        <item name="android:colorPrimary">@color/background_statusBar</item>
+        <item name="android:navigationBarColor">@color/background_button</item>-->
+    </style>
+
+    <style name="MyToolBar" >
+        <item name="android:background">@color/background_button</item>
+        <item name="android:titleTextStyle">@style/MyToolBarTitleText</item>
+        <item name="android:backgroundStacked">@android:color/holo_green_dark</item>
+
+    </style>
+
+    <style name="MyToolBarTitleText" >
+        <item name="android:textColor">#ffffff</item>
+        <item name="android:textSize">20dp</item>
+        <item name="android:layout_marginLeft">20dp</item>
+        <!--<item name="android:windowTitleSize">50dp</item>-->
+
+    </style>
+    <style name="MyTitleTextAppearance">
+
+    </style>
+</resources>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="opaque_red">#f00</color>
+    <color name="background_button">#2196f3</color>
+    <color name="background_press_button">#ff1c61ff</color>
+    <color name="background_statusBar">#1a78c3</color>
+    <color name="background_list">#ffffff</color>
+    <color name="background_list_press">#eeeeee</color>
+    <color name="background_button1">#ebebeb</color>
+    <color name="background_button2">#d3d3d3</color>
+    <color name="background_text1">#eee</color>
+    <color name="background_text2">#fff</color>
+    <color name="background_text3">#eee</color>
+    <color name="gainsboro">#ddd</color>
+    <color name="blue">#2387f7</color>
+    <color name="blue1">#ff225ab3</color>
+    <color name="background_tab_pressed">#6633B5E5</color>
+    <color name="transparent">#00000000</color>
+    <color name="translucent">#54000000</color>
+    <color name="translucent1">#14000000</color>
+
+    <color name="primary">#2196f3</color>
+    <color name="primary_pressed">#1a78c3</color>
+    <color name="mediumseagreen">#2ecc71</color>
+    <color name="seagreen">#24a35a</color>
+    <color name="lightseagreen">#009faf</color>
+    <color name="darkcyan">#158597</color>
+    <color name="black">#ff1f1f1f</color>
+</resources>
