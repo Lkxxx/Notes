@@ -66,11 +66,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
-
                 android:layout_alignParentEnd="true"
                 android:layout_gravity="bottom|right"
                 android:layout_marginBottom="25dp"
-
                 android:layout_marginRight="20dp"
                 android:src="@mipmap/ic_action_content_new"
                 fab:fab_colorNormal="@color/primary"
@@ -89,6 +87,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
+                android:id="@+id/ll_dl_iv"
                 android:background="@color/lightseagreen">
 
                 <ImageView
@@ -132,11 +131,44 @@
                 android:layout_height="1dp"
                 android:background="@color/translucent"
                 android:layout_marginLeft="15dp"/>
+
             <RelativeLayout
                 android:layout_width="300dp"
                 android:layout_height="60dp"
 
 
+                android:clickable="true"
+                android:focusable="true">
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="13dp"
+                    android:background="@mipmap/materialcolors" />
+
+                <TextView
+                    android:id="@+id/id_textView03_Menu"
+                    android:layout_width="300dp"
+                    android:layout_height="60dp"
+                    android:background="@drawable/button_transparent"
+                    android:focusable="true"
+                    android:paddingLeft="60dp"
+                    android:paddingTop="15dp"
+                    android:text="  主题"
+                    android:textColor="@drawable/text_color"
+                    android:textSize="18dp" />
+
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/translucent"
+                android:layout_marginLeft="15dp"/>
+            <RelativeLayout
+                android:layout_width="300dp"
+                android:layout_height="60dp"
                 android:clickable="true"
                 android:focusable="true">
 
@@ -160,6 +192,8 @@
                     android:textSize="18dp" />
 
             </RelativeLayout>
+
+
 
         </LinearLayout>
     </android.support.v4.widget.DrawerLayout>

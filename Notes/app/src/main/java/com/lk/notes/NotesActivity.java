@@ -3,6 +3,7 @@ package com.lk.notes;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
@@ -14,12 +15,14 @@ import android.view.ContextMenu;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.RotateAnimation;
 import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,7 +43,7 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
     private String id;
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
-    private TextView id_textView01_Menu, id_textView02_Menu;
+    private TextView id_textView01_Menu, id_textView02_Menu,id_textView03_Menu;
 
 
     @Override
@@ -155,6 +158,11 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
     private AlphaAnimation aa;
 
     private void intiview() {
+
+        SharedPreferences sharedPreferences =getSharedPreferences("color", MODE_PRIVATE);
+        int r = sharedPreferences.getInt("r", 0);
+        int g = sharedPreferences.getInt("g", 159);
+        int b = sharedPreferences.getInt("b", 175);
         fab = (FloatingActionButton) findViewById(R.id.fab);
 
         as = new AnimationSet(true);
@@ -178,15 +186,24 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
         registerForContextMenu(list_view);
 
 
+
         toolbar = (Toolbar) findViewById(R.id.tl_custom);
         toolbar.setTitle("Notes");
-        toolbar.setTitleTextColor(Color.rgb(15,15,15));
-
+        toolbar.setTitleTextColor(Color.rgb(15, 15, 15));
+        toolbar.setBackgroundColor(Color.rgb(r, g, b));
+        Window window = getWindow();
+        window.setStatusBarColor(Color.rgb((int) (r * 0.9), (int) (g * 0.9), (int) (b * 0.9)));
+        window.setNavigationBarColor(Color.rgb(r, g, b));
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        LinearLayout ll_dl_iv = (LinearLayout)findViewById(R.id.ll_dl_iv);
+        ll_dl_iv.setBackgroundColor(Color.rgb(r, g, b));
+
 
         fab.setOnClickListener(this);
+        fab.setColorNormal(Color.rgb(r, g, b));
+        fab.setColorPressed(Color.rgb((int) (r * 0.8), (int) (g * 0.8), (int) (b * 0.8)));
 
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer);
@@ -195,8 +212,10 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         id_textView01_Menu = (TextView) this.findViewById(R.id.id_textView01_Menu);
         id_textView02_Menu = (TextView) this.findViewById(R.id.id_textView02_Menu);
+        id_textView03_Menu = (TextView) this.findViewById(R.id.id_textView03_Menu);
         id_textView01_Menu.setOnClickListener(this);
         id_textView02_Menu.setOnClickListener(this);
+        id_textView03_Menu.setOnClickListener(this);
 
 
     }
@@ -267,6 +286,11 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
                     }
                 });
                 alertDialog.show();
+                break;
+            case R.id.id_textView03_Menu:
+                Intent intent3 = new Intent(this, ThemeActivity.class);
+                startActivity(intent3);
+                finish();
                 break;
 
         }

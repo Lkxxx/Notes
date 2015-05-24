@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -60,8 +61,15 @@ public class EditNoteActivity extends ActionBarActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("新建");
         toolbar.setTitleTextColor(Color.rgb(15, 15, 15));
+        SharedPreferences sharedPreferences =getSharedPreferences("color", MODE_PRIVATE);
+        int r = sharedPreferences.getInt("r", 0);
+        int g = sharedPreferences.getInt("g", 159);
+        int b = sharedPreferences.getInt("b", 175);
+        toolbar.setBackgroundColor(Color.rgb(r, g, b));
+        Window window = getWindow();
+        window.setStatusBarColor(Color.rgb((int) (r * 0.9), (int) (g * 0.9), (int) (b * 0.9)));
+        window.setNavigationBarColor(Color.rgb(r, g, b));
 
-        toolbar.setBackgroundColor(Color.rgb(0, 159, 175));
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 

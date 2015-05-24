@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.lk.notes" >
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -24,12 +24,15 @@
         </activity>
         <activity
             android:name=".NotesChangeActivity"
-            android:label="title_activity_notes_change"
-            >
+            android:label="title_activity_notes_change" >
         </activity>
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings" >
+        </activity>
+        <activity
+            android:name=".ThemeActivity"
+            android:label="@string/title_activity_theme" >
         </activity>
     </application>
 

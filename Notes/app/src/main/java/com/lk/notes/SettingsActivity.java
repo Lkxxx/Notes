@@ -2,12 +2,14 @@ package com.lk.notes;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -35,6 +37,15 @@ public class SettingsActivity extends ActionBarActivity {
         toolbar = (Toolbar) findViewById(R.id.tl_custom);
         toolbar.setTitle("设置");
         toolbar.setTitleTextColor(Color.rgb(15, 15, 15));
+
+        SharedPreferences sharedPreferences =getSharedPreferences("color", MODE_PRIVATE);
+        int r = sharedPreferences.getInt("r", 0);
+        int g = sharedPreferences.getInt("g", 159);
+        int b = sharedPreferences.getInt("b", 175);
+        toolbar.setBackgroundColor(Color.rgb(r, g, b));
+        Window window = getWindow();
+        window.setStatusBarColor(Color.rgb((int) (r * 0.9), (int) (g * 0.9), (int) (b * 0.9)));
+        window.setNavigationBarColor(Color.rgb(r, g, b));
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

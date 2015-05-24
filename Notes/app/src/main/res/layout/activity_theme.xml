@@ -1,0 +1,137 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.lk.notes.ThemeActivity">
+
+    <include layout="@layout/toolbar"/>
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal"
+        >
+
+        <Button
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:background="@drawable/red"
+            android:id="@+id/bt_red"
+            />
+        <Button
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@drawable/orange"
+            android:background="@drawable/orange"
+            android:id="@+id/bt_orange"
+            />
+        <Button
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:background="@drawable/yellow"
+            android:id="@+id/bt_yellow"
+            />
+        <Button
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:background="@drawable/charttreuse"
+            android:id="@+id/bt_charttreuse"
+            />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal"
+        >
+
+        <Button
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:background="@drawable/lime"
+            android:id="@+id/bt_lime"
+
+            />
+        <Button
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:background="@drawable/springgreen"
+            android:id="@+id/bt_springgreen"
+            />
+        <Button
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:background="@drawable/aquamarine"
+            android:id="@+id/bt_aquamarine"
+            />
+        <Button
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:background="@drawable/cyan"
+            android:id="@+id/bt_cyan"
+            />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal"
+        >
+        <Button
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:background="@drawable/royalblue"
+            android:id="@+id/bt_royalblue"
+            />
+
+        <Button
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:background="@drawable/darkviolet"
+            android:id="@+id/bt_darkviolet"
+            />
+        <Button
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:background="@drawable/magenta"
+            android:id="@+id/bt_magenta"
+            />
+        <Button
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:background="@drawable/mediumvioletred"
+            android:id="@+id/bt_mediumvioletred"
+            />
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal"
+        >
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="自定义"
+            android:id="@+id/bt_colorCustom"
+            android:background="@drawable/button_bordless_bg_material"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="恢复默认"
+
+        android:id="@+id/bt_restore"
+
+        android:background="@drawable/button_bordless_bg_material"/>
+    </LinearLayout>
+</LinearLayout>
