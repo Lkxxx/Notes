@@ -15,6 +15,7 @@ import android.os.Message;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -137,6 +138,7 @@ public class FloatingActionButton extends ImageButton {
                             shapeDrawable});
             int shadowSize = getDimension(
                     mType == TYPE_NORMAL ? R.dimen.fab_shadow_size : R.dimen.fab_mini_shadow_size);
+            Log.e("shadow", String.valueOf(shadowSize));
             layerDrawable.setLayerInset(1, shadowSize, shadowSize, shadowSize, shadowSize);
             return layerDrawable;
         } else {
@@ -180,8 +182,6 @@ public class FloatingActionButton extends ImageButton {
         }
         return marginBottom;
     }
-
-
 
 
     private class ScrollSettleHandler extends Handler {
@@ -230,6 +230,7 @@ public class FloatingActionButton extends ImageButton {
     public void setShadow(boolean shadow) {
         if (shadow != mShadow) {
             mShadow = shadow;
+
             updateBackground();
         }
     }

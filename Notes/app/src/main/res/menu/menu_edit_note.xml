@@ -5,12 +5,34 @@
 
 
     <item
+        android:id="@+id/action_photo"
+        android:orderInCategory="120"
+        android:icon="@mipmap/ic_photo"
+
+        app:showAsAction="ifRoom"
+        android:title="照片" />
+
+
+    <item
+        android:id="@+id/action_camera"
+        android:title="拍照"
+        android:orderInCategory="180"
+        android:icon="@mipmap/ic_camera"
+        app:showAsAction="ifRoom"
+        />
+
+
+    <item
         android:id="@+id/action_check"
-        android:orderInCategory="90"
-        android:icon="@drawable/ic_content_save_white_18dp"
+        android:orderInCategory="240"
+        android:icon="@mipmap/ic_save"
 
         app:showAsAction="ifRoom"
         android:title="保存" />
+
+
+
+
 
 
 </menu>

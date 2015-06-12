@@ -1,4 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
     xmlns:fab="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -19,31 +20,32 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="fill_parent">
 
             <include layout="@layout/toolbar" />
 
+
             <LinearLayout
-                android:id="@+id/content1"
+                android:id="@+id/sticky_content"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="fill_parent"
                 android:layout_below="@+id/tl_custom"
-                android:orientation="vertical"
+                android:orientation="vertical">
 
 
-                >
-
-                <ListView
+                <com.lk.notes.PullToZoom.PullToZoomListViewEx
                     android:id="@+id/listview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:divider="#00000000"
+                    custom:zoomView="@layout/list_head_zoom_view"
 
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+
                     >
 
-                </ListView>
-
-
+                </com.lk.notes.PullToZoom.PullToZoomListViewEx>
             </LinearLayout>
+
 
             <!--<ImageButton
                 android:layout_width="56dp"
@@ -59,12 +61,21 @@
                 android:background="@drawable/ripple"
 
                 android:layout_gravity="right" />-->
-
+            <ImageView
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
+                android:layout_gravity="bottom|right"
+                android:layout_marginBottom="13.6dp"
+                android:layout_marginRight="12dp"
+                android:src="@drawable/fab_bg_normal" />
 
             <com.lk.notes.FloatingActionButton
+
                 android:id="@+id/fab"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentEnd="true"
                 android:layout_gravity="bottom|right"
@@ -72,7 +83,26 @@
                 android:layout_marginRight="20dp"
                 android:src="@mipmap/ic_action_content_new"
                 fab:fab_colorNormal="@color/primary"
-                fab:fab_colorPressed="@color/primary_pressed" />
+                fab:fab_colorPressed="@color/primary_pressed"
+                fab:fab_shadow="false" />
+
+
+            <!--            <ImageButton
+                            android:id = "@+id/fab"
+
+                            android:layout_width = "72dp"
+                            android:layout_height = "72dp"
+                            android:layout_alignParentBottom = "true"
+                            android:layout_alignParentRight = "true"
+                            android:layout_marginBottom = "16dp"
+                            android:layout_marginRight = "16dp"
+                            android:background = "@drawable/fab"
+                            android:elevation = "10dp"
+
+                            android:src = "@mipmap/ic_action_content_new"
+                            android:textSize = "28sp"  />-->
+
+
         </RelativeLayout>
 
         <LinearLayout
@@ -85,9 +115,9 @@
             android:orientation="vertical">
 
             <LinearLayout
+                android:id="@+id/ll_dl_iv"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
-                android:id="@+id/ll_dl_iv"
                 android:background="@color/lightseagreen">
 
                 <ImageView
@@ -129,8 +159,8 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/translucent"
-                android:layout_marginLeft="15dp"/>
+                android:layout_marginLeft="15dp"
+                android:background="@color/translucent" />
 
             <RelativeLayout
                 android:layout_width="300dp"
@@ -164,8 +194,9 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/translucent"
-                android:layout_marginLeft="15dp"/>
+                android:layout_marginLeft="15dp"
+                android:background="@color/translucent" />
+
             <RelativeLayout
                 android:layout_width="300dp"
                 android:layout_height="60dp"
@@ -192,7 +223,6 @@
                     android:textSize="18dp" />
 
             </RelativeLayout>
-
 
 
         </LinearLayout>

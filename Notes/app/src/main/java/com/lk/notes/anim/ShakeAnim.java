@@ -6,7 +6,7 @@ import android.view.animation.Transformation;
 /**
  * Created by lk on 05/21.
  */
-public class ShakeAnim extends Animation{
+public class ShakeAnim extends Animation {
 
     @Override
     public void initialize(int width, int height, int parentWidth, int parentHeight) {
@@ -15,7 +15,7 @@ public class ShakeAnim extends Animation{
 
     @Override
     protected void applyTransformation(float interpolatedTime, Transformation t) {
-        t.getMatrix().setTranslate((float) (Math.sin(interpolatedTime*10)*30),0);
+        t.getMatrix().setTranslate((float) (Math.sin(interpolatedTime * 10) * 30), 0);
         super.applyTransformation(interpolatedTime, t);
     }
 }

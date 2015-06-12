@@ -5,25 +5,23 @@ package com.lk.notes;
  */
 public class NotesInfo {
 
-    private String text,title,time,id;
+    private String text, title, time, id;
 
-    public String getText(){
+    public String getText() {
         return text;
     }
-    public String getId(){
+
+    public String getId() {
         return id;
     }
 
 
-    public void setId(String id){
+    public void setId(String id) {
         this.id = id;
     }
 
 
-
-
-
-    public void setText(String text){
+    public void setText(String text) {
         this.text = text;
     }
 
@@ -36,14 +34,14 @@ public class NotesInfo {
         this.title = title;
 
     }
-    public String getTime(){
+
+    public String getTime() {
         return time;
     }
 
-    public void setTime(String time){
+    public void setTime(String time) {
         this.time = time;
     }
-
 
 
 }

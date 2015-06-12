@@ -59,7 +59,7 @@ public class BackupTask extends AsyncTask<String, Void, Integer> {
         }
     }
 
-    private void fileCopy(File dbFile, File backup) throws IOException {
+    public void fileCopy(File dbFile, File backup) throws IOException {
         // TODO Auto-generated method stub
         FileChannel inChannel = new FileInputStream(dbFile).getChannel();
         FileChannel outChannel = new FileOutputStream(backup).getChannel();

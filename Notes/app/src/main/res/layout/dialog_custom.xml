@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:colorpicker="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#eee"
-    android:theme="@style/AlertDialog.AppCompat.Light">
+    android:theme="@style/AlertDialog.AppCompat.Light"
+    android:weightSum="1">
 
     <TextView
         android:id="@+id/tv_dialog_title"
@@ -15,47 +18,18 @@
         android:textSize="18sp"
 
         android:textColor="#ff5b5b5b"/>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
+
+    <com.lk.notes.ColorPickView
+        android:layout_marginTop="15dp"
         android:layout_gravity="center"
-        android:gravity="center"
-        android:layout_marginTop="15dp">
-
-    <EditText
-        android:gravity="center"
-        android:layout_width="70dp"
+        android:id="@+id/color_picker_view"
+        android:layout_width="409dp"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:id="@+id/dialog_text_R"
-        android:textColor="#ff5b5b5b"
-        android:inputType="number"
-        android:layout_marginLeft="15dp"
-        android:hint="R(0-255)"/>
-
-    <EditText
+        android:layout_centerHorizontal="true"
         android:gravity="center"
-        android:layout_width="70dp"
-        android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:id="@+id/dialog_text_G"
-        android:textColor="#ff5b5b5b"
-        android:inputType="number"
-        android:layout_marginLeft="15dp"
-        android:hint="G(0-255)"/>
-
-    <EditText
-        android:gravity="center"
-        android:layout_width="70dp"
-        android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:id="@+id/dialog_text_B"
-        android:textColor="#ff5b5b5b"
-        android:inputType="number"
-        android:layout_marginLeft="15dp"
-        android:hint="B(0-255)"/>
-    </LinearLayout>
+        colorpicker:center_color="#87ffffff"
+        colorpicker:center_radius="8dp"
+        colorpicker:circle_radius="150dp" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -69,7 +43,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/dialog_buttoncancel"
-        android:background="@drawable/button_bordless_bg_material"
+        android:background="@drawable/button_transparent"
         android:text="取消"
         android:alpha="30"
         android:textColor="@color/lightseagreen"/>
@@ -81,7 +55,7 @@
 
         android:id="@+id/dialog_buttonconfirm"
         android:text="确认"
-        android:background="@drawable/button_bordless_bg_material"
+        android:background="@drawable/button_transparent"
         android:alpha="1"
         android:textColor="@color/lightseagreen"/>
     </LinearLayout>

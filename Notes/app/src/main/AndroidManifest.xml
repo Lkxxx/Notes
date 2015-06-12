@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.lk.notes"
-android:versionCode="2"
-    android:versionName="1.1" >
+    android:versionCode="5"
+    android:versionName="1.13" >
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
@@ -22,7 +22,8 @@ android:versionCode="2"
         </activity>
         <activity
             android:name=".EditNoteActivity"
-            android:label="title_activity_edit_note" >
+            android:label="新建"
+            >
         </activity>
         <activity
             android:name=".NotesChangeActivity"
@@ -36,6 +37,16 @@ android:versionCode="2"
             android:name=".ThemeActivity"
             android:label="@string/title_activity_theme" >
         </activity>
+
+        <receiver android:name=".NotesWidget" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/notes_widget_info" />
+        </receiver>
     </application>
 
 </manifest>

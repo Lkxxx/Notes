@@ -1,8 +1,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:colorpicker="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.lk.notes.ThemeActivity">
+    tools:context="com.lk.notes.ThemeActivity"
+    android:background="#eee"
+    android:weightSum="1">
 
     <include layout="@layout/toolbar"/>
 
@@ -16,64 +20,64 @@
         >
 
         <Button
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:background="@drawable/red"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:background="@drawable/roundred"
             android:id="@+id/bt_red"
-            />
+            android:layout_margin="10dp" />
         <Button
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:src="@drawable/orange"
-            android:background="@drawable/orange"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:background="@drawable/roundorange"
             android:id="@+id/bt_orange"
-            />
+            android:layout_margin="10dp" />
         <Button
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:background="@drawable/yellow"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:background="@drawable/roundyellow"
             android:id="@+id/bt_yellow"
-            />
+            android:layout_margin="10dp" />
         <Button
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:background="@drawable/charttreuse"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:background="@drawable/roundcharttreuse"
             android:id="@+id/bt_charttreuse"
+            android:layout_margin="10dp"
             />
     </LinearLayout>
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:orientation="horizontal"
         >
 
         <Button
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:background="@drawable/lime"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:background="@drawable/roundlime"
             android:id="@+id/bt_lime"
 
-            />
+            android:layout_margin="10dp" />
         <Button
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:background="@drawable/springgreen"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:background="@drawable/roundspringgreen"
             android:id="@+id/bt_springgreen"
-            />
+            android:layout_margin="10dp" />
         <Button
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:background="@drawable/aquamarine"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:background="@drawable/roundaquamarine"
             android:id="@+id/bt_aquamarine"
-            />
+            android:layout_margin="10dp" />
         <Button
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:background="@drawable/cyan"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:background="@drawable/roundcyan"
             android:id="@+id/bt_cyan"
-            />
+            android:layout_margin="10dp" />
 
 
     </LinearLayout>
@@ -82,56 +86,70 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:orientation="horizontal"
         >
         <Button
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:background="@drawable/royalblue"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:background="@drawable/roundroyalblue"
             android:id="@+id/bt_royalblue"
-            />
+            android:layout_margin="10dp" />
 
         <Button
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:background="@drawable/darkviolet"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:background="@drawable/rounddarkviolet"
             android:id="@+id/bt_darkviolet"
-            />
+            android:layout_margin="10dp" />
         <Button
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:background="@drawable/magenta"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:background="@drawable/roundmagenta"
             android:id="@+id/bt_magenta"
-            />
+            android:layout_margin="10dp" />
         <Button
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:background="@drawable/mediumvioletred"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:background="@drawable/roundmediumvioletred"
             android:id="@+id/bt_mediumvioletred"
-            />
+            android:layout_margin="10dp" />
 
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:orientation="horizontal"
-        >
+        android:id="@+id/ll_custom">
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="自定义"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:background="@drawable/roundblack"
+            android:id="@+id/bt_black"
+            android:layout_margin="10dp" />
+
+        <Button
+            android:layout_margin="10dp"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+
+            android:textColor="#ff292929"
             android:id="@+id/bt_colorCustom"
+            android:background="@drawable/piccolor"/>
+        <Button
+            android:layout_margin="10dp"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:text="默认"
+            android:textSize="16sp"
+            android:textColor="#ff6a6a6a"
+            android:id="@+id/bt_restore"
             android:background="@drawable/button_bordless_bg_material"/>
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="恢复默认"
 
-        android:id="@+id/bt_restore"
 
-        android:background="@drawable/button_bordless_bg_material"/>
+
     </LinearLayout>
 </LinearLayout>

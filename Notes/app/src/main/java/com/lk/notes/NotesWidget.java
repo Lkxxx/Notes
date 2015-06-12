@@ -20,11 +20,11 @@ public class NotesWidget extends AppWidgetProvider {
         final int N = appWidgetIds.length;
         for (int i = 0; i < N; i++) {
             updateAppWidget(context, appWidgetManager, appWidgetIds[i]);
-            Intent intent = new Intent(context,EditNoteActivity.class);
-            PendingIntent pendingIntent =PendingIntent.getActivity(context, 0, intent, 0);
-            RemoteViews remoteViews =new RemoteViews(context.getPackageName(),R.layout.notes_widget);
-            remoteViews.setOnClickPendingIntent(R.id.bt_appwidget,pendingIntent);
-            ComponentName componentName = new ComponentName(context,NotesWidget.class);
+            Intent intent = new Intent(context, EditNoteActivity.class);
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+            RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.notes_widget);
+            remoteViews.setOnClickPendingIntent(R.id.bt_appwidget, pendingIntent);
+            ComponentName componentName = new ComponentName(context, NotesWidget.class);
             appWidgetManager.updateAppWidget(componentName, remoteViews);
         }
     }
