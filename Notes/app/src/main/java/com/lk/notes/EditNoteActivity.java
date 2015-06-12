@@ -93,7 +93,7 @@ public class EditNoteActivity extends ActionBarActivity {
                 switch (item.getItemId()) {
                     case R.id.action_check:
                         save();
-                        finish();
+
                         break;
                     case R.id.action_camera:
 
@@ -195,7 +195,6 @@ public class EditNoteActivity extends ActionBarActivity {
                 iv_image.setVisibility(View.VISIBLE);
                 Uri uri = data.getData();
                 String path = new ImageProcessing().uri2path(uri, this);
-
                 Bitmap bitmap = new ImageProcessing().getPhotoCache(path, getWindowManager());
                 iv_image.setImageBitmap(bitmap);
                 toolbar.setBackgroundColor(Color.alpha(0));
@@ -319,10 +318,8 @@ public class EditNoteActivity extends ActionBarActivity {
             if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
 
 
-                if (TextUtils.isEmpty(str_title) && TextUtils.isEmpty(str_text)) {
+                if (TextUtils.isEmpty(str_title) && TextUtils.isEmpty(str_text)&&!new File(Environment.getExternalStorageDirectory() + "/Notes/image/cache/cache").exists()) {
                     finish();
-                    setResult(10000);
-
                 } else {
                     save();
                     Toast.makeText(EditNoteActivity.this, "已经保存", Toast.LENGTH_SHORT).show();

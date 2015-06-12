@@ -128,8 +128,9 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
         ra.setDuration(200);
 
         list_view = (PullToZoomListViewEx) findViewById(R.id.listview);
-        if (getDataLastPath()!= null){
-        list_view.setHeaderLayoutParams(localObject(getDataLastPath()));}
+        if (getDataLastPath() != null) {
+            list_view.setHeaderLayoutParams(localObject(getDataLastPath()));
+        }
         list_view.setVerticalScrollBarEnabled(true);
         registerForContextMenu(list_view.getPullRootView());
         list_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -195,16 +196,18 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
         getWindowManager().getDefaultDisplay().getMetrics(localDisplayMetrics);
         int mScreenWidth = localDisplayMetrics.widthPixels;
 
-        AbsListView.LayoutParams localObject;
-        if (new File(path).exists()) {
-            localObject = new AbsListView.LayoutParams(mScreenWidth, (int) (9.0F * (mScreenWidth / 16.0F)));
-        } else {
-            localObject = new AbsListView.LayoutParams(mScreenWidth, (int) (0.1F * (mScreenWidth / 16.0F)));
+        AbsListView.LayoutParams localObject = new AbsListView.LayoutParams(mScreenWidth, (int) (0.1F * (mScreenWidth / 16.0F)));;
+        if (path != null) {
+            if (new File(path).exists()) {
+                localObject = new AbsListView.LayoutParams(mScreenWidth, (int) (9.0F * (mScreenWidth / 16.0F)));
+            } else {
+                localObject = new AbsListView.LayoutParams(mScreenWidth, (int) (0.1F * (mScreenWidth / 16.0F)));
+            }
         }
         return localObject;
     }
 
-    public String getDataLastPath(){
+    public String getDataLastPath() {
         String path = null;
         NotesOpenHelper notesOpenHelper;
         notesOpenHelper = new NotesOpenHelper(this);
@@ -244,11 +247,13 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
                     @Override
                     public void onAnimationStart(Animation animation) {
                     }
+
                     @Override
                     public void onAnimationEnd(Animation animation) {
                         Intent intent = new Intent(NotesActivity.this, EditNoteActivity.class);
                         startActivityForResult(intent, Change);
                     }
+
                     @Override
                     public void onAnimationRepeat(Animation animation) {
                     }
@@ -284,7 +289,6 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
                 break;
         }
     }
-
 
 
     @Override
@@ -388,10 +392,10 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
                     @Override
                     public void run() {
                         Message message = new Message();
-                        message.what = Refresh ;
+                        message.what = Refresh;
                         handler.sendMessage(message);
                     }
-                },1000);
+                }, 1000);
             }
         }
     }
@@ -400,11 +404,14 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-           if (msg.what == Refresh){
-               ImageView imageView = (ImageView) list_view.getZoomView();
-               imageView.setImageBitmap(BitmapFactory.decodeFile(getDataLastPath()));
-               list_view.setHeaderLayoutParams(localObject(getDataLastPath()));
-           }
+            if (msg.what == Refresh) {
+                ImageView imageView = (ImageView) list_view.getZoomView();
+                if (getDataLastPath() != null) {
+                    imageView.setImageBitmap(BitmapFactory.decodeFile(getDataLastPath()));
+                    list_view.setHeaderLayoutParams(localObject(getDataLastPath()));
+                }
+
+            }
         }
     };
 }

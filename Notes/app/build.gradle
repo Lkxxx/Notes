@@ -7,8 +7,8 @@ android {
         applicationId "com.lk.notes"
         minSdkVersion 21
         targetSdkVersion 22
-        versionCode 2
-        versionName "1.1"
+        versionCode 5
+        versionName "1.13"
     }
     buildTypes {
         release {
@@ -24,4 +24,7 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:support-v4:22.1.1'
     compile 'com.android.support:appcompat-v7:22.1.1'
+    compile files('libs/android-support-v7-palette.jar')
+    compile files('src/main/java/com/lk/notes/universal-image-loader-1.9.4.jar')
+    compile files('universal-image-loader-1.9.4.jar')
 }
