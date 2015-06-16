@@ -8,9 +8,8 @@
         android:id="@+id/action_photo"
         android:orderInCategory="120"
         android:icon="@mipmap/ic_photo"
-
         app:showAsAction="ifRoom"
-        android:title="照片" />
+        android:title="照片"/>
 
 
     <item
@@ -26,7 +25,6 @@
         android:id="@+id/action_check"
         android:orderInCategory="240"
         android:icon="@mipmap/ic_save"
-
         app:showAsAction="ifRoom"
         android:title="保存" />
 

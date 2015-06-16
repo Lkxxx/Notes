@@ -1,32 +1,22 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rl_edit"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#eee"
-    android:orientation="vertical"
+
     tools:context="com.lk.notes.EditNoteActivity">
 
-    <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/background_button"
-        android:minHeight="?attr/actionBarSize"
-        android:title="   Lalala"
-        android:visibility="visible"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-
-        />
 
     <ScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="#eee"
         android:scrollbars="none"
-        android:id="@+id/scrollView">
+
+        >
 
 
         <LinearLayout
@@ -42,8 +32,8 @@
                 android:id="@+id/iv_image"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:scaleType="center"
                 android:minHeight="55dp"
+                android:scaleType="center"
 
 
                 />
@@ -56,7 +46,7 @@
                 android:layout_marginTop="20dp"
                 android:background="#eee"
                 android:hint="写下你的标题"
-                android:paddingEnd="20dp"
+
                 android:textColor="#ff2ebe78"
                 android:textColorHint="#ff989898" />
 
@@ -84,4 +74,8 @@
 
 
     </ScrollView>
-</RelativeLayout>
+
+
+        <include layout="@layout/toolbar" />
+
+</FrameLayout>

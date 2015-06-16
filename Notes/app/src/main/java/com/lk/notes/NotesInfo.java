@@ -3,7 +3,7 @@ package com.lk.notes;
 /**
  * Created by lk on 05/17.
  */
-public class NotesInfo {
+public class NotesInfo  {
 
     private String text, title, time, id;
 
@@ -42,6 +42,7 @@ public class NotesInfo {
     public void setTime(String time) {
         this.time = time;
     }
+
 
 
 }

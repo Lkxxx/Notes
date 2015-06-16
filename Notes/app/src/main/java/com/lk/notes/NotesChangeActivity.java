@@ -2,7 +2,6 @@ package com.lk.notes;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -25,7 +25,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ScrollView;
@@ -39,8 +38,6 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class NotesChangeActivity extends ActionBarActivity {
 
@@ -88,7 +85,7 @@ public class NotesChangeActivity extends ActionBarActivity {
         iv_image = (ImageView) findViewById(R.id.iv_image);
         registerForContextMenu(iv_image);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.tl_custom);
         toolbar.setTitle("编辑");
         toolbar.setTitleTextColor(Color.rgb(238, 238, 238));
         setcolor();
@@ -97,7 +94,7 @@ public class NotesChangeActivity extends ActionBarActivity {
         getSupportActionBar().setElevation(15);
         getSupportActionBar().setHomeAsUpIndicator(R.mipmap.ic_back);
 
-
+        new File(Environment.getExternalStorageDirectory() + "/Notes/image/cache/cache").delete();
         String idurl = Environment.getExternalStorageDirectory() + "/Notes/image/" + id;
         final File file = new File(idurl);
         if (file.exists()) {
@@ -163,10 +160,12 @@ public class NotesChangeActivity extends ActionBarActivity {
         int g = sharedPreferences.getInt("g", 159);
         int b = sharedPreferences.getInt("b", 175);
         toolbar.setBackgroundColor(Color.rgb(r, g, b));
-        Window window = getWindow();
-        window.setStatusBarColor(Color.rgb((int) (r * 0.9), (int) (g * 0.9), (int) (b * 0.9)));
-        window.setNavigationBarColor(Color.rgb(r, g, b));
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+            window.setStatusBarColor(Color.rgb((int) (r * 0.9), (int) (g * 0.9), (int) (b * 0.9)));
+            window.setNavigationBarColor(Color.rgb(r, g, b));
+        }
     }
 
     private Handler handler = new Handler() {

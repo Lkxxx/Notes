@@ -7,14 +7,17 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.lk.notes.fakesearchview.FakeSearchView;
 
-public class SettingsActivity extends ActionBarActivity {
+
+public class SettingsActivity extends ActionBarActivity implements FakeSearchView.OnSearchListener {
 
 
     private Toolbar toolbar;
@@ -131,5 +134,21 @@ public class SettingsActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_notes, menu);
 
+        return true;
+    }
+
+
+    @Override
+    public void onSearch(FakeSearchView fakeSearchView, CharSequence constraint) {
+
+    }
+
+    @Override
+    public void onSearchHint(FakeSearchView fakeSearchView, CharSequence constraint) {
+
+    }
 }

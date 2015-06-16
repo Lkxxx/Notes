@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.lk.notes"
-    android:versionCode="5"
-    android:versionName="1.13" >
+    android:versionCode="6"
+    android:versionName="1.14">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
@@ -10,10 +10,10 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
         <activity
             android:name=".NotesActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -22,23 +22,18 @@
         </activity>
         <activity
             android:name=".EditNoteActivity"
-            android:label="新建"
-            >
-        </activity>
+            android:label="新建"></activity>
         <activity
             android:name=".NotesChangeActivity"
-            android:label="title_activity_notes_change" >
-        </activity>
+            android:label="title_activity_notes_change"></activity>
         <activity
             android:name=".SettingsActivity"
-            android:label="@string/title_activity_settings" >
-        </activity>
+            android:label="@string/title_activity_settings"></activity>
         <activity
             android:name=".ThemeActivity"
-            android:label="@string/title_activity_theme" >
-        </activity>
+            android:label="@string/title_activity_theme"></activity>
 
-        <receiver android:name=".NotesWidget" >
+        <receiver android:name=".NotesWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>

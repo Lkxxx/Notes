@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.graphics.Palette;
@@ -183,9 +184,13 @@ public class ImageProcessing {
             public void onGenerated(Palette palette) {
                 Palette.Swatch vibrant = palette.getDarkVibrantSwatch();
                 if (vibrant != null) {
-                    window.setStatusBarColor(vibrant.getRgb());
-                    Log.e("rgb", String.valueOf(vibrant.getRgb()));
-                    window.setNavigationBarColor(vibrant.getRgb());
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        window.setStatusBarColor(vibrant.getRgb());
+                        Log.e("rgb", String.valueOf(vibrant.getRgb()));
+                        window.setNavigationBarColor(vibrant.getRgb());
+                    }
+
                 }
 
             }

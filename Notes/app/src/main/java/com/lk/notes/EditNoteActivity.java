@@ -1,6 +1,5 @@
 package com.lk.notes;
 
-import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -10,6 +9,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -67,7 +67,11 @@ public class EditNoteActivity extends ActionBarActivity {
         new File(new ImageProcessing().getPhotopath()).delete();
         et_text = (EditText) findViewById(R.id.et_text);
         et_title = (EditText) findViewById(R.id.et_title);
+
         iv_image = (ImageView) findViewById(R.id.iv_image);
+        registerForContextMenu(iv_image);
+
+
         final Intent intent = this.getIntent();
         String title = intent.getStringExtra("title");
         String text = intent.getStringExtra("text");
@@ -75,7 +79,7 @@ public class EditNoteActivity extends ActionBarActivity {
         et_text.setText(text);
 
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.tl_custom);
         toolbar.setTitle("新建");
         toolbar.setTitleTextColor(Color.rgb(238, 238, 238));
         setcolor();
@@ -85,35 +89,6 @@ public class EditNoteActivity extends ActionBarActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setElevation(15);
         getSupportActionBar().setHomeAsUpIndicator(R.mipmap.ic_back);
-        registerForContextMenu(iv_image);
-        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.action_check:
-                        save();
-
-                        break;
-                    case R.id.action_camera:
-
-                        Intent capIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                        capIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
-                        File out = new File(Environment.getExternalStorageDirectory() + "/Notes/image/cache/camera");
-                        Uri uri = Uri.fromFile(out);
-                        capIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-                        startActivityForResult(capIntent, 100);
-                        break;
-                    case R.id.action_photo:
-                        Intent photoIntent = new Intent(Intent.ACTION_PICK,
-                                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                        startActivityForResult(photoIntent, 1000);
-
-
-                }
-                return true;
-            }
-        });
 
 
     }
@@ -126,8 +101,10 @@ public class EditNoteActivity extends ActionBarActivity {
 
         toolbar.setBackgroundColor(Color.rgb(r, g, b));
         Window window = getWindow();
-        window.setStatusBarColor(Color.rgb((int) (r * 0.9), (int) (g * 0.9), (int) (b * 0.9)));
-        window.setNavigationBarColor(Color.rgb(r, g, b));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.setStatusBarColor(Color.rgb((int) (r * 0.9), (int) (g * 0.9), (int) (b * 0.9)));
+            window.setNavigationBarColor(Color.rgb(r, g, b));
+        }
 
 
         Timer timer = new Timer();
@@ -199,6 +176,14 @@ public class EditNoteActivity extends ActionBarActivity {
                 iv_image.setImageBitmap(bitmap);
                 toolbar.setBackgroundColor(Color.alpha(0));
                 new ImageProcessing().getPhotoRgb(getWindow(), bitmap);
+
+                Rect frame = new Rect();
+                getWindow().getDecorView().getWindowVisibleDisplayFrame(frame);
+                int statusBarHeight = frame.top;
+                if(Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT){
+
+
+                }
             }
         }
     }
@@ -294,9 +279,25 @@ public class EditNoteActivity extends ActionBarActivity {
                         });
                         alertDialog.show();
                     }
-                    return true;
-                default:
                     break;
+                case R.id.action_check:
+                    save();
+
+                    break;
+                case R.id.action_camera:
+
+                    Intent capIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    capIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
+                    File out = new File(Environment.getExternalStorageDirectory() + "/Notes/image/cache/camera");
+                    Uri uri = Uri.fromFile(out);
+                    capIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+                    startActivityForResult(capIntent, 100);
+                    break;
+                case R.id.action_photo:
+                    Intent photoIntent = new Intent(Intent.ACTION_PICK,
+                            android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    startActivityForResult(photoIntent, 1000);
+
 
             }
             return super.onOptionsItemSelected(item);
@@ -329,6 +330,7 @@ public class EditNoteActivity extends ActionBarActivity {
 
             return super.onKeyDown(keyCode, event);
         }
+
 
 
     }

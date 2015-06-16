@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
 
         <item name="android:statusBarColor">@color/darkcyan</item>
@@ -8,20 +9,21 @@
         <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
         <item name="android:navigationBarColor">@color/lightseagreen</item>
 
-
     </style>
 
 
 
-
-    <style name="MyToolBar" >
-        <item name="android:background">@color/background_button</item>
+    <style name="MyToolBar" parent="Base.ThemeOverlay.AppCompat.Light">
         <item name="android:titleTextStyle">@style/MyToolBarTitleText</item>
         <item name="android:backgroundStacked">@android:color/holo_green_dark</item>
-
+        <item name="android:actionOverflowButtonStyle">@style/OverflowStyle.Light</item>
     </style>
 
-    <style name="MyToolBarTitleText" >
+    <style name="OverflowStyle.Light" parent="@android:style/Widget.Holo.ActionButton.Overflow">
+        <item name="android:src">@drawable/ic_action_overflow</item>
+    </style>
+
+    <style name="MyToolBarTitleText">
 
         <item name="android:textColor">#ffffff</item>
         <item name="android:textSize">20dp</item>
@@ -29,14 +31,17 @@
         <!--<item name="android:windowTitleSize">50dp</item>-->
 
     </style>
+
     <style name="MyTitleTextAppearance">
-        
+
     </style>
 
     <style name="add_dialog" parent="Theme.AppCompat.Light.Dialog">
-        <item name="android:windowMinWidthMajor">@null</item><!-- 边框 -->
+        <item name="android:windowMinWidthMajor">@null</item>
+        <!-- 边框 -->
 
-        <item name="android:backgroundDimEnabled">true</item><!-- 模糊 -->
+        <item name="android:backgroundDimEnabled">true</item>
+        <!-- 模糊 -->
     </style>
 
     <style name="fabShadow">

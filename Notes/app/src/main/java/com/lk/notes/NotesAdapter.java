@@ -25,6 +25,7 @@ public class NotesAdapter extends BaseAdapter {
     private LayoutInflater inflater;
 
     public NotesAdapter(Context context, List<NotesInfo> mNotesInfos, NotesDao dao) {
+
         inflater = LayoutInflater.from(context);
         this.mNotesInfos = mNotesInfos;
         this.context = context;
