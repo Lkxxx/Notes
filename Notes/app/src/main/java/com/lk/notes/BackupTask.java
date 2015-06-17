@@ -1,6 +1,8 @@
 package com.lk.notes;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.util.Log;
@@ -99,5 +101,31 @@ public class BackupTask extends AsyncTask<String, Void, Integer> {
             default:
                 break;
         }
+    }
+
+    public SQLiteDatabase op(Context context){
+        String filePath = Environment.getExternalStorageDirectory()+ "Notes/backup/notes.db";
+        File Path=new File(filePath);
+        if (Path.exists()){
+            return SQLiteDatabase.openOrCreateDatabase(Path, null);
+        }else {
+            return null;
+        }
+    }
+
+    public void re(){
+        String title,text,time,id;
+        NotesDao dao = null;
+        SQLiteDatabase database = op(mContext);
+        Cursor c = database.query("notes", new String[]{"title", "text", "time", "id"}, null, null, null, null, null);
+        if (c.moveToNext()){
+            title = c.getString(0);
+            text = c.getString(0);
+            time = c.getString(0);
+            id = c.getString(0);
+            dao.add(title,text,time,id);
+        }
+        c.close();
+        database.close();
     }
 }

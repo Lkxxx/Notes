@@ -1,6 +1,7 @@
 package com.lk.notes;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -58,7 +59,7 @@ public class NotesActivity extends ActionBarActivity {
     private RelativeLayout rl_notes;
 
     private long exitTime = 0;
-
+    String dbFilePath = Environment.getExternalStorageDirectory() + "/Notes/backup/notes.db";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -252,11 +253,11 @@ public class NotesActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void setPopMenu(){
+    private void setPopMenu() {
         PopupMenu popupMenu;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             popupMenu = new PopupMenu(this, toolbar, Gravity.END);
-        }else {
+        } else {
             popupMenu = new PopupMenu(this, toolbar);
         }
         getMenuInflater().inflate(R.menu.menu_menu, popupMenu.getMenu());
@@ -270,14 +271,17 @@ public class NotesActivity extends ActionBarActivity {
                     case R.id.action_recover:
                         AlertDialog.Builder alertDialog = new AlertDialog.Builder(NotesActivity.this);
                         alertDialog.setTitle("警告");
-                        alertDialog.setMessage("还原备份将覆盖当前的笔记，确认继续？");
+                        alertDialog.setMessage("还原以前所备份笔记，确认继续？");
                         alertDialog.setPositiveButton("确认", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-
-                                recover();
-                                setRefresh();
-
+                                if (new File(dbFilePath).exists()) {
+                                    re();
+                                    setRefresh();
+                                    Toast.makeText(NotesActivity.this, "还原成功", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(NotesActivity.this, "没有发现备份文件", Toast.LENGTH_SHORT).show();
+                                }
                             }
                         });
                         alertDialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -464,15 +468,59 @@ public class NotesActivity extends ActionBarActivity {
     }
 
 
-   /* @Override
-    public void onSearch(FakeSearchView fakeSearchView, CharSequence constraint) {
-        ((NotesAdapter)list_view.getPullRootView().getAdapter()).getFilter().filter(constraint);
+    /* @Override
+     public void onSearch(FakeSearchView fakeSearchView, CharSequence constraint) {
+         ((NotesAdapter)list_view.getPullRootView().getAdapter()).getFilter().filter(constraint);
+     }
+
+     @Override
+     public void onSearchHint(FakeSearchView fakeSearchView, CharSequence constraint) {
+
+     }*/
+    public SQLiteDatabase op(Context context) {
+
+        Log.e("path", dbFilePath);
+        File Path = new File(dbFilePath);
+        if (Path.exists()) {
+            return SQLiteDatabase.openOrCreateDatabase(Path, null);
+        } else {
+            return SQLiteDatabase.openOrCreateDatabase(Path, null);
+        }
     }
 
-    @Override
-    public void onSearchHint(FakeSearchView fakeSearchView, CharSequence constraint) {
+    public void re() {
+        String title, text, time, id;
+        NotesDao dao = new NotesDao(this);
+        SQLiteDatabase database = op(getApplicationContext());
+        Cursor c = database.query("notes", new String[]{"title", "text", "time", "id"}, null, null, null, null, "id");
+        while (c.moveToNext()) {
+            title = c.getString(0);
+            text = c.getString(1);
+            time = c.getString(2);
+            id = c.getString(3);
+            if (idExist(id)){
+                dao.add(title, text, time, id);
+            }
+        }
+        c.close();
+        database.close();
+    }
 
-    }*/
+    public boolean idExist(String id){
+        SQLiteDatabase database1 = new NotesOpenHelper(this).getReadableDatabase();
+        Cursor cursor = database1.query("notes", null,"id = ?",new String[]{id}, null, null, null);
+        if (cursor.moveToNext()){
+            cursor.close();
+            database1.close();
+            Log.e("exist", "ture");
+            return false;
+        } else{
+            cursor.close();
+            database1.close();
+            Log.e("exist", "false");
+            return true;
+        }
 
+    }
 
 }
