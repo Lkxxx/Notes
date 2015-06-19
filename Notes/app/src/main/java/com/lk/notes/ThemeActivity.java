@@ -16,7 +16,7 @@ import android.view.Window;
 import android.widget.Button;
 
 
-public class ThemeActivity extends ActionBarActivity implements View.OnClickListener {
+public class ThemeActivity extends ActionBarActivity implements View.OnClickListener, View.OnLongClickListener {
 
 
     private Toolbar toolbar;
@@ -87,6 +87,22 @@ public class ThemeActivity extends ActionBarActivity implements View.OnClickList
         bt_restore.setOnClickListener(this);
         bt_colorCustom.setOnClickListener(this);
         bt_black.setOnClickListener(this);
+        bt_red.setOnLongClickListener(this);
+        bt_orange.setOnLongClickListener(this);
+        bt_yellow.setOnLongClickListener(this);
+        bt_charttreuse.setOnLongClickListener(this);
+        bt_lime.setOnLongClickListener(this);
+        bt_springgreen.setOnLongClickListener(this);
+        bt_aquamarine.setOnLongClickListener(this);
+        bt_cyan.setOnLongClickListener(this);
+        bt_royalblue.setOnLongClickListener(this);
+        bt_darkviolet.setOnLongClickListener(this);
+        bt_magenta.setOnLongClickListener(this);
+        bt_mediumvioletred.setOnLongClickListener(this);
+        bt_restore.setOnLongClickListener(this);
+        bt_colorCustom.setOnLongClickListener(this);
+        bt_black.setOnLongClickListener(this);
+
     }
 
 
@@ -252,6 +268,68 @@ public class ThemeActivity extends ActionBarActivity implements View.OnClickList
     }
 
 
+    @Override
+    public boolean onLongClick(View view) {
+        switch (view.getId()) {
+            case R.id.bt_red:
+                waveColor(255,0,0,255,74,74);
+                break;
+            case R.id.bt_orange:
+                waveColor(255, 128, 0, 255, 165, 74);
+                break;
+            case R.id.bt_yellow:
+                waveColor(255, 225, 0, 255, 234, 74);
+                break;
+            case R.id.bt_charttreuse:
+                waveColor(128, 255, 0,165,255,74);
+                break;
+            case R.id.bt_lime:
+                waveColor(0, 255, 0,74, 255, 74);
+                break;
+            case R.id.bt_springgreen:
+                waveColor(0, 255, 128,74,255,165);
+                break;
+            case R.id.bt_aquamarine:
+                waveColor(102, 255, 179,146,255,201);
+                break;
+            case R.id.bt_cyan:
+                waveColor(0, 255, 255,74,255,255);
+                break;
+            case R.id.bt_royalblue:
+                waveColor(0, 127, 255,74,164,255);
+                break;
+            case R.id.bt_darkviolet:
+                waveColor(127, 0, 255,164,74,255);
+                break;
+            case R.id.bt_magenta:
+                waveColor(255, 0, 255,255,74,255);
+                break;
+            case R.id.bt_mediumvioletred:
+                waveColor(255, 0, 128,255,74,165);
+                break;
+            case R.id.bt_black:
+                waveColor(15, 15, 15,85,85,85);
+                break;
+            case R.id.bt_restore:
+                waveColor(0, 159, 175, 74, 187, 198);
+                break;
+            case R.id.bt_colorCustom:
+                colorCustom();
+                break;
 
+    }
+        return false;
+    }
 
+    public void waveColor(int r ,int g, int b,int r1,int g1,int b1){
+        Intent intent = new Intent();
+        intent.putExtra("r", r);
+        intent.putExtra("g", g);
+        intent.putExtra("b", b);
+        intent.putExtra("r1", r1);
+        intent.putExtra("g1", g1);
+        intent.putExtra("b1", b1);
+        intent.setClass(ThemeActivity.this, FirstInActivity.class);
+        startActivity(intent);
+    }
 }

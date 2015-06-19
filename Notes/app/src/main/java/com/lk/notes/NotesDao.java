@@ -21,13 +21,15 @@ public class NotesDao {
 
     }
 
-    public boolean add(String title, String text, String time, String id) {
+    public boolean add(String title, String text, String time, String id,String year,String clock) {
         SQLiteDatabase db = notesOpenHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("title", title);
         values.put("text", text);
         values.put("time", time);
         values.put("id", id);
+        values.put("year",year);
+        values.put("clock",clock);
 
         long rowID = db.insert("notes", null, values);
 
@@ -69,7 +71,7 @@ public class NotesDao {
         SQLiteDatabase db = notesOpenHelper.getReadableDatabase();
 
         List<NotesInfo> lists = new ArrayList<NotesInfo>();
-        Cursor c = db.query("notes", new String[]{"title", "text", "time", "id"}, null, null, null, null, "id DESC");
+        Cursor c = db.query("notes", new String[]{"title", "text", "time", "id","year","clock"}, null, null, null, null, "_id DESC");
         while (c.moveToNext()) {
             NotesInfo info = new NotesInfo();
             info.setTitle(c.getString(0));

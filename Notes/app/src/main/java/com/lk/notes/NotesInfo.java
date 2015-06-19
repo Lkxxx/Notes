@@ -3,9 +3,26 @@ package com.lk.notes;
 /**
  * Created by lk on 05/17.
  */
-public class NotesInfo  {
+public class NotesInfo {
 
-    private String text, title, time, id;
+    private String text, title, time, id, year, clock;
+
+
+    public String getYear() {
+        return year;
+    }
+
+    public String getClock() {
+        return clock;
+    }
+
+    public void setYear(String year) {
+        this.year = year;
+    }
+
+    public void setClock(String clock) {
+        this.clock = clock;
+    }
 
     public String getText() {
         return text;
@@ -42,7 +59,6 @@ public class NotesInfo  {
     public void setTime(String time) {
         this.time = time;
     }
-
 
 
 }

@@ -14,7 +14,7 @@ public class NotesOpenHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        sqLiteDatabase.execSQL("create table notes (_id integer primary key autoincrement,title varchar,text varchar,time varchar,id varchar)");
+        sqLiteDatabase.execSQL("create table notes (_id integer primary key autoincrement,title varchar,text varchar,time varchar,id varchar,year varchar,clock varchar)");
     }
 
     @Override

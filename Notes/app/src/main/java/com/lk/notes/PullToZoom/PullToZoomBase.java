@@ -72,7 +72,7 @@ public abstract class PullToZoomBase<T extends View> extends LinearLayout implem
         NotesOpenHelper notesOpenHelper;
         notesOpenHelper = new NotesOpenHelper(context);
         SQLiteDatabase db = notesOpenHelper.getReadableDatabase();
-        Cursor c = db.query("notes", new String[]{"title", "text", "time", "id"}, null, null, null, null, "id DESC");
+        Cursor c = db.query("notes", new String[]{"title", "text", "time", "id"}, null, null, null, null, "_id DESC");
         String path = null;
         if (c.moveToFirst()) {
             path = Environment.getExternalStorageDirectory() + "/Notes/image/" + c.getString(3);

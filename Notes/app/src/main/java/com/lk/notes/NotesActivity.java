@@ -1,6 +1,7 @@
 package com.lk.notes;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -47,6 +48,8 @@ public class NotesActivity extends ActionBarActivity {
     private static final int Edit = 1;
     private static final int Change = 1;
     private static final int Refresh = 2;
+    private static final int RECOVER = 3;
+
 
     private FloatingActionButton fab;
     private PullToZoomListViewEx list_view;
@@ -57,16 +60,58 @@ public class NotesActivity extends ActionBarActivity {
     private String id;
     private RotateAnimation ra;
     private RelativeLayout rl_notes;
-
+    private ProgressDialog progressDialog;
     private long exitTime = 0;
     String dbFilePath = Environment.getExternalStorageDirectory() + "/Notes/backup/notes.db";
+
+
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            if (msg.what == Refresh) {
+                ImageView imageView = (ImageView) list_view.getZoomView();
+                if (getDataLastPath() != null) {
+                    imageView.setImageBitmap(BitmapFactory.decodeFile(getDataLastPath()));
+                    list_view.setHeaderLayoutParams(localObject(getDataLastPath()));
+                }
+
+            }
+        }
+    };
+
+    private Handler handler1 = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            if (msg.what == RECOVER) {
+                progressDialog.dismiss();
+                setRefresh();
+                Toast.makeText(NotesActivity.this, "还原成功", Toast.LENGTH_SHORT).show();
+            }
+        }
+    };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notes);
         intiview();
-        initData();
+        SharedPreferences sp = getSharedPreferences("isFirstIn", NotesActivity.MODE_PRIVATE);
+        boolean isFirstIn = sp.getBoolean("isFirstInWith1.14", true);
+        SharedPreferences.Editor editor = sp.edit();
+        if (isFirstIn /*&& getApplicationContext().getDatabasePath("notes.db").exists()*/) {
+            Log.e("dbpath", String.valueOf(getDatabasePath("notes.db")));
+            //editor.putBoolean("isFirstInWith1.14", false);
+            //editor.commit();
+            startActivity(new Intent(this, FirstInActivity.class));
+            finish();
+        }else {
+            initData();
+        }
+
+
+
+
 
 
     }
@@ -83,7 +128,6 @@ public class NotesActivity extends ActionBarActivity {
     private void initData() {
         dao = new NotesDao(this);
         new Thread() {
-
             public void run() {
                 mNotesInfos = dao.findNotes();
                 runOnUiThread(new Runnable() {
@@ -95,8 +139,6 @@ public class NotesActivity extends ActionBarActivity {
                     }
                 });
             }
-
-            ;
         }.start();
 
     }
@@ -217,7 +259,7 @@ public class NotesActivity extends ActionBarActivity {
         NotesOpenHelper notesOpenHelper;
         notesOpenHelper = new NotesOpenHelper(this);
         SQLiteDatabase db = notesOpenHelper.getReadableDatabase();
-        Cursor c = db.query("notes", new String[]{"title", "text", "time", "id"}, null, null, null, null, "id DESC");
+        Cursor c = db.query("notes", new String[]{"title", "text", "time", "id"}, null, null, null, null, "_id DESC");
 
         if (c.moveToFirst()) {
             path = Environment.getExternalStorageDirectory() + "/Notes/image/" + c.getString(3);
@@ -269,29 +311,7 @@ public class NotesActivity extends ActionBarActivity {
                         backup();
                         break;
                     case R.id.action_recover:
-                        AlertDialog.Builder alertDialog = new AlertDialog.Builder(NotesActivity.this);
-                        alertDialog.setTitle("警告");
-                        alertDialog.setMessage("还原以前所备份笔记，确认继续？");
-                        alertDialog.setPositiveButton("确认", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                if (new File(dbFilePath).exists()) {
-                                    re();
-                                    setRefresh();
-                                    Toast.makeText(NotesActivity.this, "还原成功", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    Toast.makeText(NotesActivity.this, "没有发现备份文件", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
-                        alertDialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                return;
-                            }
-                        });
-
-                        alertDialog.show();
+                        recover();
                         break;
                     case R.id.action_about:
                         AlertDialog.Builder alertDialog1 = new AlertDialog.Builder(NotesActivity.this);
@@ -301,9 +321,7 @@ public class NotesActivity extends ActionBarActivity {
                         alertDialog1.setPositiveButton("确认", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-
                                 return;
-
                             }
                         });
                         alertDialog1.show();
@@ -320,15 +338,45 @@ public class NotesActivity extends ActionBarActivity {
         popupMenu.show();
     }
 
-    private void backup() {
+    public void backup() {
         new BackupTask(this).execute("backupDatabase");
         Toast.makeText(this, "备份成功", Toast.LENGTH_SHORT).show();
 
     }
 
     private void recover() {
-        new BackupTask(this).execute("restroeDatabase");
-        Toast.makeText(this, "还原备份成功", Toast.LENGTH_SHORT).show();
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(NotesActivity.this);
+        alertDialog.setTitle("警告");
+        alertDialog.setMessage("还原以前所备份笔记，确认继续？");
+        alertDialog.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if (new File(dbFilePath).exists()) {
+                    progressDialog = ProgressDialog.show(NotesActivity.this, "", "正在还原", true, false);
+                    Thread thread = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            re();
+                            Message msg = new Message();
+                            msg.what = RECOVER;
+                            handler1.sendMessage(msg);
+                        }
+
+                    });
+                    thread.start();
+                } else {
+                    Toast.makeText(NotesActivity.this, "没有发现备份文件", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        alertDialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                return;
+            }
+        });
+
+        alertDialog.show();
     }
 
 
@@ -446,19 +494,6 @@ public class NotesActivity extends ActionBarActivity {
         }, 1000);
     }
 
-    private Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            if (msg.what == Refresh) {
-                ImageView imageView = (ImageView) list_view.getZoomView();
-                if (getDataLastPath() != null) {
-                    imageView.setImageBitmap(BitmapFactory.decodeFile(getDataLastPath()));
-                    list_view.setHeaderLayoutParams(localObject(getDataLastPath()));
-                }
-
-            }
-        }
-    };
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -489,32 +524,34 @@ public class NotesActivity extends ActionBarActivity {
     }
 
     public void re() {
-        String title, text, time, id;
+        String title, text, time, id, year, clock;
         NotesDao dao = new NotesDao(this);
         SQLiteDatabase database = op(getApplicationContext());
-        Cursor c = database.query("notes", new String[]{"title", "text", "time", "id"}, null, null, null, null, "id");
+        Cursor c = database.query("notes", new String[]{"title", "text", "time", "id", "year", "clock"}, null, null, null, null, "id");
         while (c.moveToNext()) {
             title = c.getString(0);
             text = c.getString(1);
             time = c.getString(2);
             id = c.getString(3);
-            if (idExist(id)){
-                dao.add(title, text, time, id);
+            year = c.getString(4);
+            clock = c.getString(5);
+            if (idExist(id)) {
+                dao.add(title, text, time, id, null, null);
             }
         }
         c.close();
         database.close();
     }
 
-    public boolean idExist(String id){
+    public boolean idExist(String id) {
         SQLiteDatabase database1 = new NotesOpenHelper(this).getReadableDatabase();
-        Cursor cursor = database1.query("notes", null,"id = ?",new String[]{id}, null, null, null);
-        if (cursor.moveToNext()){
+        Cursor cursor = database1.query("notes", null, "id = ?", new String[]{id}, null, null, null);
+        if (cursor.moveToNext()) {
             cursor.close();
             database1.close();
             Log.e("exist", "ture");
             return false;
-        } else{
+        } else {
             cursor.close();
             database1.close();
             Log.e("exist", "false");

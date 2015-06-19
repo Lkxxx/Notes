@@ -52,4 +52,9 @@
         <!--抽屉开关箭头颜色-->
         <item name="color">@android:color/white</item>
     </style>
+
+    <style name="WaveTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+    </style>
 </resources>

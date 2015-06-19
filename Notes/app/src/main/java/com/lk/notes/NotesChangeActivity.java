@@ -25,10 +25,18 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.ScrollView;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.fourmob.datetimepicker.date.DatePickerDialog;
+import com.sleepbot.datetimepicker.time.RadialPickerLayout;
+import com.sleepbot.datetimepicker.time.TimePickerDialog;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -36,10 +44,12 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
-public class NotesChangeActivity extends ActionBarActivity {
+public class NotesChangeActivity extends ActionBarActivity implements View.OnClickListener, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
     private Toolbar toolbar;
     private EditText et_title, et_text;
@@ -51,6 +61,20 @@ public class NotesChangeActivity extends ActionBarActivity {
     private ProgressDialog progressDialog;
     private static final int STOP = 1;
     private ScrollView scrollView;
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            if (msg.what == STOP) {
+                progressDialog.dismiss();
+                finish();
+            }
+        }
+    };
+
+    private LinearLayout ll_remind,ll_date;
+    private TextView tv_date,tv_time;
+    private Button bt_delete;
+    String[] date = new String[1];
 
 
     @Override
@@ -64,15 +88,27 @@ public class NotesChangeActivity extends ActionBarActivity {
 
     private void initView() {
 
+
+        ll_remind = (LinearLayout)findViewById(R.id.ll_remind);
+        tv_date = (TextView)findViewById(R.id.tv_date);
+        tv_time = (TextView)findViewById(R.id.tv_time);
+        bt_delete = (Button)findViewById(R.id.bt_delete);
+        ll_date = (LinearLayout)findViewById(R.id.ll_date);
+        ll_remind.setOnClickListener(this);
+        tv_date.setOnClickListener(this);
+        tv_time.setOnClickListener(this);
+        bt_delete.setOnClickListener(this);
+        ll_date.setVisibility(View.GONE);
+
         scrollView = (ScrollView)findViewById(R.id.scrollView);
 
 
 
         et_text = (EditText) findViewById(R.id.et_text);
         et_title = (EditText) findViewById(R.id.et_title);
-
+        et_text.setMinLines(20);
         Intent intent = this.getIntent();
-        String title = intent.getStringExtra("title");
+        String title = intent.getStringExtra("title");//
         String text = intent.getStringExtra("text");
 
         id = intent.getStringExtra("id");
@@ -168,15 +204,7 @@ public class NotesChangeActivity extends ActionBarActivity {
         }
     }
 
-    private Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            if (msg.what == STOP) {
-                progressDialog.dismiss();
-                finish();
-            }
-        }
-    };
+
 
 
     private void change() {
@@ -216,7 +244,10 @@ public class NotesChangeActivity extends ActionBarActivity {
             info.setText(str_text);
             info.setTime(str_time);
             Log.e("a", str_title + str_text + str_time);
-            dao.change(str_title, str_text, str_time, id);
+            //dao.change(str_title, str_text, str_time, id);
+            dao.delete(id);
+            dao.add(str_title, str_text, str_time, id,null,null);
+
             new File(Environment.getExternalStorageDirectory() + "/Notes/image/cache/cache.jpg").delete();
             Toast.makeText(NotesChangeActivity.this, "修改已经保存", Toast.LENGTH_SHORT).show();
         }
@@ -344,7 +375,166 @@ public class NotesChangeActivity extends ActionBarActivity {
     }
 
 
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.ll_remind:
+                ll_remind.setVisibility(View.GONE);
+                ll_date.setVisibility(View.VISIBLE);
+                break;
+            case R.id.tv_date:
+                tv_date.setTextColor(Color.parseColor("#f7333333"));
+                tv_time.setTextColor(Color.parseColor("#c4707070"));
+                setDateMenu();
+                break;
+            case R.id.tv_time:
+                tv_date.setTextColor(Color.parseColor("#c4707070"));
+                tv_time.setTextColor(Color.parseColor("#f7333333"));
+                setTimeMenu();
+                break;
+            case R.id.bt_delete:
+                ll_remind.setVisibility(View.VISIBLE);
+                ll_date.setVisibility(View.GONE);
+                break;
+    }
+    }
 
+    @Override
+    public void onDateSet(DatePickerDialog datePickerDialog, int i, int i1, int i2) {
+        long timeGetTime = new Date().getTime();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy年",
+                Locale.getDefault());
+        int year = Integer.parseInt(sdf.format(timeGetTime).substring(0,4));
+        String date ;
+        if (year == i ){
+            date = (i1+1)+"月"+i2+"日";
+        }else {
+            date = i+"年"+(i1+1)+"月"+i2+"日";
+        }
+        tv_date.setText(date);
+    }
+
+    @Override
+    public void onTimeSet(RadialPickerLayout radialPickerLayout, int i, int i1) {
+        String hourString = i < 10 ? "0"+i : ""+i;
+        String minuteString = i1 < 10 ? "0"+i1 : ""+i1;
+        String time = hourString+":"+minuteString;
+        tv_time.setText(time);
+    }
+
+    public void setTimeMenu() {
+        PopupMenu popupMenu = new PopupMenu(this, tv_time);
+        getMenuInflater().inflate(R.menu.menu_time, popupMenu.getMenu());
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                switch (menuItem.getItemId()) {
+                    case R.id.action_morning:
+                        tv_time.setText("上午");
+                        break;
+                    case R.id.action_afternoon:
+                        tv_time.setText("下午");
+
+                        break;
+                    case R.id.action_evening:
+                        tv_time.setText("傍晚");
+
+                        break;
+                    case R.id.action_night:
+                        tv_time.setText("晚上");
+                        break;
+                    case R.id.action_time_choose:
+                        tv_time.setText("选择时间");
+                        Calendar now = Calendar.getInstance();
+                        TimePickerDialog tpd = TimePickerDialog.newInstance(
+                                NotesChangeActivity.this,
+                                now.get(Calendar.HOUR_OF_DAY),
+                                now.get(Calendar.MINUTE),
+                                true
+                        );
+                        tpd.show(getSupportFragmentManager(), "Timepickerdialog");
+                        break;
+
+
+                }
+                return true;
+            }
+        });
+        popupMenu.show();
+
+
+    }
+
+
+
+
+    public void setDateMenu() {
+
+        long timeGetTime = new Date().getTime();
+        SimpleDateFormat sdf = new SimpleDateFormat("MM月dd日",
+                Locale.getDefault());
+        final String str_time = sdf.format(timeGetTime);
+
+
+        PopupMenu  popupMenu = new PopupMenu(this, tv_date);
+        getMenuInflater().inflate(R.menu.menu_date, popupMenu.getMenu());
+        popupMenu.getMenu().findItem(R.id.action_nextweek).setTitle("下周" + weekDay());
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                switch (menuItem.getItemId()) {
+                    case R.id.action_today:
+                        tv_date.setText("今天");
+                        date[0] = str_time;
+                        break;
+                    case R.id.action_tomorrow:
+                        tv_date.setText("明天");
+                        date[0] = str_time;
+                        break;
+                    case R.id.action_nextweek:
+                        tv_date.setText("下周"+weekDay());
+                        date[0] = str_time;
+                        break;
+                    case R.id.action_date_choose:
+                        Calendar now = Calendar.getInstance();
+                        DatePickerDialog dpd = DatePickerDialog.newInstance(
+                                NotesChangeActivity.this,
+                                now.get(Calendar.YEAR),
+                                now.get(Calendar.MONTH),
+                                now.get(Calendar.DAY_OF_MONTH)
+                        );
+                        dpd.show(getSupportFragmentManager(),"Timepickerdialog");
+                        break;
+                }
+
+                return true;
+            }
+        });
+        popupMenu.show();
+    }
+
+
+    public String weekDay(){
+        Calendar c = Calendar.getInstance();
+        c.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
+        String mWay = String.valueOf(c.get(Calendar.DAY_OF_WEEK));
+        if("1".equals(mWay)){
+            mWay ="天";
+        }else if("2".equals(mWay)){
+            mWay ="一";
+        }else if("3".equals(mWay)){
+            mWay ="二";
+        }else if("4".equals(mWay)){
+            mWay ="三";
+        }else if("5".equals(mWay)){
+            mWay ="四";
+        }else if("6".equals(mWay)){
+            mWay ="五";
+        }else if("7".equals(mWay)){
+            mWay ="六";
+        }
+        return mWay;
+    }
 
 }
 
