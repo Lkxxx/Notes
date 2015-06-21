@@ -188,7 +188,7 @@ public class ImageProcessing {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         window.setStatusBarColor(vibrant.getRgb());
                         Log.e("rgb", String.valueOf(vibrant.getRgb()));
-                        window.setNavigationBarColor(vibrant.getRgb());
+
                     }
 
                 }

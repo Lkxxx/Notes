@@ -42,7 +42,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="11dp"
-                android:layout_marginTop="22dp"
+                android:layout_marginTop="@dimen/text_margin_top"
                 android:background="#eee"
                 android:hint="写下你的标题"
 

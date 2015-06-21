@@ -26,4 +26,5 @@
     <color name="lightseagreen">#009faf</color>
     <color name="darkcyan">#ff008597</color>
     <color name="black">#ff1f1f1f</color>
+    <color name="colorPrimaryDark">#008f9d</color>
 </resources>

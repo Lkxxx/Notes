@@ -1,15 +1,10 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:custom="http://schemas.android.com/apk/res-auto"
-    xmlns:fab="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#fff"
-    android:descendantFocusability="blocksDescendants"
-    android:orientation="vertical"
-    android:weightSum="1"
-    tools:context="com.lk.myapp.NotesActivity"
-    android:id="@+id/rl_notes">
+    android:fitsSystemWindows="true">
+
 
 
     <RelativeLayout
@@ -35,9 +30,9 @@
                 custom:zoomView="@layout/list_head_zoom_view"
 
 
-                >
+                />
+            >
 
-            </com.lk.notes.PullToZoom.PullToZoomListViewEx>
         </LinearLayout>
 
 
@@ -51,8 +46,7 @@
             android:layout_marginRight="12dp"
             android:src="@drawable/fab_bg_normal" />
 
-        <com.lk.notes.FloatingActionButton
-
+        <com.lk.notes.FloatingActionButton xmlns:fab="http://schemas.android.com/apk/res-auto"
             android:id="@+id/fab"
             android:layout_width="72dp"
             android:layout_height="72dp"
@@ -66,8 +60,46 @@
             fab:fab_colorPressed="@color/primary_pressed"
             fab:fab_shadow="false" />
 
+        <LinearLayout
+            android:id="@+id/ll_none"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_gravity="center"
+                android:background="@drawable/none" />
+
+            <TextView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="还没有笔记，快来创建吧～"
+                android:textColor="#ff696969" />
+        </LinearLayout>
 
     </RelativeLayout>
 
+    <com.lk.notes.UI.ScrimInsetsFrameLayout
 
-</RelativeLayout>
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        app:insetForeground="#35000000"
+        android:id="@+id/frameLayout"
+        >
+
+        <include layout="@layout/drawable" />
+
+    </com.lk.notes.UI.ScrimInsetsFrameLayout>
+
+
+</android.support.v4.widget.DrawerLayout>
+
+

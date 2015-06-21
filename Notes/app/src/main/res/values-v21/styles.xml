@@ -3,14 +3,16 @@
 
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
 
-        <item name="android:statusBarColor">@color/darkcyan</item>
+        <item name="android:statusBarColor">#00000000</item>
         <item name="android:toolbarStyle">@style/MyToolBar</item>
-        <item name="android:colorPrimary">#eee</item>
+        <item name="android:colorPrimaryDark">@color/darkcyan</item>
+        <item name="android:navigationBarColor">#000</item>
         <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
-        <item name="android:navigationBarColor">@color/lightseagreen</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:colorPrimary">@color/colorPrimaryDark</item>
+
 
     </style>
-
 
 
     <style name="MyToolBar" parent="Base.ThemeOverlay.AppCompat.Light">
@@ -36,13 +38,7 @@
 
     </style>
 
-    <style name="add_dialog" parent="Theme.AppCompat.Light.Dialog">
-        <item name="android:windowMinWidthMajor">@null</item>
-        <!-- 边框 -->
 
-        <item name="android:backgroundDimEnabled">true</item>
-        <!-- 模糊 -->
-    </style>
 
     <style name="fabShadow">
         <item name="android:shadowColor">#5e5e5e</item>
@@ -60,4 +56,6 @@
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
     </style>
+
+
 </resources>

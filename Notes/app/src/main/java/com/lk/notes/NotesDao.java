@@ -78,8 +78,10 @@ public class NotesDao {
             info.setText(c.getString(1));
             info.setTime(c.getString(2));
             info.setId(c.getString(3));
+            info.setYear(c.getString(4));
+            info.setClock(c.getString(5));
             lists.add(info);
-            System.out.println(lists);
+
         }
 
 

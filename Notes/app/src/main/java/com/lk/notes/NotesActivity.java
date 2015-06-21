@@ -1,8 +1,7 @@
 package com.lk.notes;
 
+import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -15,12 +14,13 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.ContextMenu;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -31,11 +31,11 @@ import android.view.animation.RotateAnimation;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ImageView;
-import android.widget.PopupMenu;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.lk.notes.PullToZoom.PullToZoomListViewEx;
+import com.lk.notes.UI.ScrimInsetsFrameLayout;
 
 import java.io.File;
 import java.util.List;
@@ -43,13 +43,12 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 
-public class NotesActivity extends ActionBarActivity {
+public class NotesActivity extends ActionBarActivity implements View.OnClickListener {
 
     private static final int Edit = 1;
     private static final int Change = 1;
     private static final int Refresh = 2;
-    private static final int RECOVER = 3;
-
+    static Activity finish;
 
     private FloatingActionButton fab;
     private PullToZoomListViewEx list_view;
@@ -59,11 +58,9 @@ public class NotesActivity extends ActionBarActivity {
     private List<NotesInfo> mNotesInfos;
     private String id;
     private RotateAnimation ra;
-    private RelativeLayout rl_notes;
-    private ProgressDialog progressDialog;
+    private LinearLayout ll_none, ll_notes, ll_label, ll_remind, ll_theme, ll_setting, ll_message, ll_suggest;
+    private DrawerLayout drawerLayout;
     private long exitTime = 0;
-    String dbFilePath = Environment.getExternalStorageDirectory() + "/Notes/backup/notes.db";
-
 
     private Handler handler = new Handler() {
         @Override
@@ -79,39 +76,23 @@ public class NotesActivity extends ActionBarActivity {
         }
     };
 
-    private Handler handler1 = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            if (msg.what == RECOVER) {
-                progressDialog.dismiss();
-                setRefresh();
-                Toast.makeText(NotesActivity.this, "还原成功", Toast.LENGTH_SHORT).show();
-            }
-        }
-    };
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notes);
         intiview();
+        finish = this;
         SharedPreferences sp = getSharedPreferences("isFirstIn", NotesActivity.MODE_PRIVATE);
         boolean isFirstIn = sp.getBoolean("isFirstInWith1.14", true);
         SharedPreferences.Editor editor = sp.edit();
-        if (isFirstIn /*&& getApplicationContext().getDatabasePath("notes.db").exists()*/) {
+        if (isFirstIn) {
             Log.e("dbpath", String.valueOf(getDatabasePath("notes.db")));
-            //editor.putBoolean("isFirstInWith1.14", false);
-            //editor.commit();
             startActivity(new Intent(this, FirstInActivity.class));
             finish();
-        }else {
+        } else {
             initData();
         }
-
-
-
-
 
 
     }
@@ -146,20 +127,11 @@ public class NotesActivity extends ActionBarActivity {
     @Override
     protected void onRestart() {
         adapter.notifyDataSetChanged();
-
         super.onRestart();
 
     }
 
-    @Override
-    protected void onResume() {
-
-        super.onResume();
-
-    }
-
     private void intiview() {
-        rl_notes = (RelativeLayout) findViewById(R.id.rl_notes);
         SharedPreferences sharedPreferences = getSharedPreferences("color", MODE_PRIVATE);
         int r = sharedPreferences.getInt("r", 0);
         int g = sharedPreferences.getInt("g", 159);
@@ -169,10 +141,20 @@ public class NotesActivity extends ActionBarActivity {
         ra = new RotateAnimation(0, 180, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         ra.setDuration(200);
 
+        ll_none = (LinearLayout) findViewById(R.id.ll_none);
+        if (getNone()) {
+            ll_none.setVisibility(View.VISIBLE);
+        } else {
+            ll_none.setVisibility(View.GONE);
+        }
+        ll_none.setOnClickListener(this);
+
         list_view = (PullToZoomListViewEx) findViewById(R.id.listview);
         if (getDataLastPath() != null) {
             list_view.setHeaderLayoutParams(localObject(getDataLastPath()));
         }
+
+
         list_view.setVerticalScrollBarEnabled(true);
         registerForContextMenu(list_view.getPullRootView());
         list_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -188,6 +170,7 @@ public class NotesActivity extends ActionBarActivity {
                 intent.putExtra("title", notesInfo.getTitle());
                 intent.putExtra("text", notesInfo.getText());
                 intent.putExtra("id", notesInfo.getId());
+                intent.putExtra("clock",notesInfo.getClock());
                 Log.e("id", notesInfo.getId());
                 intent.setClass(NotesActivity.this, NotesChangeActivity.class);
                 startActivityForResult(intent, Edit);
@@ -196,43 +179,51 @@ public class NotesActivity extends ActionBarActivity {
         });
 
         toolbar = (Toolbar) findViewById(R.id.tl_custom);
-        toolbar.setTitle("  Notes");
+        toolbar.setTitle("简记");
         toolbar.setTitleTextColor(Color.rgb(238, 238, 238));
         toolbar.setBackgroundColor(Color.rgb(r, g, b));
         setSupportActionBar(toolbar);
         getSupportActionBar().setElevation(15);
         toolbar.setPopupTheme(R.style.MyToolBar);
-
-
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
-            window.setStatusBarColor(Color.rgb((int) (r * 0.9), (int) (g * 0.9), (int) (b * 0.9)));
-            window.setNavigationBarColor(Color.rgb(r, g, b));
+            if (r == 0 & g == 159 && b == 175) {
+                window.setStatusBarColor(Color.argb(0, 0, 0, 0));
+            } else {
+                window.setStatusBarColor(Color.rgb((int) (r * 0.9), (int) (g * 0.9), (int) (b * 0.9)));
+            }
         }
+
+
+        ScrimInsetsFrameLayout frameLayout = (ScrimInsetsFrameLayout) findViewById(R.id.frameLayout);
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
+            drawerLayout.setFitsSystemWindows(false);
+            frameLayout.setFitsSystemWindows(false);
+        }
+        ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.abc_action_bar_home_description, R.string.abc_action_bar_home_description_format);
+        mDrawerToggle.syncState();
+        drawerLayout.setDrawerListener(mDrawerToggle);
+
         fab.setColorNormal(Color.rgb(r, g, b));
         fab.setColorPressed(Color.rgb((int) (r * 0.8), (int) (g * 0.8), (int) (b * 0.8)));
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                fab.startAnimation(ra);
-                ra.setAnimationListener(new Animation.AnimationListener() {
-                    @Override
-                    public void onAnimationStart(Animation animation) {
-                    }
+        fab.setOnClickListener(this);
 
-                    @Override
-                    public void onAnimationEnd(Animation animation) {
-                        Intent intent = new Intent(NotesActivity.this, EditNoteActivity.class);
-                        startActivityForResult(intent, Change);
-                    }
 
-                    @Override
-                    public void onAnimationRepeat(Animation animation) {
-                    }
-                });
-            }
-        });
+        ll_notes = (LinearLayout) findViewById(R.id.ll_notes);
+        ll_label = (LinearLayout) findViewById(R.id.ll_label);
+        ll_remind = (LinearLayout) findViewById(R.id.ll_remind);
+        ll_theme = (LinearLayout) findViewById(R.id.ll_theme);
+        ll_setting = (LinearLayout) findViewById(R.id.ll_setting);
+        ll_message = (LinearLayout) findViewById(R.id.ll_message);
 
+        ll_notes.setOnClickListener(this);
+        ll_label.setOnClickListener(this);
+        ll_remind.setOnClickListener(this);
+        ll_theme.setOnClickListener(this);
+        ll_setting.setOnClickListener(this);
+        ll_message.setOnClickListener(this);
 
     }
 
@@ -241,9 +232,7 @@ public class NotesActivity extends ActionBarActivity {
         DisplayMetrics localDisplayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(localDisplayMetrics);
         int mScreenWidth = localDisplayMetrics.widthPixels;
-
         AbsListView.LayoutParams localObject = new AbsListView.LayoutParams(mScreenWidth, (int) (0.1F * (mScreenWidth / 16.0F)));
-
         if (path != null) {
             if (new File(path).exists()) {
                 localObject = new AbsListView.LayoutParams(mScreenWidth, (int) (9.0F * (mScreenWidth / 16.0F)));
@@ -260,123 +249,24 @@ public class NotesActivity extends ActionBarActivity {
         notesOpenHelper = new NotesOpenHelper(this);
         SQLiteDatabase db = notesOpenHelper.getReadableDatabase();
         Cursor c = db.query("notes", new String[]{"title", "text", "time", "id"}, null, null, null, null, "_id DESC");
-
         if (c.moveToFirst()) {
             path = Environment.getExternalStorageDirectory() + "/Notes/image/" + c.getString(3);
         }
         c.close();
         db.close();
-
         return path;
     }
 
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                break;
-
-           /* case R.id.action_search:
-                Log.e("click", "search");
-
-
-                break;
-            case R.id.action_sequence:
-                Log.e("sequence", "sequence");
-                break;*/
-            case R.id.action_menu:
-                setPopMenu();
-                break;
-
-
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    private void setPopMenu() {
-        PopupMenu popupMenu;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            popupMenu = new PopupMenu(this, toolbar, Gravity.END);
-        } else {
-            popupMenu = new PopupMenu(this, toolbar);
-        }
-        getMenuInflater().inflate(R.menu.menu_menu, popupMenu.getMenu());
-        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                switch (menuItem.getItemId()) {
-                    case R.id.action_backup:
-                        backup();
-                        break;
-                    case R.id.action_recover:
-                        recover();
-                        break;
-                    case R.id.action_about:
-                        AlertDialog.Builder alertDialog1 = new AlertDialog.Builder(NotesActivity.this);
-
-                        alertDialog1.setTitle("关于");
-                        alertDialog1.setMessage("这是一个开始。成长离不开开源的支持，感谢每个人!");
-                        alertDialog1.setPositiveButton("确认", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                return;
-                            }
-                        });
-                        alertDialog1.show();
-                        break;
-                    case R.id.action_theme:
-                        Intent intent3 = new Intent(NotesActivity.this, ThemeActivity.class);
-                        startActivity(intent3);
-                        finish();
-                        break;
-                }
-                return true;
-            }
-        });
-        popupMenu.show();
-    }
-
-    public void backup() {
-        new BackupTask(this).execute("backupDatabase");
-        Toast.makeText(this, "备份成功", Toast.LENGTH_SHORT).show();
-
-    }
-
-    private void recover() {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(NotesActivity.this);
-        alertDialog.setTitle("警告");
-        alertDialog.setMessage("还原以前所备份笔记，确认继续？");
-        alertDialog.setPositiveButton("确认", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                if (new File(dbFilePath).exists()) {
-                    progressDialog = ProgressDialog.show(NotesActivity.this, "", "正在还原", true, false);
-                    Thread thread = new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            re();
-                            Message msg = new Message();
-                            msg.what = RECOVER;
-                            handler1.sendMessage(msg);
-                        }
-
-                    });
-                    thread.start();
-                } else {
-                    Toast.makeText(NotesActivity.this, "没有发现备份文件", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-        alertDialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                return;
-            }
-        });
-
-        alertDialog.show();
+    public boolean getNone() {
+        boolean none = true;
+        NotesOpenHelper notesOpenHelper;
+        notesOpenHelper = new NotesOpenHelper(this);
+        SQLiteDatabase db = notesOpenHelper.getReadableDatabase();
+        Cursor c = db.query("notes", new String[]{"title", "text", "time", "id"}, null, null, null, null, "_id DESC");
+        if (c.getCount() != 0) {none = false;}
+        c.close();
+        db.close();
+        return none;
     }
 
 
@@ -393,7 +283,6 @@ public class NotesActivity extends ActionBarActivity {
             }
             return true;
         }
-
         return super.onKeyDown(keyCode, event);
     }
 
@@ -408,52 +297,20 @@ public class NotesActivity extends ActionBarActivity {
             i = selectedPosition;
         }
         final NotesInfo notesInfo = mNotesInfos.get(i);
-        Log.e("position", String.valueOf(i));
         id = notesInfo.getId();
-        Log.e("position", id);
         switch (item.getItemId()) {
             case R.id.menuEdit:
-
                 Intent intent = new Intent();
                 intent.putExtra("title", notesInfo.getTitle());
                 intent.putExtra("text", notesInfo.getText());
                 intent.putExtra("id", id);
+                intent.putExtra("clock",notesInfo.getClock());
                 Log.e("tag", id);
                 intent.setClass(NotesActivity.this, NotesChangeActivity.class);
                 startActivityForResult(intent, Change);
                 break;
             case R.id.menuDelete:
-                AlertDialog.Builder alertDialog = new AlertDialog.Builder(NotesActivity.this);
-                alertDialog.setTitle("提示");
-                alertDialog.setMessage("你确定要删除吗");
-                alertDialog.setPositiveButton("确认", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        File f = new File(Environment.getExternalStorageDirectory() + "/Notes/image/" + id);
-                        dao.delete(id);
-                        Toast.makeText(NotesActivity.this, "删除成功", Toast.LENGTH_SHORT).show();
-                        mNotesInfos.remove(notesInfo);
-                        adapter.notifyDataSetChanged();
-                        if (f.exists()) {
-                            f.delete();
-                            ImageView imageView = (ImageView) list_view.getZoomView();
-                            if (selectedPosition == 0 || selectedPosition == 1) {
-                                imageView.setImageBitmap(BitmapFactory.decodeFile(getDataLastPath()));
-                                list_view.setHeaderLayoutParams(localObject(getDataLastPath()));
-                            }
-                        }
-
-
-                    }
-                });
-                alertDialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        return;
-                    }
-                });
-
-                alertDialog.show();
+                menuDelete(notesInfo,selectedPosition);
                 break;
             case R.id.menuShare:
                 Intent sendIntent = new Intent().setAction(Intent.ACTION_SEND);
@@ -467,11 +324,49 @@ public class NotesActivity extends ActionBarActivity {
 
     }
 
+    private void menuDelete(final NotesInfo notesInfo, final int selectedPosition){
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(NotesActivity.this);
+        alertDialog.setTitle("提示");
+        alertDialog.setMessage("你确定要删除吗");
+        alertDialog.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                File f = new File(Environment.getExternalStorageDirectory() + "/Notes/image/" + id);
+                dao.delete(id);
+                Toast.makeText(NotesActivity.this, "删除成功", Toast.LENGTH_SHORT).show();
+                mNotesInfos.remove(notesInfo);
+                adapter.notifyDataSetChanged();
+                if (getNone()) {
+                    ll_none.setVisibility(View.VISIBLE);
+                } else {
+                    ll_none.setVisibility(View.GONE);
+                }
+                if (f.exists()) {
+                    f.delete();
+                    ImageView imageView = (ImageView) list_view.getZoomView();
+                    if (selectedPosition == 0 || selectedPosition == 1) {
+                        imageView.setImageBitmap(BitmapFactory.decodeFile(getDataLastPath()));
+                        list_view.setHeaderLayoutParams(localObject(getDataLastPath()));
+                    }
+                }
+            }
+        });
+        alertDialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                return;
+            }
+        });
+        alertDialog.show();
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == Change) {
+            Log.e("result", "Change");
             if (resultCode != 10000) {
+                Log.e("result", "10000");
                 setRefresh();
             }
         }
@@ -480,84 +375,80 @@ public class NotesActivity extends ActionBarActivity {
 
     private void setRefresh() {
         ImageView imageView = (ImageView) list_view.getZoomView();
-        imageView.setImageBitmap(BitmapFactory.decodeFile(getDataLastPath()));
-        list_view.setHeaderLayoutParams(localObject(getDataLastPath()));
-        initData();
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                Message message = new Message();
-                message.what = Refresh;
-                handler.sendMessage(message);
+        if (getDataLastPath() != null) {
+            imageView.setImageBitmap(BitmapFactory.decodeFile(getDataLastPath()));
+            list_view.setHeaderLayoutParams(localObject(getDataLastPath()));
+            initData();
+            Timer timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    Message message = new Message();
+                    message.what = Refresh;
+                    handler.sendMessage(message);
+                }
+            }, 1000);
+            if (getNone()) {
+                ll_none.setVisibility(View.VISIBLE);
+            } else {
+                ll_none.setVisibility(View.GONE);
             }
-        }, 1000);
+        }
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_notes, menu);
-
         return true;
     }
 
 
-    /* @Override
-     public void onSearch(FakeSearchView fakeSearchView, CharSequence constraint) {
-         ((NotesAdapter)list_view.getPullRootView().getAdapter()).getFilter().filter(constraint);
-     }
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.fab:
+                fab.startAnimation(ra);
+                ra.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+                    }
 
-     @Override
-     public void onSearchHint(FakeSearchView fakeSearchView, CharSequence constraint) {
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        Intent intent = new Intent(NotesActivity.this, EditNoteActivity.class);
+                        startActivityForResult(intent, Change);
+                    }
 
-     }*/
-    public SQLiteDatabase op(Context context) {
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+                    }
+                });
+                break;
+            case R.id.ll_none:
+                Intent intent = new Intent(NotesActivity.this, EditNoteActivity.class);
+                startActivityForResult(intent, Change);
+                break;
+            case R.id.ll_notes:
+                break;
+            case R.id.ll_label:
+                break;
+            case R.id.ll_remind:
+                break;
+            case R.id.ll_theme:
+                Intent intent3 = new Intent(NotesActivity.this, ThemeActivity.class);
+                startActivity(intent3);
+                finish();
+                break;
+            case R.id.ll_setting:
+                Intent intent4 = new Intent(NotesActivity.this, SettingActivity.class);
+                startActivityForResult(intent4, Change);
+                break;
+            case R.id.ll_message:
+                Intent intent5 = new Intent(NotesActivity.this, MessageActivity.class);
+                startActivity(intent5);
+                break;
 
-        Log.e("path", dbFilePath);
-        File Path = new File(dbFilePath);
-        if (Path.exists()) {
-            return SQLiteDatabase.openOrCreateDatabase(Path, null);
-        } else {
-            return SQLiteDatabase.openOrCreateDatabase(Path, null);
         }
     }
-
-    public void re() {
-        String title, text, time, id, year, clock;
-        NotesDao dao = new NotesDao(this);
-        SQLiteDatabase database = op(getApplicationContext());
-        Cursor c = database.query("notes", new String[]{"title", "text", "time", "id", "year", "clock"}, null, null, null, null, "id");
-        while (c.moveToNext()) {
-            title = c.getString(0);
-            text = c.getString(1);
-            time = c.getString(2);
-            id = c.getString(3);
-            year = c.getString(4);
-            clock = c.getString(5);
-            if (idExist(id)) {
-                dao.add(title, text, time, id, null, null);
-            }
-        }
-        c.close();
-        database.close();
-    }
-
-    public boolean idExist(String id) {
-        SQLiteDatabase database1 = new NotesOpenHelper(this).getReadableDatabase();
-        Cursor cursor = database1.query("notes", null, "id = ?", new String[]{id}, null, null, null);
-        if (cursor.moveToNext()) {
-            cursor.close();
-            database1.close();
-            Log.e("exist", "ture");
-            return false;
-        } else {
-            cursor.close();
-            database1.close();
-            Log.e("exist", "false");
-            return true;
-        }
-
-    }
-
 }

@@ -55,11 +55,12 @@ public class EditNoteActivity extends ActionBarActivity implements View.OnClickL
     private EditText et_title, et_text;
     private NotesDao dao;
     private ImageView iv_image;
-
     private LinearLayout ll_remind,ll_date;
     private TextView tv_date,tv_time;
     private Button bt_delete;
 
+
+    int[] date = new int [5];
 
 
     @Override
@@ -126,7 +127,7 @@ public class EditNoteActivity extends ActionBarActivity implements View.OnClickL
         Window window = getWindow();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window.setStatusBarColor(Color.rgb((int) (r * 0.9), (int) (g * 0.9), (int) (b * 0.9)));
-            window.setNavigationBarColor(Color.rgb(r, g, b));
+
         }
 
 
@@ -289,7 +290,9 @@ public class EditNoteActivity extends ActionBarActivity implements View.OnClickL
                     String str_text = et_text.getText().toString().trim();
 
                     if (TextUtils.isEmpty(str_title) && TextUtils.isEmpty(str_text)) {
+                        setResult(10000);
                         finish();
+
 
                     } else {
                         AlertDialog.Builder alertDialog = new AlertDialog.Builder(EditNoteActivity.this);
@@ -306,8 +309,9 @@ public class EditNoteActivity extends ActionBarActivity implements View.OnClickL
                         alertDialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                finish();
+
                                 setResult(10000);
+                                finish();
                             }
                         });
                         alertDialog.show();
@@ -354,6 +358,7 @@ public class EditNoteActivity extends ActionBarActivity implements View.OnClickL
 
                 if (TextUtils.isEmpty(str_title) && TextUtils.isEmpty(str_text)&&!new File(Environment.getExternalStorageDirectory() + "/Notes/image/cache/cache").exists()) {
                     finish();
+                    setResult(10000);
                 } else {
                     save();
                     Toast.makeText(EditNoteActivity.this, "已经保存", Toast.LENGTH_SHORT).show();
@@ -371,6 +376,13 @@ public class EditNoteActivity extends ActionBarActivity implements View.OnClickL
             case R.id.ll_remind:
                 ll_remind.setVisibility(View.GONE);
                 ll_date.setVisibility(View.VISIBLE);
+                Calendar c = Calendar.getInstance();
+                c.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
+                c.set(Calendar.HOUR_OF_DAY, 9);
+                c.set(Calendar.MINUTE, 00);
+                c.add(Calendar.DATE, 1);
+                date = new int[]{c.get(Calendar.YEAR),c.get(Calendar.MONTH)+1,c.get(Calendar.DAY_OF_MONTH),
+                        c.get(Calendar.HOUR_OF_DAY),c.get(Calendar.MINUTE)};
                 break;
             case R.id.tv_date:
                 tv_date.setTextColor(Color.parseColor("#f7333333"));
@@ -385,15 +397,15 @@ public class EditNoteActivity extends ActionBarActivity implements View.OnClickL
             case R.id.bt_delete:
                 ll_remind.setVisibility(View.VISIBLE);
                 ll_date.setVisibility(View.GONE);
+                date = null;
                 break;
         }
     }
-    int[] date = new int [5];
+
     public void setTimeMenu() {
         final Calendar c = Calendar.getInstance();
         c.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
-        int hour =  c.get(Calendar.HOUR_OF_DAY);
-        int min =  c.get(Calendar.MINUTE);
+
         PopupMenu  popupMenu = new PopupMenu(this, tv_time);
         getMenuInflater().inflate(R.menu.menu_time, popupMenu.getMenu());
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -472,14 +484,14 @@ public class EditNoteActivity extends ActionBarActivity implements View.OnClickL
                     case R.id.action_today:
                         tv_date.setText("今天");
                         date[0] = year;
-                        date[1]= month;
+                        date[1]= month+1;
                         date[2] = day;
                         break;
                     case R.id.action_tomorrow:
                         c.add(Calendar.DATE, 1);
                         tv_date.setText("明天");
                         date[0] = c.get(Calendar.YEAR);
-                        date[1] = c.get(Calendar.MONTH);
+                        date[1] = c.get(Calendar.MONTH)+1;
                         date[2] = c.get(Calendar.DATE);
 
                         break;
@@ -487,7 +499,7 @@ public class EditNoteActivity extends ActionBarActivity implements View.OnClickL
                         tv_date.setText("下周"+weekDay());
                         c.add(Calendar.DATE,7);
                         date[0] = c.get(Calendar.YEAR);
-                        date[1] = c.get(Calendar.MONTH);
+                        date[1] = c.get(Calendar.MONTH)+1;
                         date[2] = c.get(Calendar.DATE);
                         break;
                     case R.id.action_date_choose:

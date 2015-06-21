@@ -43,6 +43,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -61,6 +62,7 @@ public class NotesChangeActivity extends ActionBarActivity implements View.OnCli
     private ProgressDialog progressDialog;
     private static final int STOP = 1;
     private ScrollView scrollView;
+
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -74,8 +76,8 @@ public class NotesChangeActivity extends ActionBarActivity implements View.OnCli
     private LinearLayout ll_remind,ll_date;
     private TextView tv_date,tv_time;
     private Button bt_delete;
-    String[] date = new String[1];
 
+    int[] date = new int [5];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +100,7 @@ public class NotesChangeActivity extends ActionBarActivity implements View.OnCli
         tv_date.setOnClickListener(this);
         tv_time.setOnClickListener(this);
         bt_delete.setOnClickListener(this);
-        ll_date.setVisibility(View.GONE);
+
 
         scrollView = (ScrollView)findViewById(R.id.scrollView);
 
@@ -106,12 +108,15 @@ public class NotesChangeActivity extends ActionBarActivity implements View.OnCli
 
         et_text = (EditText) findViewById(R.id.et_text);
         et_title = (EditText) findViewById(R.id.et_title);
-        et_text.setMinLines(20);
+        et_text.setMinLines(17);
         Intent intent = this.getIntent();
         String title = intent.getStringExtra("title");//
         String text = intent.getStringExtra("text");
-
         id = intent.getStringExtra("id");
+        String clock = intent.getStringExtra("clock");
+
+
+
         et_title.setText(title);
         et_text.setText(text);
         et_title.setSelection(title.length());
@@ -129,6 +134,35 @@ public class NotesChangeActivity extends ActionBarActivity implements View.OnCli
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setElevation(15);
         getSupportActionBar().setHomeAsUpIndicator(R.mipmap.ic_back);
+
+
+        if (clock != null){
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy年MM月dd日HH时mm分");
+            try {
+                Date d = formatter.parse(clock);
+                long timeGetTime = d.getTime();
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日HH时mm分",
+                        Locale.getDefault());
+                String str_time = sdf.format(timeGetTime);
+                date = new int[]{Integer.parseInt(str_time.substring(0,4)),Integer.parseInt(str_time.substring(5,7)),
+                        Integer.parseInt(str_time.substring(8,10)),
+                        Integer.parseInt(str_time.substring(11,13)),
+                        Integer.parseInt(str_time.substring(14,16))};
+
+                ll_remind.setVisibility(View.GONE);
+                ll_date.setVisibility(View.VISIBLE);
+                tv_date.setText(Integer.parseInt(str_time.substring(5, 7)) + "月" + Integer.parseInt(str_time.substring(8, 10)) + "日");
+                tv_time.setText(Integer.parseInt(str_time.substring(11,13))+":"+Integer.parseInt(str_time.substring(14,16))+"");
+                Log.e("date",Integer.parseInt(str_time.substring(5, 7)) + "月" + Integer.parseInt(str_time.substring(8, 10)) + "日");
+
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+        }else {
+            ll_remind.setVisibility(View.VISIBLE);
+            ll_date.setVisibility(View.GONE);
+        }
 
         new File(Environment.getExternalStorageDirectory() + "/Notes/image/cache/cache").delete();
         String idurl = Environment.getExternalStorageDirectory() + "/Notes/image/" + id;
@@ -187,6 +221,9 @@ public class NotesChangeActivity extends ActionBarActivity implements View.OnCli
         });
         scrollView.smoothScrollBy(0,200);
 
+
+
+
     }
 
 
@@ -200,7 +237,7 @@ public class NotesChangeActivity extends ActionBarActivity implements View.OnCli
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.setStatusBarColor(Color.rgb((int) (r * 0.9), (int) (g * 0.9), (int) (b * 0.9)));
-            window.setNavigationBarColor(Color.rgb(r, g, b));
+
         }
     }
 
@@ -209,6 +246,9 @@ public class NotesChangeActivity extends ActionBarActivity implements View.OnCli
 
     private void change() {
 
+        Calendar c = Calendar.getInstance();
+        c.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
+
         NotesInfo info = new NotesInfo();
         dao = new NotesDao(this);
         str_title = et_title.getText().toString().trim();
@@ -216,7 +256,7 @@ public class NotesChangeActivity extends ActionBarActivity implements View.OnCli
         long timeGetTime = new Date().getTime();
         SimpleDateFormat sdf = new SimpleDateFormat("MM月dd日HH时mm分",
                 Locale.getDefault());
-        String str_time = sdf.format(timeGetTime);
+        final String str_time = sdf.format(timeGetTime);
         Log.e("a", str_title + str_text + str_time + id);
         progressDialog = ProgressDialog.show(this, "", "正在保存", true, false);
         if (TextUtils.isEmpty(str_title) && TextUtils.isEmpty(str_text)) {
@@ -236,6 +276,8 @@ public class NotesChangeActivity extends ActionBarActivity implements View.OnCli
                         Message msg = new Message();
                         msg.what = STOP;
                         handler.sendMessage(msg);
+
+
                     }
                 }
             });
@@ -246,7 +288,13 @@ public class NotesChangeActivity extends ActionBarActivity implements View.OnCli
             Log.e("a", str_title + str_text + str_time);
             //dao.change(str_title, str_text, str_time, id);
             dao.delete(id);
-            dao.add(str_title, str_text, str_time, id,null,null);
+
+            if(ll_remind.getVisibility() == View.GONE &&  ll_date.getVisibility() == View.VISIBLE) {
+                dao.add(str_title, str_text, str_time, id,String.valueOf(c.get(Calendar.YEAR)),
+                        date[0] + "年" + date[1] + "月" + date[2] + "日" + date[3] + "时" + date[4] + "分");
+            }else {
+                dao.add(str_title, str_text, str_time, id,String.valueOf(c.get(Calendar.YEAR)),null);
+            }
 
             new File(Environment.getExternalStorageDirectory() + "/Notes/image/cache/cache.jpg").delete();
             Toast.makeText(NotesChangeActivity.this, "修改已经保存", Toast.LENGTH_SHORT).show();
@@ -381,6 +429,13 @@ public class NotesChangeActivity extends ActionBarActivity implements View.OnCli
             case R.id.ll_remind:
                 ll_remind.setVisibility(View.GONE);
                 ll_date.setVisibility(View.VISIBLE);
+                Calendar c = Calendar.getInstance();
+                c.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
+                c.set(Calendar.HOUR_OF_DAY, 9);
+                c.set(Calendar.MINUTE, 00);
+                c.add(Calendar.DATE, 1);
+                date = new int[]{c.get(Calendar.YEAR),c.get(Calendar.MONTH)+1,c.get(Calendar.DAY_OF_MONTH),
+                        c.get(Calendar.HOUR_OF_DAY),c.get(Calendar.MINUTE)};
                 break;
             case R.id.tv_date:
                 tv_date.setTextColor(Color.parseColor("#f7333333"));
@@ -395,9 +450,11 @@ public class NotesChangeActivity extends ActionBarActivity implements View.OnCli
             case R.id.bt_delete:
                 ll_remind.setVisibility(View.VISIBLE);
                 ll_date.setVisibility(View.GONE);
+                date = null;
                 break;
     }
     }
+
 
     @Override
     public void onDateSet(DatePickerDialog datePickerDialog, int i, int i1, int i2) {
@@ -405,43 +462,66 @@ public class NotesChangeActivity extends ActionBarActivity implements View.OnCli
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy年",
                 Locale.getDefault());
         int year = Integer.parseInt(sdf.format(timeGetTime).substring(0,4));
-        String date ;
+        String str ;
         if (year == i ){
-            date = (i1+1)+"月"+i2+"日";
+            str = (i1+1)+"月"+i2+"日";
         }else {
-            date = i+"年"+(i1+1)+"月"+i2+"日";
+            str = i+"年"+(i1+1)+"月"+i2+"日";
         }
-        tv_date.setText(date);
+        tv_date.setText(str);
+        date[0] = i;
+        date[1] = i1;
+        date[2] = i2;
     }
-
     @Override
     public void onTimeSet(RadialPickerLayout radialPickerLayout, int i, int i1) {
         String hourString = i < 10 ? "0"+i : ""+i;
         String minuteString = i1 < 10 ? "0"+i1 : ""+i1;
         String time = hourString+":"+minuteString;
         tv_time.setText(time);
+        date[3] = i;
+        date[4] = i1;
+
     }
 
+
     public void setTimeMenu() {
-        PopupMenu popupMenu = new PopupMenu(this, tv_time);
+        final Calendar c = Calendar.getInstance();
+        c.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
+
+        PopupMenu  popupMenu = new PopupMenu(this, tv_time);
         getMenuInflater().inflate(R.menu.menu_time, popupMenu.getMenu());
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
                     case R.id.action_morning:
-                        tv_time.setText("上午");
+                        tv_time.setText("上午");//9:00
+                        c.set(Calendar.HOUR_OF_DAY, 9);
+                        c.set(Calendar.MINUTE, 00);
+                        date[3] = c.get(Calendar.HOUR_OF_DAY);
+                        date[4] = c.get(Calendar.MINUTE);
                         break;
                     case R.id.action_afternoon:
-                        tv_time.setText("下午");
-
+                        tv_time.setText("下午");//14:00
+                        c.set(Calendar.HOUR_OF_DAY, 14);
+                        c.set(Calendar.MINUTE, 00);
+                        date[3] = c.get(Calendar.HOUR_OF_DAY);
+                        date[4] = c.get(Calendar.MINUTE);
                         break;
                     case R.id.action_evening:
-                        tv_time.setText("傍晚");
-
+                        tv_time.setText("傍晚");//17:00
+                        c.set(Calendar.HOUR_OF_DAY, 17);
+                        c.set(Calendar.MINUTE, 00);
+                        date[3] = c.get(Calendar.HOUR_OF_DAY);
+                        date[4] = c.get(Calendar.MINUTE);
                         break;
                     case R.id.action_night:
-                        tv_time.setText("晚上");
+                        tv_time.setText("晚上");//20:00
+                        c.set(Calendar.HOUR_OF_DAY, 20);
+                        c.set(Calendar.MINUTE, 00);
+                        date[3] = c.get(Calendar.HOUR_OF_DAY);
+                        date[4] = c.get(Calendar.MINUTE);
                         break;
                     case R.id.action_time_choose:
                         tv_time.setText("选择时间");
@@ -468,12 +548,14 @@ public class NotesChangeActivity extends ActionBarActivity implements View.OnCli
 
 
 
-    public void setDateMenu() {
 
-        long timeGetTime = new Date().getTime();
-        SimpleDateFormat sdf = new SimpleDateFormat("MM月dd日",
-                Locale.getDefault());
-        final String str_time = sdf.format(timeGetTime);
+    public void setDateMenu() {
+        final Calendar c = Calendar.getInstance();
+        c.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
+        final int  day = c.get(Calendar.DAY_OF_MONTH);
+        final int month = c.get(Calendar.MONTH);
+        final int year = c.get(Calendar.YEAR);
+
 
 
         PopupMenu  popupMenu = new PopupMenu(this, tv_date);
@@ -485,23 +567,32 @@ public class NotesChangeActivity extends ActionBarActivity implements View.OnCli
                 switch (menuItem.getItemId()) {
                     case R.id.action_today:
                         tv_date.setText("今天");
-                        date[0] = str_time;
+                        date[0] = year;
+                        date[1]= month+1;
+                        date[2] = day;
                         break;
                     case R.id.action_tomorrow:
+                        c.add(Calendar.DATE, 1);
                         tv_date.setText("明天");
-                        date[0] = str_time;
+                        date[0] = c.get(Calendar.YEAR);
+                        date[1] = c.get(Calendar.MONTH)+1;
+                        date[2] = c.get(Calendar.DATE);
+
                         break;
                     case R.id.action_nextweek:
                         tv_date.setText("下周"+weekDay());
-                        date[0] = str_time;
+                        c.add(Calendar.DATE,7);
+                        date[0] = c.get(Calendar.YEAR);
+                        date[1] = c.get(Calendar.MONTH)+1;
+                        date[2] = c.get(Calendar.DATE);
                         break;
                     case R.id.action_date_choose:
-                        Calendar now = Calendar.getInstance();
+
                         DatePickerDialog dpd = DatePickerDialog.newInstance(
                                 NotesChangeActivity.this,
-                                now.get(Calendar.YEAR),
-                                now.get(Calendar.MONTH),
-                                now.get(Calendar.DAY_OF_MONTH)
+                                c.get(Calendar.YEAR),
+                                c.get(Calendar.MONTH),
+                                c.get(Calendar.DAY_OF_MONTH)
                         );
                         dpd.show(getSupportFragmentManager(),"Timepickerdialog");
                         break;
@@ -512,6 +603,7 @@ public class NotesChangeActivity extends ActionBarActivity implements View.OnCli
         });
         popupMenu.show();
     }
+
 
 
     public String weekDay(){

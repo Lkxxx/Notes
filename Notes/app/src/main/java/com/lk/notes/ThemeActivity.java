@@ -45,7 +45,7 @@ public class ThemeActivity extends ActionBarActivity implements View.OnClickList
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window.setStatusBarColor(Color.rgb((int) (r * 0.9), (int) (g * 0.9), (int) (b * 0.9)));
 
-        window.setNavigationBarColor(Color.rgb(r, g, b));
+
     }
         setSupportActionBar(toolbar);
         getSupportActionBar().setElevation(15);
@@ -217,7 +217,7 @@ public class ThemeActivity extends ActionBarActivity implements View.OnClickList
         toolbar.setBackgroundColor(Color.rgb(r, g, b));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window.setStatusBarColor(Color.rgb((int) (r * 0.9), (int) (g * 0.9), (int) (b * 0.9)));
-
+            window.setNavigationBarColor(Color.rgb(r, g, b));
         }
         editor.putInt("r", r);
         editor.putInt("g", g);
@@ -236,6 +236,7 @@ public class ThemeActivity extends ActionBarActivity implements View.OnClickList
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
+                NotesActivity.finish.finish();
                 Intent intent = new Intent(this, NotesActivity.class);
                 startActivity(intent);
 
@@ -256,6 +257,8 @@ public class ThemeActivity extends ActionBarActivity implements View.OnClickList
 
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
             if ((System.currentTimeMillis() - exitTime) > 2000) {
+
+
                 Intent intent = new Intent(this, NotesActivity.class);
                 startActivity(intent);
 
