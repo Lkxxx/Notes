@@ -6,7 +6,6 @@
     android:fitsSystemWindows="true">
 
 
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="fill_parent">
@@ -87,15 +86,17 @@
     <com.lk.notes.UI.ScrimInsetsFrameLayout
 
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:fitsSystemWindows="true"
-        app:insetForeground="#35000000"
         android:id="@+id/frameLayout"
-        >
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="left"
+        android:fitsSystemWindows="true"
+        app:insetForeground="#35000000">
 
         <include layout="@layout/drawable" />
+
+
+
 
     </com.lk.notes.UI.ScrimInsetsFrameLayout>
 

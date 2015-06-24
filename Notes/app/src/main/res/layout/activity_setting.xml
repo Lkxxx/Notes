@@ -32,7 +32,7 @@
             android:layout_marginBottom="10dp"
             android:layout_marginLeft="0dp"
             android:layout_marginTop="2dp"
-            android:text="点击之后将会把你现有的数据备份到SD卡上预感，但是不会备份图片"
+            android:text="点击之后将会把你现有的数据备份到SD卡，但是不会备份图片"
             android:textSize="12sp"
             android:layout_marginRight="20dp"/>
 
@@ -149,5 +149,6 @@
         android:layout_height="1.2dp"
         android:layout_marginLeft="20dp"
         android:background="#ff8d8d8d" />
+
 
 </LinearLayout>

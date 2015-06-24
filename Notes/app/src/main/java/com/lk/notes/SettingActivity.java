@@ -84,7 +84,12 @@ public class SettingActivity extends ActionBarActivity implements View.OnClickLi
         ll_message.setOnClickListener(this);
 
 
+
     }
+
+
+
+
 
 
     @Override

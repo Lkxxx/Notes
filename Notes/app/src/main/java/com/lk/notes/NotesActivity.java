@@ -21,11 +21,11 @@ import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.widget.AbsListView;
@@ -186,18 +186,17 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
         getSupportActionBar().setElevation(15);
         toolbar.setPopupTheme(R.style.MyToolBar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = getWindow();
-            if (r == 0 & g == 159 && b == 175) {
-                window.setStatusBarColor(Color.argb(0, 0, 0, 0));
-            } else {
-                window.setStatusBarColor(Color.rgb((int) (r * 0.9), (int) (g * 0.9), (int) (b * 0.9)));
-            }
-        }
+
 
 
         ScrimInsetsFrameLayout frameLayout = (ScrimInsetsFrameLayout) findViewById(R.id.frameLayout);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
+        drawerLayout.setDrawerShadow(R.drawable.drawer_shadow,Gravity.START);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            drawerLayout.setStatusBarBackgroundColor(Color.rgb((int) (r * 0.9), (int) (g * 0.9), (int) (b * 0.9)));
+
+        }
+
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
             drawerLayout.setFitsSystemWindows(false);
             frameLayout.setFitsSystemWindows(false);

@@ -2,6 +2,7 @@ package com.lk.notes;
 
 import android.content.Context;
 import android.os.Environment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -79,6 +80,8 @@ public class NotesAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) view.getTag();
         }
+        Log.e("getview",mNotesInfos.get(i).getTitle());
+        holder.ll_clock.setVisibility(View.VISIBLE);
         holder.tv_text.setVisibility(View.VISIBLE);
         holder.iv_text.setVisibility(View.GONE);
         holder.tv_text.setText(mNotesInfos.get(i).getText());
@@ -92,10 +95,10 @@ public class NotesAdapter extends BaseAdapter {
         if (file.exists()) {
             holder.iv_text.setVisibility(View.VISIBLE);
         }
-        if (mNotesInfos.get(i).getClock() == null) {
-            holder.ll_clock.setVisibility(View.GONE);
-        } else {
+        if (mNotesInfos.get(i).getClock() != null){
             holder.tv_clock.setText(convertClock(mNotesInfos.get(i).getClock()));
+        } else {
+            holder.ll_clock.setVisibility(View.GONE);
         }
         return view;
     }

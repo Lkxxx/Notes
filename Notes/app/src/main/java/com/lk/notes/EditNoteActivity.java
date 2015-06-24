@@ -1,6 +1,8 @@
 package com.lk.notes;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -37,6 +39,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fourmob.datetimepicker.date.DatePickerDialog;
+import com.lk.notes.receiver.ClockReceiver;
 import com.sleepbot.datetimepicker.time.RadialPickerLayout;
 import com.sleepbot.datetimepicker.time.TimePickerDialog;
 
@@ -55,12 +58,12 @@ public class EditNoteActivity extends ActionBarActivity implements View.OnClickL
     private EditText et_title, et_text;
     private NotesDao dao;
     private ImageView iv_image;
-    private LinearLayout ll_remind,ll_date;
-    private TextView tv_date,tv_time;
+    private LinearLayout ll_remind, ll_date;
+    private TextView tv_date, tv_time;
     private Button bt_delete;
 
 
-    int[] date = new int [5];
+    int[] date = new int[5];
 
 
     @Override
@@ -74,11 +77,11 @@ public class EditNoteActivity extends ActionBarActivity implements View.OnClickL
 
     private void initView() {
 
-        ll_remind = (LinearLayout)findViewById(R.id.ll_remind);
-        tv_date = (TextView)findViewById(R.id.tv_date);
-        tv_time = (TextView)findViewById(R.id.tv_time);
-        bt_delete = (Button)findViewById(R.id.bt_delete);
-        ll_date = (LinearLayout)findViewById(R.id.ll_date);
+        ll_remind = (LinearLayout) findViewById(R.id.ll_remind);
+        tv_date = (TextView) findViewById(R.id.tv_date);
+        tv_time = (TextView) findViewById(R.id.tv_time);
+        bt_delete = (Button) findViewById(R.id.bt_delete);
+        ll_date = (LinearLayout) findViewById(R.id.ll_date);
         ll_remind.setOnClickListener(this);
         tv_date.setOnClickListener(this);
         tv_time.setOnClickListener(this);
@@ -204,7 +207,7 @@ public class EditNoteActivity extends ActionBarActivity implements View.OnClickL
                 Rect frame = new Rect();
                 getWindow().getDecorView().getWindowVisibleDisplayFrame(frame);
                 int statusBarHeight = frame.top;
-                if(Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT){
+                if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
 
 
                 }
@@ -228,7 +231,6 @@ public class EditNoteActivity extends ActionBarActivity implements View.OnClickL
             }
         }
     };
-
 
 
     private void save() {
@@ -270,11 +272,12 @@ public class EditNoteActivity extends ActionBarActivity implements View.OnClickL
                 info.setTime(str_time);
                 info.setId(str_id);
                 Log.e("a", str_title + str_text + str_time);
-                if(ll_remind.getVisibility() == View.GONE &&  ll_date.getVisibility() == View.VISIBLE) {
-                    dao.add(str_title, str_text, str_time, str_id,String.valueOf(c.get(Calendar.YEAR)),
+                if (ll_remind.getVisibility() == View.GONE && ll_date.getVisibility() == View.VISIBLE) {
+                    dao.add(str_title, str_text, str_time, str_id, String.valueOf(c.get(Calendar.YEAR)),
                             date[0] + "年" + date[1] + "月" + date[2] + "日" + date[3] + "时" + date[4] + "分");
-                }else {
-                    dao.add(str_title, str_text, str_time, str_id,String.valueOf(c.get(Calendar.YEAR)),null);
+                    setClock(str_title,str_text,str_id);
+                } else {
+                    dao.add(str_title, str_text, str_time, str_id, String.valueOf(c.get(Calendar.YEAR)), null);
                 }
 
             }
@@ -282,97 +285,120 @@ public class EditNoteActivity extends ActionBarActivity implements View.OnClickL
         thread.start();
     }
 
-        @Override
-        public boolean onOptionsItemSelected (MenuItem item){
-            switch (item.getItemId()) {
-                case android.R.id.home:
-                    String str_title = et_title.getText().toString().trim();
-                    String str_text = et_text.getText().toString().trim();
+    public void setClock(String title ,String str_text,String str_id) {
+        Calendar c = Calendar.getInstance();
+        c.setTimeInMillis(System.currentTimeMillis());
 
-                    if (TextUtils.isEmpty(str_title) && TextUtils.isEmpty(str_text)) {
-                        setResult(10000);
-                        finish();
+        // Log.e("clock", c.get(Calendar.YEAR) + "年" +(c.get(Calendar.MONTH) + 1)+ "月" + c.get(Calendar.DAY_OF_MONTH) + "日" + c.get(Calendar.HOUR_OF_DAY) + ";" + c.get(Calendar.MINUTE));
 
+        c.set(Calendar.YEAR, date[0]);
+        c.set(Calendar.MONTH, date[1] - 1);
+        c.set(Calendar.DAY_OF_MONTH, date[2]);
+        c.set(Calendar.HOUR_OF_DAY, date[3]);
+        c.set(Calendar.MINUTE, date[4]);
+        c.set(Calendar.SECOND, 0);
+        //Log.e("clock",c.get(Calendar.YEAR)+"年"+(c.get(Calendar.MONTH)+1)+"月"+c.get(Calendar.DAY_OF_MONTH)+"日"+c.get(Calendar.HOUR_OF_DAY)+";"+c.get(Calendar.MINUTE));
+        Intent intent = new Intent(this, ClockReceiver.class);
+        intent.putExtra("text", str_text);
+        intent.putExtra("title", title);
+        intent.putExtra("id", str_id);
+        int requestCode = 0;
+        PendingIntent pi = PendingIntent.getBroadcast(this, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager am = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
+        am.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pi);
+    }
 
-                    } else {
-                        AlertDialog.Builder alertDialog = new AlertDialog.Builder(EditNoteActivity.this);
-                        alertDialog.setTitle("提示");
-                        alertDialog.setMessage("保存？");
-                        alertDialog.setPositiveButton("保存", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                String str_title = et_title.getText().toString().trim();
+                String str_text = et_text.getText().toString().trim();
 
-                                save();
-
-                            }
-                        });
-                        alertDialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-
-                                setResult(10000);
-                                finish();
-                            }
-                        });
-                        alertDialog.show();
-                    }
-                    break;
-                case R.id.action_check:
-                    save();
-
-                    break;
-                case R.id.action_camera:
-
-                    Intent capIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    capIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
-                    File out = new File(Environment.getExternalStorageDirectory() + "/Notes/image/cache/camera");
-                    Uri uri = Uri.fromFile(out);
-                    capIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-                    startActivityForResult(capIntent, 100);
-                    break;
-                case R.id.action_photo:
-                    Intent photoIntent = new Intent(Intent.ACTION_PICK,
-                            android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                    startActivityForResult(photoIntent, 1000);
-
-
-            }
-            return super.onOptionsItemSelected(item);
-        }
-
-
-        @Override
-        public boolean onCreateOptionsMenu (Menu menu){
-            getMenuInflater().inflate(R.menu.menu_edit_note, menu);
-            return true;
-        }
-
-
-        @Override
-        public boolean onKeyDown ( int keyCode, KeyEvent event){
-            String str_title = et_title.getText().toString().trim();
-            String str_text = et_text.getText().toString().trim();
-
-            if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
-
-
-                if (TextUtils.isEmpty(str_title) && TextUtils.isEmpty(str_text)&&!new File(Environment.getExternalStorageDirectory() + "/Notes/image/cache/cache").exists()) {
-                    finish();
+                if (TextUtils.isEmpty(str_title) && TextUtils.isEmpty(str_text)) {
                     setResult(10000);
-                } else {
-                    save();
-                    Toast.makeText(EditNoteActivity.this, "已经保存", Toast.LENGTH_SHORT).show();
                     finish();
-                }
-            }
 
-            return super.onKeyDown(keyCode, event);
+
+                } else {
+                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(EditNoteActivity.this);
+                    alertDialog.setTitle("提示");
+                    alertDialog.setMessage("保存？");
+                    alertDialog.setPositiveButton("保存", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+
+                            save();
+
+                        }
+                    });
+                    alertDialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+
+                            setResult(10000);
+                            finish();
+                        }
+                    });
+                    alertDialog.show();
+                }
+                break;
+            case R.id.action_check:
+                save();
+
+                break;
+            case R.id.action_camera:
+
+                Intent capIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                capIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
+                File out = new File(Environment.getExternalStorageDirectory() + "/Notes/image/cache/camera");
+                Uri uri = Uri.fromFile(out);
+                capIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+                startActivityForResult(capIntent, 100);
+                break;
+            case R.id.action_photo:
+                Intent photoIntent = new Intent(Intent.ACTION_PICK,
+                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(photoIntent, 1000);
+
+
         }
+        return super.onOptionsItemSelected(item);
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_edit_note, menu);
+        return true;
+    }
+
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        String str_title = et_title.getText().toString().trim();
+        String str_text = et_text.getText().toString().trim();
+
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
+
+
+            if (TextUtils.isEmpty(str_title) && TextUtils.isEmpty(str_text) && !new File(Environment.getExternalStorageDirectory() + "/Notes/image/cache/cache").exists()) {
+                finish();
+                setResult(10000);
+            } else {
+                save();
+                Toast.makeText(EditNoteActivity.this, "已经保存", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        }
+
+        return super.onKeyDown(keyCode, event);
+    }
 
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.ll_remind:
                 ll_remind.setVisibility(View.GONE);
                 ll_date.setVisibility(View.VISIBLE);
@@ -381,8 +407,8 @@ public class EditNoteActivity extends ActionBarActivity implements View.OnClickL
                 c.set(Calendar.HOUR_OF_DAY, 9);
                 c.set(Calendar.MINUTE, 00);
                 c.add(Calendar.DATE, 1);
-                date = new int[]{c.get(Calendar.YEAR),c.get(Calendar.MONTH)+1,c.get(Calendar.DAY_OF_MONTH),
-                        c.get(Calendar.HOUR_OF_DAY),c.get(Calendar.MINUTE)};
+                date = new int[]{c.get(Calendar.YEAR), c.get(Calendar.MONTH) + 1, c.get(Calendar.DAY_OF_MONTH),
+                        c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE)};
                 break;
             case R.id.tv_date:
                 tv_date.setTextColor(Color.parseColor("#f7333333"));
@@ -405,8 +431,7 @@ public class EditNoteActivity extends ActionBarActivity implements View.OnClickL
     public void setTimeMenu() {
         final Calendar c = Calendar.getInstance();
         c.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
-
-        PopupMenu  popupMenu = new PopupMenu(this, tv_time);
+        PopupMenu popupMenu = new PopupMenu(this, tv_time);
         getMenuInflater().inflate(R.menu.menu_time, popupMenu.getMenu());
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
@@ -463,18 +488,14 @@ public class EditNoteActivity extends ActionBarActivity implements View.OnClickL
     }
 
 
-
-
     public void setDateMenu() {
         final Calendar c = Calendar.getInstance();
         c.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
-        final int  day = c.get(Calendar.DAY_OF_MONTH);
+        final int day = c.get(Calendar.DAY_OF_MONTH);
         final int month = c.get(Calendar.MONTH);
         final int year = c.get(Calendar.YEAR);
 
-
-
-        PopupMenu  popupMenu = new PopupMenu(this, tv_date);
+        PopupMenu popupMenu = new PopupMenu(this, tv_date);
         getMenuInflater().inflate(R.menu.menu_date, popupMenu.getMenu());
         popupMenu.getMenu().findItem(R.id.action_nextweek).setTitle("下周" + weekDay());
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -484,22 +505,22 @@ public class EditNoteActivity extends ActionBarActivity implements View.OnClickL
                     case R.id.action_today:
                         tv_date.setText("今天");
                         date[0] = year;
-                        date[1]= month+1;
+                        date[1] = month + 1;
                         date[2] = day;
                         break;
                     case R.id.action_tomorrow:
                         c.add(Calendar.DATE, 1);
                         tv_date.setText("明天");
                         date[0] = c.get(Calendar.YEAR);
-                        date[1] = c.get(Calendar.MONTH)+1;
+                        date[1] = c.get(Calendar.MONTH) + 1;
                         date[2] = c.get(Calendar.DATE);
 
                         break;
                     case R.id.action_nextweek:
-                        tv_date.setText("下周"+weekDay());
-                        c.add(Calendar.DATE,7);
+                        tv_date.setText("下周" + weekDay());
+                        c.add(Calendar.DATE, 7);
                         date[0] = c.get(Calendar.YEAR);
-                        date[1] = c.get(Calendar.MONTH)+1;
+                        date[1] = c.get(Calendar.MONTH) + 1;
                         date[2] = c.get(Calendar.DATE);
                         break;
                     case R.id.action_date_choose:
@@ -507,10 +528,10 @@ public class EditNoteActivity extends ActionBarActivity implements View.OnClickL
                         DatePickerDialog dpd = DatePickerDialog.newInstance(
                                 EditNoteActivity.this,
                                 c.get(Calendar.YEAR),
-                                c.get(Calendar.MONTH),
+                                c.get(Calendar.MONTH) + 1,
                                 c.get(Calendar.DAY_OF_MONTH)
                         );
-                        dpd.show(getSupportFragmentManager(),"Timepickerdialog");
+                        dpd.show(getSupportFragmentManager(), "Timepickerdialog");
                         break;
                 }
 
@@ -521,24 +542,24 @@ public class EditNoteActivity extends ActionBarActivity implements View.OnClickL
     }
 
 
-    public String weekDay(){
+    public String weekDay() {
         Calendar c = Calendar.getInstance();
         c.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
         String mWay = String.valueOf(c.get(Calendar.DAY_OF_WEEK));
-        if("1".equals(mWay)){
-            mWay ="天";
-        }else if("2".equals(mWay)){
-            mWay ="一";
-        }else if("3".equals(mWay)){
-            mWay ="二";
-        }else if("4".equals(mWay)){
-            mWay ="三";
-        }else if("5".equals(mWay)){
-            mWay ="四";
-        }else if("6".equals(mWay)){
-            mWay ="五";
-        }else if("7".equals(mWay)){
-            mWay ="六";
+        if ("1".equals(mWay)) {
+            mWay = "天";
+        } else if ("2".equals(mWay)) {
+            mWay = "一";
+        } else if ("3".equals(mWay)) {
+            mWay = "二";
+        } else if ("4".equals(mWay)) {
+            mWay = "三";
+        } else if ("5".equals(mWay)) {
+            mWay = "四";
+        } else if ("6".equals(mWay)) {
+            mWay = "五";
+        } else if ("7".equals(mWay)) {
+            mWay = "六";
         }
         return mWay;
     }
@@ -548,27 +569,29 @@ public class EditNoteActivity extends ActionBarActivity implements View.OnClickL
         long timeGetTime = new Date().getTime();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy年",
                 Locale.getDefault());
-      int year = Integer.parseInt(sdf.format(timeGetTime).substring(0,4));
-        String str ;
-        if (year == i ){
-            str = (i1+1)+"月"+i2+"日";
-        }else {
-            str = i+"年"+(i1+1)+"月"+i2+"日";
+        int year = Integer.parseInt(sdf.format(timeGetTime).substring(0, 4));
+        String str;
+        if (year == i) {
+            str = (i1 + 1) + "月" + i2 + "日";
+        } else {
+            str = i + "年" + (i1 + 1) + "月" + i2 + "日";
         }
         tv_date.setText(str);
         date[0] = i;
-        date[1] = i1;
+        date[1] = i1 + 1;
         date[2] = i2;
     }
 
     @Override
     public void onTimeSet(RadialPickerLayout radialPickerLayout, int i, int i1) {
-        String hourString = i < 10 ? "0"+i : ""+i;
-        String minuteString = i1 < 10 ? "0"+i1 : ""+i1;
-        String time = hourString+":"+minuteString;
+        String hourString = i < 10 ? "0" + i : "" + i;
+        String minuteString = i1 < 10 ? "0" + i1 : "" + i1;
+        String time = hourString + ":" + minuteString;
         tv_time.setText(time);
         date[3] = i;
         date[4] = i1;
 
     }
+
+
 }

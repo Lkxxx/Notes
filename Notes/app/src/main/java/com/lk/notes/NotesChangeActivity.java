@@ -116,7 +116,7 @@ public class NotesChangeActivity extends ActionBarActivity implements View.OnCli
         String clock = intent.getStringExtra("clock");
 
 
-
+        Log.e("changetext", "title:" + title +"    text:"+ text);
         et_title.setText(title);
         et_text.setText(text);
         et_title.setSelection(title.length());

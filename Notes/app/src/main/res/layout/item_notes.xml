@@ -72,6 +72,7 @@
                     android:layout_marginLeft="5dp"
                     android:text="未知"
                     android:textColor="#e5636363"
+
                     android:id="@+id/tv_clock"/>
 
             </LinearLayout>
