@@ -30,8 +30,8 @@ public class MessageActivity extends ActionBarActivity {
     private void  initView(){
 
         int r = 0;
-        int g = 159;
-        int b = 175;
+        int g = 172;
+        int b = 193;
         toolbar = (Toolbar) findViewById(R.id.tl_custom);
         toolbar.setTitle("关于");
         toolbar.setTitleTextColor(Color.rgb(238, 238, 238));

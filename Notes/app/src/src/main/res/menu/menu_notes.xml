@@ -1,0 +1,27 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".NotesActivity">
+
+
+
+
+<!--    <item
+        android:id="@+id/action_search"
+        android:icon="@drawable/ic_search"
+        android:title="搜索"
+        app:showAsAction="ifRoom" />
+
+
+    <item
+        android:id="@+id/action_sequence"
+        android:icon="@drawable/ic_filter_list_white_fw"
+
+        android:title="排序"
+        app:showAsAction="ifRoom" />-->
+    <item
+        android:id="@+id/action_menu"
+        android:icon="@drawable/ic_search"
+        app:showAsAction="ifRoom"
+        android:title="敬请期待"/>
+</menu>

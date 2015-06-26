@@ -27,7 +27,7 @@ public class ClockReceiver extends WakefulBroadcastReceiver {
         Notification.Builder builder = new Notification.Builder(context);
         builder.setContentTitle(title);
         builder.setContentText(text);
-        builder.setColor(Color.rgb(96, 125, 139));
+        builder.setColor(Color.rgb(0, 172, 193));
         builder.setSmallIcon(R.mipmap.notification_icon);
         builder.setDefaults(Notification.DEFAULT_ALL);
 

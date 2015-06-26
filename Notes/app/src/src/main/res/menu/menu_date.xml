@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/action_today"
+        android:title="今天"
+        />
+
+    <item
+        android:id="@+id/action_tomorrow"
+        android:title="明天"
+        />
+    <item
+        android:id="@+id/action_nextweek"
+        android:title="下周"
+        />
+    <item
+        android:id="@+id/action_date_choose"
+        android:title="选择日期.."
+        />
+
+
+
+</menu>

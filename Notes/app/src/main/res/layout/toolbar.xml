@@ -1,14 +1,12 @@
-<android.support.v7.widget.Toolbar
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/tl_custom"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/lightseagreen"
-app:titleMarginTop="@dimen/title"
+    android:background="@color/colorMain"
+    android:paddingTop="@dimen/tool_bar_top_padding"
+    android:theme="@style/MyToolBar"
     android:title="   Lalala"
     app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
     app:theme="@style/ThemeOverlay.AppCompat.Light"
-    android:theme="@style/MyToolBar"
-    android:paddingTop="@dimen/tool_bar_top_padding"
-    ></android.support.v7.widget.Toolbar>
+    app:titleMarginTop="@dimen/title"></android.support.v7.widget.Toolbar>

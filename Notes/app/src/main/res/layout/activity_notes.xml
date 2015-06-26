@@ -54,7 +54,7 @@
             android:layout_gravity="bottom|right"
             android:layout_marginBottom="25dp"
             android:layout_marginRight="20dp"
-            android:src="@mipmap/ic_action_content_new"
+            android:src="@mipmap/ic_pencil_white_48dp"
             fab:fab_colorNormal="@color/primary"
             fab:fab_colorPressed="@color/primary_pressed"
             fab:fab_shadow="false" />

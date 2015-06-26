@@ -32,6 +32,7 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.lk.notes.PullToZoom.PullToZoomListViewEx;
@@ -60,6 +61,8 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
     private RotateAnimation ra;
     private LinearLayout ll_none, ll_notes, ll_label, ll_remind, ll_theme, ll_setting, ll_message, ll_suggest;
     private DrawerLayout drawerLayout;
+    private ImageView iv_notes;
+    private TextView tv_notes;
     private long exitTime = 0;
 
     private Handler handler = new Handler() {
@@ -134,8 +137,8 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
     private void intiview() {
         SharedPreferences sharedPreferences = getSharedPreferences("color", MODE_PRIVATE);
         int r = sharedPreferences.getInt("r", 0);
-        int g = sharedPreferences.getInt("g", 159);
-        int b = sharedPreferences.getInt("b", 175);
+        int g = sharedPreferences.getInt("g", 172);
+        int b = sharedPreferences.getInt("b", 193);
         fab = (FloatingActionButton) findViewById(R.id.fab);
 
         ra = new RotateAnimation(0, 180, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
@@ -170,7 +173,7 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
                 intent.putExtra("title", notesInfo.getTitle());
                 intent.putExtra("text", notesInfo.getText());
                 intent.putExtra("id", notesInfo.getId());
-                intent.putExtra("clock",notesInfo.getClock());
+                intent.putExtra("clock", notesInfo.getClock());
                 Log.e("id", notesInfo.getId());
                 intent.setClass(NotesActivity.this, NotesChangeActivity.class);
                 startActivityForResult(intent, Edit);
@@ -188,10 +191,9 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
-
         ScrimInsetsFrameLayout frameLayout = (ScrimInsetsFrameLayout) findViewById(R.id.frameLayout);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
-        drawerLayout.setDrawerShadow(R.drawable.drawer_shadow,Gravity.START);
+        drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, Gravity.START);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             drawerLayout.setStatusBarBackgroundColor(Color.rgb((int) (r * 0.9), (int) (g * 0.9), (int) (b * 0.9)));
 
@@ -201,14 +203,13 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
             drawerLayout.setFitsSystemWindows(false);
             frameLayout.setFitsSystemWindows(false);
         }
-        ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.abc_action_bar_home_description, R.string.abc_action_bar_home_description_format);
+        final ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.abc_action_bar_home_description, R.string.abc_action_bar_home_description_format);
         mDrawerToggle.syncState();
         drawerLayout.setDrawerListener(mDrawerToggle);
 
-        fab.setColorNormal(Color.rgb(r, g, b));
-        fab.setColorPressed(Color.rgb((int) (r * 0.8), (int) (g * 0.8), (int) (b * 0.8)));
+        fab.setColorNormal(Color.rgb(76, 175, 80));
+        fab.setColorPressed(Color.rgb((int) (76 * 0.8), (int) (175 * 0.8), (int) (80 * 0.8)));
         fab.setOnClickListener(this);
-
 
         ll_notes = (LinearLayout) findViewById(R.id.ll_notes);
         ll_label = (LinearLayout) findViewById(R.id.ll_label);
@@ -223,6 +224,10 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
         ll_theme.setOnClickListener(this);
         ll_setting.setOnClickListener(this);
         ll_message.setOnClickListener(this);
+        ll_notes.setPressed(true);
+
+iv_notes = (ImageView)findViewById(R.id.iv_notes);
+
 
     }
 
@@ -262,7 +267,9 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
         notesOpenHelper = new NotesOpenHelper(this);
         SQLiteDatabase db = notesOpenHelper.getReadableDatabase();
         Cursor c = db.query("notes", new String[]{"title", "text", "time", "id"}, null, null, null, null, "_id DESC");
-        if (c.getCount() != 0) {none = false;}
+        if (c.getCount() != 0) {
+            none = false;
+        }
         c.close();
         db.close();
         return none;
@@ -303,13 +310,13 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
                 intent.putExtra("title", notesInfo.getTitle());
                 intent.putExtra("text", notesInfo.getText());
                 intent.putExtra("id", id);
-                intent.putExtra("clock",notesInfo.getClock());
+                intent.putExtra("clock", notesInfo.getClock());
                 Log.e("tag", id);
                 intent.setClass(NotesActivity.this, NotesChangeActivity.class);
                 startActivityForResult(intent, Change);
                 break;
             case R.id.menuDelete:
-                menuDelete(notesInfo,selectedPosition);
+                menuDelete(notesInfo, selectedPosition);
                 break;
             case R.id.menuShare:
                 Intent sendIntent = new Intent().setAction(Intent.ACTION_SEND);
@@ -323,7 +330,7 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
 
     }
 
-    private void menuDelete(final NotesInfo notesInfo, final int selectedPosition){
+    private void menuDelete(final NotesInfo notesInfo, final int selectedPosition) {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(NotesActivity.this);
         alertDialog.setTitle("提示");
         alertDialog.setMessage("你确定要删除吗");
@@ -429,10 +436,20 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
                 startActivityForResult(intent, Change);
                 break;
             case R.id.ll_notes:
+                ll_notes.setSelected(true);
+                ll_notes.setPressed(true);
+                drawerLayout.closeDrawer(Gravity.START);
+
                 break;
             case R.id.ll_label:
+                ll_label.setSelected(true);
+                ll_label.setPressed(true);
+                drawerLayout.closeDrawer(Gravity.START);
                 break;
             case R.id.ll_remind:
+                ll_remind.setSelected(true);
+                ll_remind.setPressed(true);
+                drawerLayout.closeDrawer(Gravity.START);
                 break;
             case R.id.ll_theme:
                 Intent intent3 = new Intent(NotesActivity.this, ThemeActivity.class);

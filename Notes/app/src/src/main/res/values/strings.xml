@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">简记</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="title_activity_theme">ThemeActivity</string>
+    <string name="appwidget_text">gg</string>
+    <string name="add_widget">Add widget</string>
+    <string name="title_activity_first_in">FirstInActivity</string>
+    <string name="title_activity_setting">SettingActivity</string>
+    <string name="title_activity_message">MessageActivity</string>
+</resources>

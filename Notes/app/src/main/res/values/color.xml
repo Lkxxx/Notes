@@ -27,4 +27,11 @@
     <color name="darkcyan">#ff008597</color>
     <color name="black">#ff1f1f1f</color>
     <color name="colorPrimaryDark">#008f9d</color>
+
+    <color name="colorMain">#00acc1</color>
+    <color name="colorFab">#4caf50</color>
+
+    <color name="drawableTextColor">#e73b3b3b</color>
+    <color name="drawableTextColorPress">#00acc1</color>
+    <color name="ripple">#3e909090</color>
 </resources>

@@ -230,8 +230,8 @@ public class NotesChangeActivity extends ActionBarActivity implements View.OnCli
     public void setcolor() {
         SharedPreferences sharedPreferences = getSharedPreferences("color", MODE_PRIVATE);
         int r = sharedPreferences.getInt("r", 0);
-        int g = sharedPreferences.getInt("g", 159);
-        int b = sharedPreferences.getInt("b", 175);
+        int g = sharedPreferences.getInt("g", 172);
+        int b = sharedPreferences.getInt("b", 193);
         toolbar.setBackgroundColor(Color.rgb(r, g, b));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

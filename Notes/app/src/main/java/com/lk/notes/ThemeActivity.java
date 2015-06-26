@@ -38,8 +38,8 @@ public class ThemeActivity extends ActionBarActivity implements View.OnClickList
         toolbar.setTitleTextColor(Color.rgb(238, 238, 238));
         SharedPreferences sharedPreferences = getSharedPreferences("color", MODE_PRIVATE);
         int r = sharedPreferences.getInt("r", 0);
-        int g = sharedPreferences.getInt("g", 159);
-        int b = sharedPreferences.getInt("b", 175);
+        int g = sharedPreferences.getInt("g", 172);
+        int b = sharedPreferences.getInt("b", 193);
         toolbar.setBackgroundColor(Color.rgb(r, g, b));
         Window window = getWindow();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -149,7 +149,7 @@ public class ThemeActivity extends ActionBarActivity implements View.OnClickList
                 color(15, 15, 15);
                 break;
             case R.id.bt_restore:
-                color(0, 159, 175);
+                color(0, 172, 193);
                 break;
             case R.id.bt_colorCustom:
                 colorCustom();

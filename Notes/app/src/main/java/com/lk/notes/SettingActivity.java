@@ -57,8 +57,8 @@ public class SettingActivity extends ActionBarActivity implements View.OnClickLi
     private void initView() {
         SharedPreferences sharedPreferences = getSharedPreferences("color", MODE_PRIVATE);
         int r = sharedPreferences.getInt("r", 0);
-        int g = sharedPreferences.getInt("g", 159);
-        int b = sharedPreferences.getInt("b", 175);
+        int g = sharedPreferences.getInt("g", 172);
+        int b = sharedPreferences.getInt("b", 193);
         toolbar = (Toolbar) findViewById(R.id.tl_custom);
         toolbar.setTitle("设置");
         toolbar.setTitleTextColor(Color.rgb(238, 238, 238));
