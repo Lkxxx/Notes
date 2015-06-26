@@ -32,24 +32,34 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.lk.notes.PullToZoom.PullToZoomListViewEx;
 import com.lk.notes.UI.ScrimInsetsFrameLayout;
+import com.sleepbot.datetimepicker.time.RadialPickerLayout;
+import com.sleepbot.datetimepicker.time.TimePickerDialog;
 
 import java.io.File;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
 
-public class NotesActivity extends ActionBarActivity implements View.OnClickListener {
+public class NotesActivity extends ActionBarActivity implements View.OnClickListener, TimePickerDialog.OnTimeSetListener, DatePickerDialog.OnDateSetListener {
 
     private static final int Edit = 1;
     private static final int Change = 1;
     private static final int Refresh = 2;
-    static Activity finish;
+    private static int SET = 11;
+    private static int CANCEL = 12;
+
+    public static Activity finish;
 
     private FloatingActionButton fab;
     private PullToZoomListViewEx list_view;
@@ -57,12 +67,11 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
     private NotesDao dao;
     private NotesAdapter adapter;
     private List<NotesInfo> mNotesInfos;
-    private String id;
+    private String id,text,title;
     private RotateAnimation ra;
     private LinearLayout ll_none, ll_notes, ll_label, ll_remind, ll_theme, ll_setting, ll_message, ll_suggest;
     private DrawerLayout drawerLayout;
-    private ImageView iv_notes;
-    private TextView tv_notes;
+    int[] date = new EditNoteActivity().getDate();
     private long exitTime = 0;
 
     private Handler handler = new Handler() {
@@ -105,6 +114,21 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         getMenuInflater().inflate(R.menu.context, menu);
+
+        final int selectedPosition = ((AdapterView.AdapterContextMenuInfo) menuInfo).position;
+        int i = 0;
+        if (selectedPosition >= 1) {
+            i = selectedPosition - 1;
+        } else if (selectedPosition == 0) {
+            i = selectedPosition;
+        }
+        String clock = mNotesInfos.get(i).getClock();
+        if (clock != null) {
+            menu.add(0, 4, 0, "修改闹钟");
+            menu.add(0, 5, 0, "删除闹钟");
+        } else {
+            menu.add(0, 4, 0, "增加闹钟");
+        }
 
     }
 
@@ -156,8 +180,6 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
         if (getDataLastPath() != null) {
             list_view.setHeaderLayoutParams(localObject(getDataLastPath()));
         }
-
-
         list_view.setVerticalScrollBarEnabled(true);
         registerForContextMenu(list_view.getPullRootView());
         list_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -190,15 +212,12 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
         toolbar.setPopupTheme(R.style.MyToolBar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-
         ScrimInsetsFrameLayout frameLayout = (ScrimInsetsFrameLayout) findViewById(R.id.frameLayout);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
         drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, Gravity.START);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             drawerLayout.setStatusBarBackgroundColor(Color.rgb((int) (r * 0.9), (int) (g * 0.9), (int) (b * 0.9)));
-
         }
-
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
             drawerLayout.setFitsSystemWindows(false);
             frameLayout.setFitsSystemWindows(false);
@@ -225,10 +244,6 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
         ll_setting.setOnClickListener(this);
         ll_message.setOnClickListener(this);
         ll_notes.setPressed(true);
-
-iv_notes = (ImageView)findViewById(R.id.iv_notes);
-
-
     }
 
 
@@ -304,6 +319,10 @@ iv_notes = (ImageView)findViewById(R.id.iv_notes);
         }
         final NotesInfo notesInfo = mNotesInfos.get(i);
         id = notesInfo.getId();
+        String clock = notesInfo.getClock();
+        title = notesInfo.getTitle();
+        text = notesInfo.getText();
+
         switch (item.getItemId()) {
             case R.id.menuEdit:
                 Intent intent = new Intent();
@@ -311,7 +330,7 @@ iv_notes = (ImageView)findViewById(R.id.iv_notes);
                 intent.putExtra("text", notesInfo.getText());
                 intent.putExtra("id", id);
                 intent.putExtra("clock", notesInfo.getClock());
-                Log.e("tag", id);
+
                 intent.setClass(NotesActivity.this, NotesChangeActivity.class);
                 startActivityForResult(intent, Change);
                 break;
@@ -324,9 +343,65 @@ iv_notes = (ImageView)findViewById(R.id.iv_notes);
                 sendIntent.putExtra(Intent.EXTRA_SUBJECT, notesInfo.getTitle());
                 sendIntent.putExtra(Intent.EXTRA_TEXT, notesInfo.getText());
                 startActivity(sendIntent.createChooser(sendIntent, notesInfo.getTitle()));
+                break;
+            case 4:
+                addOrChange(clock);
+
+                break;
+            case 5:
+                dao.deleteClock(id);
+                date = new EditNoteActivity().getDate();
+                new EditNoteActivity().setClock(null, null, id, this, CANCEL, date);
+                setRefresh();
+
+                break;
         }
         return super.onOptionsItemSelected(item);
 
+
+    }
+
+    private void addOrChange(String clock){
+        Calendar now = Calendar.getInstance();
+        now.setTimeInMillis(System.currentTimeMillis());
+        if (clock != null) {
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy年MM月dd日HH时mm分");
+            try {
+                Date d = formatter.parse(clock);
+                long timeGetTime = d.getTime();
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日HH时mm分", Locale.getDefault());
+                String str_time = sdf.format(timeGetTime);
+                date = new int[]{Integer.parseInt(str_time.substring(0, 4)), Integer.parseInt(str_time.substring(5, 7)),
+                        Integer.parseInt(str_time.substring(8, 10)), Integer.parseInt(str_time.substring(11, 13)),
+                        Integer.parseInt(str_time.substring(14, 16))};
+                now.set(Calendar.YEAR,date[0]);
+                now.set(Calendar.MONTH,date[1]-1);
+                now.set(Calendar.DAY_OF_MONTH,date[2]);
+                DatePickerDialog dpd = DatePickerDialog.newInstance(
+                        NotesActivity.this,
+                        now.get(Calendar.YEAR),
+                        now.get(Calendar.MONTH),
+                        now.get(Calendar.DAY_OF_MONTH)
+                );
+                dpd.show(getSupportFragmentManager(), "Timepickerdialog");
+
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+
+        }else {
+
+            date[3] = now.get(Calendar.HOUR_OF_DAY);
+            date[4]= now.get(Calendar.MINUTE);
+            DatePickerDialog dpd = DatePickerDialog.newInstance(
+                    NotesActivity.this,
+                    now.get(Calendar.YEAR),
+                    now.get(Calendar.MONTH),
+                    now.get(Calendar.DAY_OF_MONTH)
+            );
+            dpd.show(getSupportFragmentManager(), "Timepickerdialog");
+        }
 
     }
 
@@ -466,5 +541,32 @@ iv_notes = (ImageView)findViewById(R.id.iv_notes);
                 break;
 
         }
+    }
+
+    @Override
+    public void onTimeSet(RadialPickerLayout radialPickerLayout, int i, int i1) {
+        date[3] = i;
+        date[4] = i1;
+        dao.changeClock(id, date[0] + "年" + (date[1]) + "月" + date[2] + "日" + date[3] + "时" + date[4] + "分");
+        new EditNoteActivity().setClock(title, text, id, this, SET, date);
+        setRefresh();
+    }
+
+    @Override
+    public void onDateSet(DatePickerDialog datePickerDialog, int i, int i1, int i2) {
+        date[0] = i;
+        date[1] = i1+1;
+        date[2] = i2;
+        Calendar now = Calendar.getInstance();
+        now.set(Calendar.HOUR_OF_DAY,date[3]);
+        now.set(Calendar.MINUTE,date[4]);
+        TimePickerDialog tpd = TimePickerDialog.newInstance(
+                NotesActivity.this,
+                now.get(Calendar.HOUR_OF_DAY),
+                now.get(Calendar.MINUTE),
+                true
+        );
+        tpd.show(getSupportFragmentManager(), "Timepickerdialog");
+
     }
 }

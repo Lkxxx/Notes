@@ -65,6 +65,18 @@ public class NotesDao {
             return true;
         }
     }
+    public boolean changeClock(String id,String clock) {
+        SQLiteDatabase db = notesOpenHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("clock", clock);
+        int rowNumber = db.update("notes", values, "id = ?", new String[]{id});
+        if (rowNumber == 0) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
 
     public boolean deleteClock(String id) {
         SQLiteDatabase db = notesOpenHelper.getWritableDatabase();

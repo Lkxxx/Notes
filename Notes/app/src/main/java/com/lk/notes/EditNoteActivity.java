@@ -61,7 +61,8 @@ public class EditNoteActivity extends ActionBarActivity implements View.OnClickL
     private LinearLayout ll_remind, ll_date;
     private TextView tv_date, tv_time;
     private Button bt_delete;
-
+    private static int SET = 11;
+    private static int CANCEL = 12;
 
     int[] date = new int[5];
 
@@ -206,11 +207,7 @@ public class EditNoteActivity extends ActionBarActivity implements View.OnClickL
 
                 Rect frame = new Rect();
                 getWindow().getDecorView().getWindowVisibleDisplayFrame(frame);
-                int statusBarHeight = frame.top;
-                if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
 
-
-                }
             }
         }
     }
@@ -249,7 +246,6 @@ public class EditNoteActivity extends ActionBarActivity implements View.OnClickL
                         Locale.getDefault());
                 Calendar c = Calendar.getInstance();
                 c.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
-
                 str_id = String.valueOf(timeGetTime);
                 String str_time = sdf.format(timeGetTime);
                 Log.e("a", str_title + str_text + str_time);
@@ -275,8 +271,9 @@ public class EditNoteActivity extends ActionBarActivity implements View.OnClickL
                 if (ll_remind.getVisibility() == View.GONE && ll_date.getVisibility() == View.VISIBLE) {
                     dao.add(str_title, str_text, str_time, str_id, String.valueOf(c.get(Calendar.YEAR)),
                             date[0] + "年" + date[1] + "月" + date[2] + "日" + date[3] + "时" + date[4] + "分");
-                    setClock(str_title,str_text,str_id);
+                    setClock(str_title, str_text, str_id, EditNoteActivity.this, SET, date);
                 } else {
+                    setClock(str_title, str_text, str_id, EditNoteActivity.this, CANCEL, date);
                     dao.add(str_title, str_text, str_time, str_id, String.valueOf(c.get(Calendar.YEAR)), null);
                 }
 
@@ -285,27 +282,32 @@ public class EditNoteActivity extends ActionBarActivity implements View.OnClickL
         thread.start();
     }
 
-    public void setClock(String title ,String str_text,String str_id) {
-        Calendar c = Calendar.getInstance();
-        c.setTimeInMillis(System.currentTimeMillis());
+    public void setClock(String title, String str_text, String str_id, Context context, int SETorCANCEL, int date[]) {
+        int requestCode = Integer.parseInt(str_id.substring(6, 13));
+        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
-        // Log.e("clock", c.get(Calendar.YEAR) + "年" +(c.get(Calendar.MONTH) + 1)+ "月" + c.get(Calendar.DAY_OF_MONTH) + "日" + c.get(Calendar.HOUR_OF_DAY) + ";" + c.get(Calendar.MINUTE));
+        if (SETorCANCEL == SET) {
+            Intent intent = new Intent(context, ClockReceiver.class);
+            intent.putExtra("text", str_text);
+            intent.putExtra("title", title);
+            intent.putExtra("id", str_id);
+            PendingIntent pi = PendingIntent.getBroadcast(context, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            Calendar c = Calendar.getInstance();
+            c.setTimeInMillis(System.currentTimeMillis());
+            c.set(Calendar.YEAR, date[0]);
+            c.set(Calendar.MONTH, date[1] - 1);
+            c.set(Calendar.DAY_OF_MONTH, date[2]);
+            c.set(Calendar.HOUR_OF_DAY, date[3]);
+            c.set(Calendar.MINUTE, date[4]);
+            c.set(Calendar.SECOND, 0);
+            am.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pi);
+            Log.e("clock", "闹钟设置成功");
+        } else if (SETorCANCEL == CANCEL) {
+            Intent intent1 = new Intent(context, ClockReceiver.class);
+            PendingIntent piC = PendingIntent.getBroadcast(context, requestCode, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
+           am.cancel(piC);
+        }
 
-        c.set(Calendar.YEAR, date[0]);
-        c.set(Calendar.MONTH, date[1] - 1);
-        c.set(Calendar.DAY_OF_MONTH, date[2]);
-        c.set(Calendar.HOUR_OF_DAY, date[3]);
-        c.set(Calendar.MINUTE, date[4]);
-        c.set(Calendar.SECOND, 0);
-        //Log.e("clock",c.get(Calendar.YEAR)+"年"+(c.get(Calendar.MONTH)+1)+"月"+c.get(Calendar.DAY_OF_MONTH)+"日"+c.get(Calendar.HOUR_OF_DAY)+";"+c.get(Calendar.MINUTE));
-        Intent intent = new Intent(this, ClockReceiver.class);
-        intent.putExtra("text", str_text);
-        intent.putExtra("title", title);
-        intent.putExtra("id", str_id);
-        int requestCode = 0;
-        PendingIntent pi = PendingIntent.getBroadcast(this, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        AlarmManager am = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
-        am.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pi);
     }
 
     @Override
@@ -327,15 +329,12 @@ public class EditNoteActivity extends ActionBarActivity implements View.OnClickL
                     alertDialog.setPositiveButton("保存", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-
                             save();
-
                         }
                     });
                     alertDialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-
                             setResult(10000);
                             finish();
                         }
@@ -345,7 +344,6 @@ public class EditNoteActivity extends ActionBarActivity implements View.OnClickL
                 break;
             case R.id.action_check:
                 save();
-
                 break;
             case R.id.action_camera:
 
@@ -396,19 +394,24 @@ public class EditNoteActivity extends ActionBarActivity implements View.OnClickL
     }
 
 
+    public int[] getDate() {
+        Calendar c = Calendar.getInstance();
+        c.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
+        c.set(Calendar.HOUR_OF_DAY, 9);
+        c.set(Calendar.MINUTE, 00);
+        c.add(Calendar.DATE, 1);
+        int[] date = new int[]{c.get(Calendar.YEAR), c.get(Calendar.MONTH) + 1, c.get(Calendar.DAY_OF_MONTH),
+                c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE)};
+        return date;
+    }
+
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.ll_remind:
                 ll_remind.setVisibility(View.GONE);
                 ll_date.setVisibility(View.VISIBLE);
-                Calendar c = Calendar.getInstance();
-                c.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
-                c.set(Calendar.HOUR_OF_DAY, 9);
-                c.set(Calendar.MINUTE, 00);
-                c.add(Calendar.DATE, 1);
-                date = new int[]{c.get(Calendar.YEAR), c.get(Calendar.MONTH) + 1, c.get(Calendar.DAY_OF_MONTH),
-                        c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE)};
+                date = getDate();
                 break;
             case R.id.tv_date:
                 tv_date.setTextColor(Color.parseColor("#f7333333"));
@@ -528,7 +531,7 @@ public class EditNoteActivity extends ActionBarActivity implements View.OnClickL
                         DatePickerDialog dpd = DatePickerDialog.newInstance(
                                 EditNoteActivity.this,
                                 c.get(Calendar.YEAR),
-                                c.get(Calendar.MONTH) + 1,
+                                c.get(Calendar.MONTH),
                                 c.get(Calendar.DAY_OF_MONTH)
                         );
                         dpd.show(getSupportFragmentManager(), "Timepickerdialog");

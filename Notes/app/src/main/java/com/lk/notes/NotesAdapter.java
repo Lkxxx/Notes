@@ -80,7 +80,7 @@ public class NotesAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) view.getTag();
         }
-        Log.e("getview",mNotesInfos.get(i).getTitle());
+        Log.e("getview", mNotesInfos.get(i).getTitle());
         holder.ll_clock.setVisibility(View.VISIBLE);
         holder.tv_text.setVisibility(View.VISIBLE);
         holder.iv_text.setVisibility(View.GONE);
@@ -95,7 +95,7 @@ public class NotesAdapter extends BaseAdapter {
         if (file.exists()) {
             holder.iv_text.setVisibility(View.VISIBLE);
         }
-        if (mNotesInfos.get(i).getClock() != null){
+        if (mNotesInfos.get(i).getClock() != null) {
             holder.tv_clock.setText(convertClock(mNotesInfos.get(i).getClock()));
         } else {
             holder.ll_clock.setVisibility(View.GONE);
@@ -114,7 +114,7 @@ public class NotesAdapter extends BaseAdapter {
 
 
     public String convertTime(String time, String str) {
-        long id = Long.parseLong(str.substring(0,10));
+        long id = Long.parseLong(str.substring(0, 10));
         String outputTime = "未知";
         int month = Integer.parseInt(time.substring(0, 2));
         int day = Integer.parseInt(time.substring(3, 5));
@@ -125,16 +125,14 @@ public class NotesAdapter extends BaseAdapter {
         c.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
 
         int yearnow = c.get(Calendar.YEAR);
-        int monthnow = c.get(Calendar.MINUTE);
+        int monthnow = c.get(Calendar.MONTH)+1;
         int daynow = c.get(Calendar.DAY_OF_MONTH);
         int hournow = c.get(Calendar.HOUR_OF_DAY);
         int minutenow = c.get(Calendar.MINUTE);
-
-
         if (id - 31556926 * (yearnow - 1970) > 0 && id - 31556926 * (yearnow - 1970) <= 31556926) {
             if (month == monthnow) {
                 if (daynow - day == 2) {
-                    outputTime = "前天" + hour + "时";
+                    outputTime = "前天" ;
                 } else if (daynow - day == 1) {
                     outputTime = "昨天" + hour + "时";
                 } else if (daynow == day) {
@@ -181,22 +179,32 @@ public class NotesAdapter extends BaseAdapter {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日HH时mm分",
                 Locale.getDefault());
         String str_time = sdf.format(timeGetTime);
-        int clock[] = new int[]{Integer.parseInt(str_time.substring(0,4)),
-                Integer.parseInt(str_time.substring(5,7)),
-                Integer.parseInt(str_time.substring(8,10)),
-                Integer.parseInt(str_time.substring(11,13)),
-                Integer.parseInt(str_time.substring(14,16))};
-        int now[] = {c.get(Calendar.YEAR),c.get(Calendar.MINUTE), c.get(Calendar.DAY_OF_MONTH),
-                c.get(Calendar.HOUR_OF_DAY),c.get(Calendar.MINUTE)};
-        if (clock[0]==now[0]){
-            c.add(Calendar.DATE,1);
-            if (clock[2] == c.get(Calendar.DAY_OF_MONTH)){
-                outputTime = "明天" + clock[3]+":" + clock[4];
+        int clock[] = new int[]{Integer.parseInt(str_time.substring(0, 4)),
+                Integer.parseInt(str_time.substring(5, 7)),
+                Integer.parseInt(str_time.substring(8, 10)),
+                Integer.parseInt(str_time.substring(11, 13)),
+                Integer.parseInt(str_time.substring(14, 16))};
+        int now[] = {c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH),
+                c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE)};
+        c.add(Calendar.MONTH, 1);
+        if (clock[0] == now[0]) {
+            if (clock[1] == c.get(Calendar.MONTH)) {
+                if (clock[2] == c.get(Calendar.DAY_OF_MONTH)) {
+                    outputTime = "今天" + clock[3] + ":" + clock[4];
+                } else {
+                    c.setTimeInMillis(System.currentTimeMillis());
+                    c.add(Calendar.DATE, 1);
+                    if (clock[2] == c.get(Calendar.DAY_OF_MONTH)) {
+                        outputTime = "明天" + clock[3] + ":" + clock[4];
+                    } else {
+                        outputTime = clock[1] + "月" + clock[2] + "日" + clock[3] + ":" + clock[4];
+                    }
+                }
             }else {
-                outputTime = clock[1]+"月"+clock[2]+"日"+ clock[3]+":" + clock[4];
+                outputTime = clock[1] + "月" + clock[2] + "日" + clock[3] + ":" + clock[4];
             }
-        }else {
-            outputTime =  clock[0]+"年"+clock[1]+"月"+clock[2]+"日";
+        } else {
+            outputTime = clock[0] + "年" + clock[1] + "月" + clock[2] + "日";
         }
 
 

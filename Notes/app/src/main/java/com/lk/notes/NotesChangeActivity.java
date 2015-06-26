@@ -61,6 +61,8 @@ public class NotesChangeActivity extends ActionBarActivity implements View.OnCli
     private ImageView iv_image;
     private ProgressDialog progressDialog;
     private static final int STOP = 1;
+    private static int SET = 11;
+    private static int CANCEL = 12;
     private ScrollView scrollView;
 
     private Handler handler = new Handler() {
@@ -286,14 +288,15 @@ public class NotesChangeActivity extends ActionBarActivity implements View.OnCli
             info.setText(str_text);
             info.setTime(str_time);
             Log.e("a", str_title + str_text + str_time);
-            //dao.change(str_title, str_text, str_time, id);
             dao.delete(id);
 
             if(ll_remind.getVisibility() == View.GONE &&  ll_date.getVisibility() == View.VISIBLE) {
                 dao.add(str_title, str_text, str_time, id,String.valueOf(c.get(Calendar.YEAR)),
                         date[0] + "年" + date[1] + "月" + date[2] + "日" + date[3] + "时" + date[4] + "分");
+                new EditNoteActivity().setClock(str_title, str_text, id, NotesChangeActivity.this,SET,date);
             }else {
                 dao.add(str_title, str_text, str_time, id,String.valueOf(c.get(Calendar.YEAR)),null);
+                new EditNoteActivity().setClock(str_title, str_text, id, NotesChangeActivity.this, CANCEL,date);
             }
 
             new File(Environment.getExternalStorageDirectory() + "/Notes/image/cache/cache.jpg").delete();
@@ -470,7 +473,7 @@ public class NotesChangeActivity extends ActionBarActivity implements View.OnCli
         }
         tv_date.setText(str);
         date[0] = i;
-        date[1] = i1;
+        date[1] = i1+1;
         date[2] = i2;
     }
     @Override
