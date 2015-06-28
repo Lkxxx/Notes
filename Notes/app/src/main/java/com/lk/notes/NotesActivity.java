@@ -1,92 +1,50 @@
 package com.lk.notes;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.ContextMenu;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.fourmob.datetimepicker.date.DatePickerDialog;
-import com.lk.notes.PullToZoom.PullToZoomListViewEx;
+import com.lk.notes.Fragment.ClockFragment;
+import com.lk.notes.Fragment.LabelFragment;
+import com.lk.notes.Fragment.MessageFragment;
+import com.lk.notes.Fragment.NotesFragment;
+import com.lk.notes.Fragment.SettingFragment;
 import com.lk.notes.UI.ScrimInsetsFrameLayout;
-import com.sleepbot.datetimepicker.time.RadialPickerLayout;
-import com.sleepbot.datetimepicker.time.TimePickerDialog;
-
-import java.io.File;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.Timer;
-import java.util.TimerTask;
 
 
-public class NotesActivity extends ActionBarActivity implements View.OnClickListener, TimePickerDialog.OnTimeSetListener, DatePickerDialog.OnDateSetListener {
+public class NotesActivity extends ActionBarActivity implements View.OnClickListener {
 
-    private static final int Edit = 1;
+
     private static final int Change = 1;
-    private static final int Refresh = 2;
-    private static int SET = 11;
-    private static int CANCEL = 12;
-
     public static Activity finish;
-
     private FloatingActionButton fab;
-    private PullToZoomListViewEx list_view;
     private Toolbar toolbar;
-    private NotesDao dao;
-    private NotesAdapter adapter;
-    private List<NotesInfo> mNotesInfos;
-    private String id,text,title;
+
     private RotateAnimation ra;
-    private LinearLayout ll_none, ll_notes, ll_label, ll_remind, ll_theme, ll_setting, ll_message, ll_suggest;
+    private LinearLayout ll_notes, ll_label, ll_remind, ll_theme, ll_setting, ll_message, ll_suggest;
     private DrawerLayout drawerLayout;
-    int[] date = new EditNoteActivity().getDate();
+    private ImageView iv_fab_shadow;
+    private TextView tv_notes, tv_message, tv_label, tv_remind, tv_setting;
+    private ImageView iv_notes, iv_message, iv_label, iv_remind, iv_setting;
     private long exitTime = 0;
-
-    private Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            if (msg.what == Refresh) {
-                ImageView imageView = (ImageView) list_view.getZoomView();
-                if (getDataLastPath() != null) {
-                    imageView.setImageBitmap(BitmapFactory.decodeFile(getDataLastPath()));
-                    list_view.setHeaderLayoutParams(localObject(getDataLastPath()));
-                }
-
-            }
-        }
-    };
 
 
     @Override
@@ -102,61 +60,11 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
             Log.e("dbpath", String.valueOf(getDatabasePath("notes.db")));
             startActivity(new Intent(this, FirstInActivity.class));
             finish();
-        } else {
-            initData();
         }
 
 
     }
 
-
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        super.onCreateContextMenu(menu, v, menuInfo);
-        getMenuInflater().inflate(R.menu.context, menu);
-
-        final int selectedPosition = ((AdapterView.AdapterContextMenuInfo) menuInfo).position;
-        int i = 0;
-        if (selectedPosition >= 1) {
-            i = selectedPosition - 1;
-        } else if (selectedPosition == 0) {
-            i = selectedPosition;
-        }
-        String clock = mNotesInfos.get(i).getClock();
-        if (clock != null) {
-            menu.add(0, 4, 0, "修改闹钟");
-            menu.add(0, 5, 0, "删除闹钟");
-        } else {
-            menu.add(0, 4, 0, "增加闹钟");
-        }
-
-    }
-
-
-    private void initData() {
-        dao = new NotesDao(this);
-        new Thread() {
-            public void run() {
-                mNotesInfos = dao.findNotes();
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        adapter = new NotesAdapter(NotesActivity.this, mNotesInfos, dao);
-                        list_view.setAdapter(adapter);
-
-                    }
-                });
-            }
-        }.start();
-
-    }
-
-    @Override
-    protected void onRestart() {
-        adapter.notifyDataSetChanged();
-        super.onRestart();
-
-    }
 
     private void intiview() {
         SharedPreferences sharedPreferences = getSharedPreferences("color", MODE_PRIVATE);
@@ -164,44 +72,10 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
         int g = sharedPreferences.getInt("g", 172);
         int b = sharedPreferences.getInt("b", 193);
         fab = (FloatingActionButton) findViewById(R.id.fab);
+        iv_fab_shadow = (ImageView) findViewById(R.id.iv_fab_shadow);
 
         ra = new RotateAnimation(0, 180, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         ra.setDuration(200);
-
-        ll_none = (LinearLayout) findViewById(R.id.ll_none);
-        if (getNone()) {
-            ll_none.setVisibility(View.VISIBLE);
-        } else {
-            ll_none.setVisibility(View.GONE);
-        }
-        ll_none.setOnClickListener(this);
-
-        list_view = (PullToZoomListViewEx) findViewById(R.id.listview);
-        if (getDataLastPath() != null) {
-            list_view.setHeaderLayoutParams(localObject(getDataLastPath()));
-        }
-        list_view.setVerticalScrollBarEnabled(true);
-        registerForContextMenu(list_view.getPullRootView());
-        list_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                NotesInfo notesInfo = null;
-                if (i >= 1) {
-                    notesInfo = mNotesInfos.get(i - 1);
-                } else if (i == 0) {
-                    notesInfo = mNotesInfos.get(i);
-                }
-                Intent intent = new Intent();
-                intent.putExtra("title", notesInfo.getTitle());
-                intent.putExtra("text", notesInfo.getText());
-                intent.putExtra("id", notesInfo.getId());
-                intent.putExtra("clock", notesInfo.getClock());
-                Log.e("id", notesInfo.getId());
-                intent.setClass(NotesActivity.this, NotesChangeActivity.class);
-                startActivityForResult(intent, Edit);
-
-            }
-        });
 
         toolbar = (Toolbar) findViewById(R.id.tl_custom);
         toolbar.setTitle("简记");
@@ -243,51 +117,19 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
         ll_theme.setOnClickListener(this);
         ll_setting.setOnClickListener(this);
         ll_message.setOnClickListener(this);
-        ll_notes.setPressed(true);
-    }
+        tv_notes = (TextView) findViewById(R.id.tv_notes);
+        tv_label = (TextView) findViewById(R.id.tv_label);
+        tv_remind = (TextView) findViewById(R.id.tv_remind);
+        tv_setting = (TextView) findViewById(R.id.tv_setting);
+        tv_message = (TextView) findViewById(R.id.tv_message);
+        iv_notes = (ImageView) findViewById(R.id.iv_notes);
+        iv_label = (ImageView) findViewById(R.id.iv_label);
+        iv_remind = (ImageView) findViewById(R.id.iv_remind);
+        iv_setting = (ImageView) findViewById(R.id.iv_setting);
+        iv_message = (ImageView) findViewById(R.id.iv_message);
 
-
-    private AbsListView.LayoutParams localObject(String path) {
-        DisplayMetrics localDisplayMetrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(localDisplayMetrics);
-        int mScreenWidth = localDisplayMetrics.widthPixels;
-        AbsListView.LayoutParams localObject = new AbsListView.LayoutParams(mScreenWidth, (int) (0.1F * (mScreenWidth / 16.0F)));
-        if (path != null) {
-            if (new File(path).exists()) {
-                localObject = new AbsListView.LayoutParams(mScreenWidth, (int) (9.0F * (mScreenWidth / 16.0F)));
-            } else {
-                localObject = new AbsListView.LayoutParams(mScreenWidth, (int) (0.1F * (mScreenWidth / 16.0F)));
-            }
-        }
-        return localObject;
-    }
-
-    public String getDataLastPath() {
-        String path = null;
-        NotesOpenHelper notesOpenHelper;
-        notesOpenHelper = new NotesOpenHelper(this);
-        SQLiteDatabase db = notesOpenHelper.getReadableDatabase();
-        Cursor c = db.query("notes", new String[]{"title", "text", "time", "id"}, null, null, null, null, "_id DESC");
-        if (c.moveToFirst()) {
-            path = Environment.getExternalStorageDirectory() + "/Notes/image/" + c.getString(3);
-        }
-        c.close();
-        db.close();
-        return path;
-    }
-
-    public boolean getNone() {
-        boolean none = true;
-        NotesOpenHelper notesOpenHelper;
-        notesOpenHelper = new NotesOpenHelper(this);
-        SQLiteDatabase db = notesOpenHelper.getReadableDatabase();
-        Cursor c = db.query("notes", new String[]{"title", "text", "time", "id"}, null, null, null, null, "_id DESC");
-        if (c.getCount() != 0) {
-            none = false;
-        }
-        c.close();
-        db.close();
-        return none;
+        addNotes();
+        fisrtDrawerBackground();
     }
 
 
@@ -307,182 +149,14 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
         return super.onKeyDown(keyCode, event);
     }
 
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-
-        final int selectedPosition = ((AdapterView.AdapterContextMenuInfo) item.getMenuInfo()).position;
-        int i = 0;
-        if (selectedPosition >= 1) {
-            i = selectedPosition - 1;
-        } else if (selectedPosition == 0) {
-            i = selectedPosition;
-        }
-        final NotesInfo notesInfo = mNotesInfos.get(i);
-        id = notesInfo.getId();
-        String clock = notesInfo.getClock();
-        title = notesInfo.getTitle();
-        text = notesInfo.getText();
-
-        switch (item.getItemId()) {
-            case R.id.menuEdit:
-                Intent intent = new Intent();
-                intent.putExtra("title", notesInfo.getTitle());
-                intent.putExtra("text", notesInfo.getText());
-                intent.putExtra("id", id);
-                intent.putExtra("clock", notesInfo.getClock());
-
-                intent.setClass(NotesActivity.this, NotesChangeActivity.class);
-                startActivityForResult(intent, Change);
-                break;
-            case R.id.menuDelete:
-                menuDelete(notesInfo, selectedPosition);
-                break;
-            case R.id.menuShare:
-                Intent sendIntent = new Intent().setAction(Intent.ACTION_SEND);
-                sendIntent.setType("text/plain");
-                sendIntent.putExtra(Intent.EXTRA_SUBJECT, notesInfo.getTitle());
-                sendIntent.putExtra(Intent.EXTRA_TEXT, notesInfo.getText());
-                startActivity(sendIntent.createChooser(sendIntent, notesInfo.getTitle()));
-                break;
-            case 4:
-                addOrChange(clock);
-
-                break;
-            case 5:
-                dao.deleteClock(id);
-                date = new EditNoteActivity().getDate();
-                new EditNoteActivity().setClock(null, null, id, this, CANCEL, date);
-                setRefresh();
-
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-
-
-    }
-
-    private void addOrChange(String clock){
-        Calendar now = Calendar.getInstance();
-        now.setTimeInMillis(System.currentTimeMillis());
-        if (clock != null) {
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy年MM月dd日HH时mm分");
-            try {
-                Date d = formatter.parse(clock);
-                long timeGetTime = d.getTime();
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日HH时mm分", Locale.getDefault());
-                String str_time = sdf.format(timeGetTime);
-                date = new int[]{Integer.parseInt(str_time.substring(0, 4)), Integer.parseInt(str_time.substring(5, 7)),
-                        Integer.parseInt(str_time.substring(8, 10)), Integer.parseInt(str_time.substring(11, 13)),
-                        Integer.parseInt(str_time.substring(14, 16))};
-                now.set(Calendar.YEAR,date[0]);
-                now.set(Calendar.MONTH,date[1]-1);
-                now.set(Calendar.DAY_OF_MONTH,date[2]);
-                DatePickerDialog dpd = DatePickerDialog.newInstance(
-                        NotesActivity.this,
-                        now.get(Calendar.YEAR),
-                        now.get(Calendar.MONTH),
-                        now.get(Calendar.DAY_OF_MONTH)
-                );
-                dpd.show(getSupportFragmentManager(), "Timepickerdialog");
-
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-
-
-        }else {
-
-            date[3] = now.get(Calendar.HOUR_OF_DAY);
-            date[4]= now.get(Calendar.MINUTE);
-            DatePickerDialog dpd = DatePickerDialog.newInstance(
-                    NotesActivity.this,
-                    now.get(Calendar.YEAR),
-                    now.get(Calendar.MONTH),
-                    now.get(Calendar.DAY_OF_MONTH)
-            );
-            dpd.show(getSupportFragmentManager(), "Timepickerdialog");
-        }
-
-    }
-
-    private void menuDelete(final NotesInfo notesInfo, final int selectedPosition) {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(NotesActivity.this);
-        alertDialog.setTitle("提示");
-        alertDialog.setMessage("你确定要删除吗");
-        alertDialog.setPositiveButton("确认", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                File f = new File(Environment.getExternalStorageDirectory() + "/Notes/image/" + id);
-                dao.delete(id);
-                Toast.makeText(NotesActivity.this, "删除成功", Toast.LENGTH_SHORT).show();
-                mNotesInfos.remove(notesInfo);
-                adapter.notifyDataSetChanged();
-                if (getNone()) {
-                    ll_none.setVisibility(View.VISIBLE);
-                } else {
-                    ll_none.setVisibility(View.GONE);
-                }
-                if (f.exists()) {
-                    f.delete();
-                    ImageView imageView = (ImageView) list_view.getZoomView();
-                    if (selectedPosition == 0 || selectedPosition == 1) {
-                        imageView.setImageBitmap(BitmapFactory.decodeFile(getDataLastPath()));
-                        list_view.setHeaderLayoutParams(localObject(getDataLastPath()));
-                    }
-                }
-            }
-        });
-        alertDialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                return;
-            }
-        });
-        alertDialog.show();
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == Change) {
-            Log.e("result", "Change");
-            if (resultCode != 10000) {
-                Log.e("result", "10000");
-                setRefresh();
-            }
-        }
-    }
-
-
-    private void setRefresh() {
-        ImageView imageView = (ImageView) list_view.getZoomView();
-        if (getDataLastPath() != null) {
-            imageView.setImageBitmap(BitmapFactory.decodeFile(getDataLastPath()));
-            list_view.setHeaderLayoutParams(localObject(getDataLastPath()));
-            initData();
-            Timer timer = new Timer();
-            timer.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    Message message = new Message();
-                    message.what = Refresh;
-                    handler.sendMessage(message);
-                }
-            }, 1000);
-            if (getNone()) {
-                ll_none.setVisibility(View.VISIBLE);
-            } else {
-                ll_none.setVisibility(View.GONE);
-            }
-        }
-    }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_notes, menu);
         return true;
     }
+
+    int d = 0;
 
 
     @Override
@@ -511,20 +185,43 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
                 startActivityForResult(intent, Change);
                 break;
             case R.id.ll_notes:
-                ll_notes.setSelected(true);
-                ll_notes.setPressed(true);
-                drawerLayout.closeDrawer(Gravity.START);
-
+                if (d == 0) {
+                    drawerLayout.closeDrawer(Gravity.LEFT);
+                } else {
+                    d = 0;
+                    addNotes();
+                    setDrawerBackground(ll_notes, tv_notes, iv_notes);
+                }
                 break;
             case R.id.ll_label:
-                ll_label.setSelected(true);
-                ll_label.setPressed(true);
-                drawerLayout.closeDrawer(Gravity.START);
+                if (d == 1) {
+                    drawerLayout.closeDrawer(Gravity.LEFT);
+                } else {
+                    d = 1;
+                    drawerLayout.closeDrawer(Gravity.LEFT);
+                    LabelFragment labelFragment = new LabelFragment();
+                    labelFragment.setArguments(getIntent().getExtras());
+                    getSupportFragmentManager().beginTransaction().replace(R.id.sticky_content, labelFragment).commit();
+                    iv_fab_shadow.setVisibility(View.GONE);
+                    fab.setVisibility(View.GONE);
+                    toolbar.setTitle("标签");
+                    setDrawerBackground(ll_label, tv_label, iv_label);
+                }
                 break;
             case R.id.ll_remind:
-                ll_remind.setSelected(true);
-                ll_remind.setPressed(true);
-                drawerLayout.closeDrawer(Gravity.START);
+                if (d == 2) {
+                    drawerLayout.closeDrawer(Gravity.LEFT);
+                } else {
+                    d = 2;
+                    drawerLayout.closeDrawer(Gravity.LEFT);
+                    ClockFragment clockFragment = new ClockFragment();
+                    clockFragment.setArguments(getIntent().getExtras());
+                    getSupportFragmentManager().beginTransaction().replace(R.id.sticky_content, clockFragment).commit();
+                    iv_fab_shadow.setVisibility(View.GONE);
+                    fab.setVisibility(View.GONE);
+                    toolbar.setTitle("提醒");
+                    setDrawerBackground(ll_remind, tv_remind, iv_remind);
+                }
                 break;
             case R.id.ll_theme:
                 Intent intent3 = new Intent(NotesActivity.this, ThemeActivity.class);
@@ -532,41 +229,110 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
                 finish();
                 break;
             case R.id.ll_setting:
-                Intent intent4 = new Intent(NotesActivity.this, SettingActivity.class);
-                startActivityForResult(intent4, Change);
+                if (d == 3) {
+                    drawerLayout.closeDrawer(Gravity.LEFT);
+                } else {
+                    d = 3;
+                    drawerLayout.closeDrawer(Gravity.LEFT);
+                    SettingFragment settingFragment = new SettingFragment();
+                    settingFragment.setArguments(getIntent().getExtras());
+                    getSupportFragmentManager().beginTransaction().replace(R.id.sticky_content, settingFragment).commit();
+                    iv_fab_shadow.setVisibility(View.GONE);
+                    fab.setVisibility(View.GONE);
+                    toolbar.setTitle("设置");
+                    setDrawerBackground(ll_setting, tv_setting, iv_setting);
+                }
                 break;
             case R.id.ll_message:
-                Intent intent5 = new Intent(NotesActivity.this, MessageActivity.class);
-                startActivity(intent5);
+                if (d == 4) {
+                    drawerLayout.closeDrawer(Gravity.LEFT);
+                } else {
+                    d = 4;
+                    MessageFragment messageFragment = new MessageFragment();
+                    messageFragment.setArguments(getIntent().getExtras());
+                    getSupportFragmentManager().beginTransaction().replace(R.id.sticky_content, messageFragment).commit();
+                    drawerLayout.closeDrawer(Gravity.LEFT);
+                    fab.setVisibility(View.GONE);
+                    iv_fab_shadow.setVisibility(View.GONE);
+                    toolbar.setTitle("关于");
+                    setDrawerBackground(ll_message, tv_message, iv_message);
+                }
+
+
                 break;
 
         }
     }
 
-    @Override
-    public void onTimeSet(RadialPickerLayout radialPickerLayout, int i, int i1) {
-        date[3] = i;
-        date[4] = i1;
-        dao.changeClock(id, date[0] + "年" + (date[1]) + "月" + date[2] + "日" + date[3] + "时" + date[4] + "分");
-        new EditNoteActivity().setClock(title, text, id, this, SET, date);
-        setRefresh();
-    }
+    private void addNotes() {
+        drawerLayout.closeDrawer(Gravity.LEFT);
+        NotesFragment notesFragment = new NotesFragment();
+        notesFragment.setArguments(getIntent().getExtras());
+        getSupportFragmentManager().beginTransaction().replace(R.id.sticky_content, notesFragment).commit();
+        fab.setVisibility(View.VISIBLE);
+        iv_fab_shadow.setVisibility(View.VISIBLE);
+        toolbar.setTitle("笔记");
 
-    @Override
-    public void onDateSet(DatePickerDialog datePickerDialog, int i, int i1, int i2) {
-        date[0] = i;
-        date[1] = i1+1;
-        date[2] = i2;
-        Calendar now = Calendar.getInstance();
-        now.set(Calendar.HOUR_OF_DAY,date[3]);
-        now.set(Calendar.MINUTE,date[4]);
-        TimePickerDialog tpd = TimePickerDialog.newInstance(
-                NotesActivity.this,
-                now.get(Calendar.HOUR_OF_DAY),
-                now.get(Calendar.MINUTE),
-                true
-        );
-        tpd.show(getSupportFragmentManager(), "Timepickerdialog");
 
     }
+
+    public void setDrawerBackground(LinearLayout ll, TextView textView, ImageView imageView) {
+        ll_notes.setBackgroundResource(R.drawable.button_transparent);
+        ll_label.setBackgroundResource(R.drawable.button_transparent);
+        ll_remind.setBackgroundResource(R.drawable.button_transparent);
+        ll_setting.setBackgroundResource(R.drawable.button_transparent);
+        ll_message.setBackgroundResource(R.drawable.button_transparent);
+
+        tv_notes.setTextColor(getResources().getColor(R.color.drawableTextColor));
+        tv_label.setTextColor(getResources().getColor(R.color.drawableTextColor));
+        tv_remind.setTextColor(getResources().getColor(R.color.drawableTextColor));
+        tv_setting.setTextColor(getResources().getColor(R.color.drawableTextColor));
+        tv_message.setTextColor(getResources().getColor(R.color.drawableTextColor));
+        iv_notes.setImageResource(R.drawable.selector_ic_view_list);
+        iv_label.setImageResource(R.drawable.selector_ic_label);
+        iv_remind.setImageResource(R.drawable.selector_ic_clock);
+        iv_setting.setImageResource(R.drawable.selector_ic_setting);
+        iv_message.setImageResource(R.drawable.selector_ic_message);
+
+        switch (d) {
+            case 0:
+                iv_notes.setImageResource(R.mipmap.ic_view_list_grey600_48dp_press);
+                break;
+            case 1:
+                iv_label.setImageResource(R.mipmap.ic_label_grey600_48dp_press);
+                break;
+            case 2:
+                iv_remind.setImageResource(R.mipmap.ic_clock_grey600_48dp_press);
+                break;
+            case 3:
+                iv_setting.setImageResource(R.mipmap.ic_settings_grey600_48dp_press);
+                break;
+            case 4:
+                iv_message.setImageResource(R.mipmap.ic_information_outline_grey600_48dp_press);
+                break;
+
+        }
+        textView.setTextColor(Color.parseColor("#FF00ACC1"));
+        ll.setBackgroundColor(Color.parseColor("#13000000"));
+    }
+
+    private void fisrtDrawerBackground(){
+        iv_notes.setImageResource(R.mipmap.ic_view_list_grey600_48dp_press);
+        tv_notes.setTextColor(Color.parseColor("#FF00ACC1"));
+        ll_notes.setBackgroundColor(Color.parseColor("#13000000"));
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == Change) {
+            Log.e("result", "Change");
+            if (resultCode != 10000) {
+                Log.e("result", "10000");
+
+            }
+        }
+    }
+
 }

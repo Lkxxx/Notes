@@ -10,4 +10,7 @@
     <string name="title_activity_first_in">FirstInActivity</string>
     <string name="title_activity_setting">SettingActivity</string>
     <string name="title_activity_message">MessageActivity</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

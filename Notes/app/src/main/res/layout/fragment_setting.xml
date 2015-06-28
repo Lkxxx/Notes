@@ -1,0 +1,171 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_setting"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#eee"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="12dp">
+
+        <LinearLayout
+            android:id="@+id/ll_backup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/cardview_background"
+            android:clickable="true"
+            android:orientation="vertical">
+
+            <TextView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="15dp"
+                android:layout_marginTop="15dp"
+                android:text="备份笔记"
+                android:textSize="16sp"
+                android:textColor="@color/textcolor_light"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:paddingRight="10dp"
+                android:layout_marginTop="10dp"
+                android:text="点击之后将会把你现有的数据备份到SD卡，但是不会备份图片"
+                android:textSize="14sp"
+                android:paddingLeft="15dp"
+                android:textColor="@color/textcolor_light"/>
+
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
+  <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="8dp">
+
+        <LinearLayout
+            android:id="@+id/ll_recover"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/cardview_background"
+            android:clickable="true"
+            android:orientation="vertical">
+
+            <TextView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="15dp"
+                android:layout_marginTop="15dp"
+                android:text="还原备份"
+                android:textSize="16sp"
+                android:textColor="@color/textcolor_light"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:paddingRight="10dp"
+                android:layout_marginTop="10dp"
+                android:text="将会把您备份到SD卡上的笔记进行还原处理，现有的数据和备份的数据进行合并"
+                android:textSize="14sp"
+                android:paddingLeft="15dp"
+                android:textColor="@color/textcolor_light"/>
+
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+  <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="8dp">
+
+        <LinearLayout
+            android:id="@+id/ll_theme"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/cardview_background"
+            android:clickable="true"
+            android:orientation="vertical">
+
+            <TextView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="15dp"
+                android:layout_marginTop="15dp"
+                android:text="主题风格"
+                android:textSize="16sp"
+                android:textColor="@color/textcolor_light"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:paddingRight="10dp"
+                android:layout_marginTop="10dp"
+                android:text="选择你喜爱的颜色风格，并设置为应用的主题"
+                android:textSize="14sp"
+                android:paddingLeft="15dp"
+                android:textColor="@color/textcolor_light"/>
+
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
+  <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="8dp">
+
+        <LinearLayout
+            android:id="@+id/ll_suggest"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/cardview_background"
+            android:clickable="true"
+            android:orientation="vertical">
+
+            <TextView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="15dp"
+                android:layout_marginTop="15dp"
+                android:text="反馈建议"
+                android:textSize="16sp"
+                android:textColor="@color/textcolor_light"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:paddingRight="10dp"
+                android:layout_marginTop="10dp"
+                android:text="尽情吐槽，改变你的不爽！！"
+                android:textSize="14sp"
+                android:paddingLeft="15dp"
+                android:textColor="@color/textcolor_light"/>
+
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
+
+
+
+
+
+
+
+
+</LinearLayout>

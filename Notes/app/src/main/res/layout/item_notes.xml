@@ -20,7 +20,7 @@
             android:ellipsize="end"
             android:maxLines="2"
             android:text="123"
-            android:textColor="#ff232323"
+            android:textColor="#d4232323"
             android:textSize="20sp"
 
             />
@@ -100,7 +100,7 @@
             android:layout_height="0.5dp"
             android:layout_below="@+id/tv_text"
             android:layout_marginLeft="10dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="7dp"
             android:background="#67000000" />
     </RelativeLayout>
 

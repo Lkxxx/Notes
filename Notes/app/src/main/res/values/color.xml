@@ -32,6 +32,11 @@
     <color name="colorFab">#4caf50</color>
 
     <color name="drawableTextColor">#e73b3b3b</color>
-    <color name="drawableTextColorPress">#00acc1</color>
+    <color name="drawableTextColorPress">#FF00ACC1</color>
     <color name="ripple">#3e909090</color>
+    <color name="textcolor_light">#ff737373</color>
+    <color name="snow">#fffafafa</color>
+
+    <color name="navigationdrawer_selected_background_light">#35000000</color>
+
 </resources>
