@@ -57,7 +57,6 @@ public class FirstInActivity extends ActionBarActivity {
         boolean isFirstIn = sp.getBoolean("isFirstInWith1.14", true);
         final SharedPreferences.Editor editor = sp.edit();
         if (isFirstIn) {
-
             thread.start();
             editor.putBoolean("isFirstInWith1.14", false);
             editor.commit();

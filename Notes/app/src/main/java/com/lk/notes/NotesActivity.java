@@ -32,7 +32,6 @@ import com.lk.notes.UI.ScrimInsetsFrameLayout;
 
 public class NotesActivity extends ActionBarActivity implements View.OnClickListener {
 
-
     private static final int Change = 1;
     public static Activity finish;
     private FloatingActionButton fab;
@@ -46,7 +45,6 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
     private ImageView iv_notes, iv_message, iv_label, iv_remind, iv_setting;
     private long exitTime = 0;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,15 +54,12 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
         SharedPreferences sp = getSharedPreferences("isFirstIn", NotesActivity.MODE_PRIVATE);
         boolean isFirstIn = sp.getBoolean("isFirstInWith1.14", true);
         SharedPreferences.Editor editor = sp.edit();
-        if (isFirstIn) {
+        if (isFirstIn && getApplicationContext().getDatabasePath("notes.db").exists()) {
             Log.e("dbpath", String.valueOf(getDatabasePath("notes.db")));
             startActivity(new Intent(this, FirstInActivity.class));
             finish();
         }
-
-
     }
-
 
     private void intiview() {
         SharedPreferences sharedPreferences = getSharedPreferences("color", MODE_PRIVATE);
@@ -316,7 +311,7 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
         ll.setBackgroundColor(Color.parseColor("#13000000"));
     }
 
-    private void fisrtDrawerBackground(){
+    private void fisrtDrawerBackground() {
         iv_notes.setImageResource(R.mipmap.ic_view_list_grey600_48dp_press);
         tv_notes.setTextColor(Color.parseColor("#FF00ACC1"));
         ll_notes.setBackgroundColor(Color.parseColor("#13000000"));

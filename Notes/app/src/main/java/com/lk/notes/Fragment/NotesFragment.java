@@ -24,7 +24,6 @@ import android.view.ViewGroup;
 import android.view.animation.TranslateAnimation;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -68,7 +67,7 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Dat
     private List<NotesInfo> mNotesInfos;
     private String id, text, title;
     private FragmentActivity myContext;
-private TranslateAnimation translateAnimation;
+    private TranslateAnimation translateAnimation;
     int[] date = new EditNoteActivity().getDate();
 
     private Handler handler = new Handler() {
@@ -213,7 +212,10 @@ private TranslateAnimation translateAnimation;
 
     @Override
     public void onClick(View view) {
-
+        if (view.getId() ==R.id.ll_none){
+            Intent intent = new Intent(getActivity(), EditNoteActivity.class);
+            startActivityForResult(intent, Change);
+        }
     }
 
     @Override
@@ -396,10 +398,8 @@ private TranslateAnimation translateAnimation;
                 ll_none.setVisibility(View.GONE);
             }
         }
-        Log.e("TAG","setRefresh");
+        Log.e("TAG", "setRefresh");
     }
-
-  
 
 
     @Override

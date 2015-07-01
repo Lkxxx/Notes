@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.support.v4.content.WakefulBroadcastReceiver;
 import android.util.Log;
 
@@ -27,7 +28,10 @@ public class ClockReceiver extends WakefulBroadcastReceiver {
         Notification.Builder builder = new Notification.Builder(context);
         builder.setContentTitle(title);
         builder.setContentText(text);
-        builder.setColor(Color.rgb(0, 172, 193));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+            builder.setColor(Color.rgb(0, 172, 193));
+        }
+
         builder.setSmallIcon(R.mipmap.notification_icon);
         builder.setDefaults(Notification.DEFAULT_ALL);
 
