@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -57,6 +58,8 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Dat
     private static final int Edit = 1;
     private static final int Change = 1;
     private static final int Refresh = 2;
+    private static final int EYES = 3;
+
     private static int SET = 11;
     private static int CANCEL = 12;
     private NotesDao dao;
@@ -68,6 +71,7 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Dat
     private String id, text, title;
     private FragmentActivity myContext;
     private TranslateAnimation translateAnimation;
+    private ImageView iv_none;
     int[] date = new EditNoteActivity().getDate();
 
     private Handler handler = new Handler() {
@@ -83,6 +87,7 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Dat
             }
         }
     };
+
 
     public NotesFragment() {
 
@@ -131,11 +136,17 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Dat
     private void initView() {
 
         ll_none = (LinearLayout) view.findViewById(R.id.ll_none);
+        iv_none = (ImageView) view.findViewById(R.id.iv_none);
+        iv_none.setBackgroundResource(R.drawable.eyes);
+        AnimationDrawable ad =  (AnimationDrawable)iv_none.getBackground();
+        ad.start();
         if (getNone()) {
             ll_none.setVisibility(View.VISIBLE);
         } else {
             ll_none.setVisibility(View.GONE);
         }
+
+
         ll_none.setOnClickListener(this);
 
         list_view = (PullToZoomListViewEx) view.findViewById(R.id.listview);
@@ -204,6 +215,7 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Dat
         Cursor c = db.query("notes", new String[]{"title", "text", "time", "id"}, null, null, null, null, "_id DESC");
         if (c.getCount() != 0) {
             none = false;
+
         }
         c.close();
         db.close();
@@ -212,7 +224,7 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Dat
 
     @Override
     public void onClick(View view) {
-        if (view.getId() ==R.id.ll_none){
+        if (view.getId() == R.id.ll_none) {
             Intent intent = new Intent(getActivity(), EditNoteActivity.class);
             startActivityForResult(intent, Change);
         }
@@ -246,7 +258,13 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Dat
                 startActivityForResult(intent, Change);
                 break;
             case R.id.menuDelete:
+
+
+                dao.deleteClock(id);
+                date = new EditNoteActivity().getDate();
+                new EditNoteActivity().setClock(null, null, id, getActivity(), CANCEL, date);
                 menuDelete(notesInfo, selectedPosition);
+
                 break;
             case R.id.menuShare:
                 Intent sendIntent = new Intent().setAction(Intent.ACTION_SEND);
@@ -378,6 +396,7 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Dat
     }
 
     private void setRefresh() {
+
         ImageView imageView = (ImageView) list_view.getZoomView();
         if (getDataLastPath() != null) {
             imageView.setImageBitmap(BitmapFactory.decodeFile(getDataLastPath()));

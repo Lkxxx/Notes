@@ -134,7 +134,7 @@ public class NotesChangeActivity extends ActionBarActivity implements View.OnCli
         setcolor();
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setElevation(15);
+
         getSupportActionBar().setHomeAsUpIndicator(R.mipmap.ic_back);
 
 

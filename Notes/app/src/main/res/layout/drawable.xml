@@ -202,7 +202,38 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginLeft="32dp"
+                android:layout_marginTop="-1dp"
                 android:text="关于"
+                android:textColor="@drawable/selector_text_color"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_suggest"
+            android:layout_width="304dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="2dp"
+            android:background="@drawable/button_transparent"
+            android:clickable="true"
+            android:orientation="horizontal">
+
+
+            <ImageView
+                android:id="@+id/iv_suggest"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="16dp"
+                android:background="@drawable/selector_ic_suggest" />
+
+            <TextView
+                android:id="@+id/tv_suggest"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="32dp"
+                android:text="反馈"
+                android:layout_marginTop="-1dp"
                 android:textColor="@drawable/selector_text_color"
                 android:textSize="16sp" />
         </LinearLayout>

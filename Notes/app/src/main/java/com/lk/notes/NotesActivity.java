@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
@@ -77,7 +78,8 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
         toolbar.setTitleTextColor(Color.rgb(238, 238, 238));
         toolbar.setBackgroundColor(Color.rgb(r, g, b));
         setSupportActionBar(toolbar);
-        getSupportActionBar().setElevation(15);
+
+
         toolbar.setPopupTheme(R.style.MyToolBar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -105,6 +107,7 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
         ll_theme = (LinearLayout) findViewById(R.id.ll_theme);
         ll_setting = (LinearLayout) findViewById(R.id.ll_setting);
         ll_message = (LinearLayout) findViewById(R.id.ll_message);
+        ll_suggest = (LinearLayout) findViewById(R.id.ll_suggest);
 
         ll_notes.setOnClickListener(this);
         ll_label.setOnClickListener(this);
@@ -112,6 +115,8 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
         ll_theme.setOnClickListener(this);
         ll_setting.setOnClickListener(this);
         ll_message.setOnClickListener(this);
+        ll_suggest.setOnClickListener(this);
+
         tv_notes = (TextView) findViewById(R.id.tv_notes);
         tv_label = (TextView) findViewById(R.id.tv_label);
         tv_remind = (TextView) findViewById(R.id.tv_remind);
@@ -252,8 +257,11 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
                     toolbar.setTitle("关于");
                     setDrawerBackground(ll_message, tv_message, iv_message);
                 }
-
-
+                break;
+            case R.id.ll_suggest:
+                Intent data = new Intent(Intent.ACTION_SENDTO);
+                data.setData(Uri.parse("mailto:luoshuidao@gmail.com"));
+                startActivity(data);
                 break;
 
         }

@@ -9,4 +9,5 @@
     android:title="   Lalala"
     app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
     app:theme="@style/ThemeOverlay.AppCompat.Light"
+    android:elevation="4dp"
     app:titleMarginTop="@dimen/title"></android.support.v7.widget.Toolbar>

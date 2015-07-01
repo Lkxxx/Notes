@@ -156,7 +156,7 @@ public class SettingActivity extends ActionBarActivity implements View.OnClickLi
                 }
             }
         });
-        alertDialog.setNegativeButton("合并", new DialogInterface.OnClickListener() {
+        alertDialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 return;

@@ -1,155 +1,177 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:colorpicker="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="com.lk.notes.ThemeActivity"
-    android:background="#eee"
-    android:weightSum="1">
-
-    <include layout="@layout/toolbar"/>
-
+    android:id="@+id/frameLayout">
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="20dp"
-        android:orientation="horizontal"
-        >
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#eee"
+        android:orientation="vertical"
+        android:weightSum="1"
+        tools:context="com.lk.notes.ThemeActivity">
 
-        <Button
-            android:layout_width="65dp"
-            android:layout_height="65dp"
-            android:background="@drawable/roundred"
-            android:id="@+id/bt_red"
-            android:layout_margin="10dp" />
-        <Button
-            android:layout_width="65dp"
-            android:layout_height="65dp"
-            android:background="@drawable/roundorange"
-            android:id="@+id/bt_orange"
-            android:layout_margin="10dp" />
-        <Button
-            android:layout_width="65dp"
-            android:layout_height="65dp"
-            android:background="@drawable/roundyellow"
-            android:id="@+id/bt_yellow"
-            android:layout_margin="10dp" />
-        <Button
-            android:layout_width="65dp"
-            android:layout_height="65dp"
-            android:background="@drawable/roundcharttreuse"
-            android:id="@+id/bt_charttreuse"
-            android:layout_margin="10dp"
-            />
+        <include layout="@layout/toolbar" />
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/bt_red"
+                android:layout_width="65dp"
+                android:layout_height="65dp"
+                android:layout_margin="10dp"
+                android:background="@drawable/roundred" />
+
+            <Button
+                android:id="@+id/bt_orange"
+                android:layout_width="65dp"
+                android:layout_height="65dp"
+                android:layout_margin="10dp"
+                android:background="@drawable/roundorange" />
+
+            <Button
+                android:id="@+id/bt_yellow"
+                android:layout_width="65dp"
+                android:layout_height="65dp"
+                android:layout_margin="10dp"
+                android:background="@drawable/roundyellow" />
+
+            <Button
+                android:id="@+id/bt_charttreuse"
+                android:layout_width="65dp"
+                android:layout_height="65dp"
+                android:layout_margin="10dp"
+                android:background="@drawable/roundcharttreuse" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/bt_lime"
+                android:layout_width="65dp"
+                android:layout_height="65dp"
+                android:layout_margin="10dp"
+
+                android:background="@drawable/roundlime" />
+
+            <Button
+                android:id="@+id/bt_springgreen"
+                android:layout_width="65dp"
+                android:layout_height="65dp"
+                android:layout_margin="10dp"
+                android:background="@drawable/roundspringgreen" />
+
+            <Button
+                android:id="@+id/bt_aquamarine"
+                android:layout_width="65dp"
+                android:layout_height="65dp"
+                android:layout_margin="10dp"
+                android:background="@drawable/roundaquamarine" />
+
+            <Button
+                android:id="@+id/bt_cyan"
+                android:layout_width="65dp"
+                android:layout_height="65dp"
+                android:layout_margin="10dp"
+                android:background="@drawable/roundcyan" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/bt_royalblue"
+                android:layout_width="65dp"
+                android:layout_height="65dp"
+                android:layout_margin="10dp"
+                android:background="@drawable/roundroyalblue" />
+
+            <Button
+                android:id="@+id/bt_darkviolet"
+                android:layout_width="65dp"
+                android:layout_height="65dp"
+                android:layout_margin="10dp"
+                android:background="@drawable/rounddarkviolet" />
+
+            <Button
+                android:id="@+id/bt_magenta"
+                android:layout_width="65dp"
+                android:layout_height="65dp"
+                android:layout_margin="10dp"
+                android:background="@drawable/roundmagenta" />
+
+            <Button
+                android:id="@+id/bt_mediumvioletred"
+                android:layout_width="65dp"
+                android:layout_height="65dp"
+                android:layout_margin="10dp"
+                android:background="@drawable/roundmediumvioletred" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_custom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/bt_black"
+                android:layout_width="65dp"
+                android:layout_height="65dp"
+                android:layout_margin="10dp"
+                android:background="@drawable/roundblack" />
+
+            <Button
+                android:id="@+id/bt_colorCustom"
+                android:layout_width="65dp"
+                android:layout_height="65dp"
+
+                android:layout_margin="10dp"
+                android:background="@drawable/piccolor"
+                android:textColor="#ff292929" />
+
+            <Button
+                android:id="@+id/bt_restore"
+                android:layout_width="65dp"
+                android:layout_height="65dp"
+                android:layout_margin="10dp"
+                android:background="@drawable/button_bordless_bg_material"
+                android:text="默认"
+                android:textColor="#ff6a6a6a"
+                android:textSize="16sp" />
+
+
+        </LinearLayout>
     </LinearLayout>
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <View
+        android:id="@+id/view"
+        android:layout_width="65dp"
+        android:layout_height="65dp"
+        android:background="@drawable/button_bordless_bg_material"
         android:layout_gravity="center"
-        android:layout_marginTop="10dp"
-        android:orientation="horizontal"
-        >
-
-        <Button
-            android:layout_width="65dp"
-            android:layout_height="65dp"
-            android:background="@drawable/roundlime"
-            android:id="@+id/bt_lime"
-
-            android:layout_margin="10dp" />
-        <Button
-            android:layout_width="65dp"
-            android:layout_height="65dp"
-            android:background="@drawable/roundspringgreen"
-            android:id="@+id/bt_springgreen"
-            android:layout_margin="10dp" />
-        <Button
-            android:layout_width="65dp"
-            android:layout_height="65dp"
-            android:background="@drawable/roundaquamarine"
-            android:id="@+id/bt_aquamarine"
-            android:layout_margin="10dp" />
-        <Button
-            android:layout_width="65dp"
-            android:layout_height="65dp"
-            android:background="@drawable/roundcyan"
-            android:id="@+id/bt_cyan"
-            android:layout_margin="10dp" />
-
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="10dp"
-        android:orientation="horizontal"
-        >
-        <Button
-            android:layout_width="65dp"
-            android:layout_height="65dp"
-            android:background="@drawable/roundroyalblue"
-            android:id="@+id/bt_royalblue"
-            android:layout_margin="10dp" />
-
-        <Button
-            android:layout_width="65dp"
-            android:layout_height="65dp"
-            android:background="@drawable/rounddarkviolet"
-            android:id="@+id/bt_darkviolet"
-            android:layout_margin="10dp" />
-        <Button
-            android:layout_width="65dp"
-            android:layout_height="65dp"
-            android:background="@drawable/roundmagenta"
-            android:id="@+id/bt_magenta"
-            android:layout_margin="10dp" />
-        <Button
-            android:layout_width="65dp"
-            android:layout_height="65dp"
-            android:background="@drawable/roundmediumvioletred"
-            android:id="@+id/bt_mediumvioletred"
-            android:layout_margin="10dp" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="10dp"
-        android:orientation="horizontal"
-        android:id="@+id/ll_custom">
-        <Button
-            android:layout_width="65dp"
-            android:layout_height="65dp"
-            android:background="@drawable/roundblack"
-            android:id="@+id/bt_black"
-            android:layout_margin="10dp" />
-
-        <Button
-            android:layout_margin="10dp"
-            android:layout_width="65dp"
-            android:layout_height="65dp"
-
-            android:textColor="#ff292929"
-            android:id="@+id/bt_colorCustom"
-            android:background="@drawable/piccolor"/>
-        <Button
-            android:layout_margin="10dp"
-            android:layout_width="65dp"
-            android:layout_height="65dp"
-            android:text="默认"
-            android:textSize="16sp"
-            android:textColor="#ff6a6a6a"
-            android:id="@+id/bt_restore"
-            android:background="@drawable/button_bordless_bg_material"/>
-
-
-
-    </LinearLayout>
-</LinearLayout>
+android:layout_marginTop="100dp"
+        android:layout_marginLeft="85dp"
+android:visibility="gone"
+        />
+</FrameLayout>

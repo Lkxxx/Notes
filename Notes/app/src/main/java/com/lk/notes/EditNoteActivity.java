@@ -115,7 +115,6 @@ public class EditNoteActivity extends ActionBarActivity implements View.OnClickL
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setElevation(15);
         getSupportActionBar().setHomeAsUpIndicator(R.mipmap.ic_back);
 
 

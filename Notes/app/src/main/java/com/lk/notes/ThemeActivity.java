@@ -13,7 +13,10 @@ import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.view.animation.Animation;
 import android.widget.Button;
+
+import com.lk.notes.anim.ScaleAnim;
 
 
 public class ThemeActivity extends ActionBarActivity implements View.OnClickListener, View.OnLongClickListener {
@@ -23,6 +26,7 @@ public class ThemeActivity extends ActionBarActivity implements View.OnClickList
     private AlertDialog dialog;
     private Button bt_black, bt_red, bt_orange, bt_yellow, bt_charttreuse, bt_lime, bt_springgreen, bt_aquamarine, bt_cyan, bt_royalblue, bt_darkviolet, bt_magenta, bt_mediumvioletred, bt_restore, bt_colorCustom;
     private ColorPickView colorPickView;
+    private View iview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +36,6 @@ public class ThemeActivity extends ActionBarActivity implements View.OnClickList
     }
 
     private void view() {
-
         toolbar = (Toolbar) findViewById(R.id.tl_custom);
         toolbar.setTitle("主题");
         toolbar.setTitleTextColor(Color.rgb(238, 238, 238));
@@ -46,9 +49,9 @@ public class ThemeActivity extends ActionBarActivity implements View.OnClickList
             window.setStatusBarColor(Color.rgb((int) (r * 0.9), (int) (g * 0.9), (int) (b * 0.9)));
 
 
-    }
+        }
         setSupportActionBar(toolbar);
-        getSupportActionBar().setElevation(15);
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.mipmap.ic_back);
 
@@ -71,7 +74,7 @@ public class ThemeActivity extends ActionBarActivity implements View.OnClickList
         bt_colorCustom = (Button) findViewById(R.id.bt_colorCustom);
         bt_black = (Button) findViewById(R.id.bt_black);
 
-
+        iview = (View) findViewById(R.id.view);
         bt_red.setOnClickListener(this);
         bt_orange.setOnClickListener(this);
         bt_yellow.setOnClickListener(this);
@@ -107,7 +110,7 @@ public class ThemeActivity extends ActionBarActivity implements View.OnClickList
 
 
     @Override
-    public void onClick(View view) {
+    public void onClick(final View view) {
         switch (view.getId()) {
             case R.id.bt_red:
                 color(255, 0, 0);
@@ -149,7 +152,35 @@ public class ThemeActivity extends ActionBarActivity implements View.OnClickList
                 color(15, 15, 15);
                 break;
             case R.id.bt_restore:
-                color(0, 172, 193);
+
+                int[] location = new int[2];
+                bt_restore.getLocationOnScreen(location);
+
+
+                iview.setVisibility(View.VISIBLE);
+                //ScaleAnimation sa = new ScaleAnimation(1, 30, 1, 30, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+                ScaleAnim sa = new ScaleAnim();
+                sa.setDuration(500);
+
+
+                sa.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        iview.setVisibility(View.GONE);
+                        color(0, 172, 193);
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
+                iview.startAnimation(sa);
                 break;
             case R.id.bt_colorCustom:
                 colorCustom();
@@ -275,7 +306,7 @@ public class ThemeActivity extends ActionBarActivity implements View.OnClickList
     public boolean onLongClick(View view) {
         switch (view.getId()) {
             case R.id.bt_red:
-                waveColor(255,0,0,255,74,74);
+                waveColor(255, 0, 0, 255, 74, 74);
                 break;
             case R.id.bt_orange:
                 waveColor(255, 128, 0, 255, 165, 74);
@@ -284,34 +315,34 @@ public class ThemeActivity extends ActionBarActivity implements View.OnClickList
                 waveColor(255, 225, 0, 255, 234, 74);
                 break;
             case R.id.bt_charttreuse:
-                waveColor(128, 255, 0,165,255,74);
+                waveColor(128, 255, 0, 165, 255, 74);
                 break;
             case R.id.bt_lime:
-                waveColor(0, 255, 0,74, 255, 74);
+                waveColor(0, 255, 0, 74, 255, 74);
                 break;
             case R.id.bt_springgreen:
-                waveColor(0, 255, 128,74,255,165);
+                waveColor(0, 255, 128, 74, 255, 165);
                 break;
             case R.id.bt_aquamarine:
-                waveColor(102, 255, 179,146,255,201);
+                waveColor(102, 255, 179, 146, 255, 201);
                 break;
             case R.id.bt_cyan:
-                waveColor(0, 255, 255,74,255,255);
+                waveColor(0, 255, 255, 74, 255, 255);
                 break;
             case R.id.bt_royalblue:
-                waveColor(0, 127, 255,74,164,255);
+                waveColor(0, 127, 255, 74, 164, 255);
                 break;
             case R.id.bt_darkviolet:
-                waveColor(127, 0, 255,164,74,255);
+                waveColor(127, 0, 255, 164, 74, 255);
                 break;
             case R.id.bt_magenta:
-                waveColor(255, 0, 255,255,74,255);
+                waveColor(255, 0, 255, 255, 74, 255);
                 break;
             case R.id.bt_mediumvioletred:
-                waveColor(255, 0, 128,255,74,165);
+                waveColor(255, 0, 128, 255, 74, 165);
                 break;
             case R.id.bt_black:
-                waveColor(15, 15, 15,85,85,85);
+                waveColor(15, 15, 15, 85, 85, 85);
                 break;
             case R.id.bt_restore:
                 waveColor(0, 159, 175, 74, 187, 198);
@@ -320,11 +351,11 @@ public class ThemeActivity extends ActionBarActivity implements View.OnClickList
                 colorCustom();
                 break;
 
-    }
+        }
         return false;
     }
 
-    public void waveColor(int r ,int g, int b,int r1,int g1,int b1){
+    public void waveColor(int r, int g, int b, int r1, int g1, int b1) {
         Intent intent = new Intent();
         intent.putExtra("r", r);
         intent.putExtra("g", g);
