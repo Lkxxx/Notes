@@ -19,7 +19,7 @@
 
         android:textColor="#ff5b5b5b"/>
 
-    <com.lk.notes.ColorPickView
+    <com.lk.notes.UI.ColorPickView
         android:layout_marginTop="15dp"
         android:layout_gravity="center"
         android:id="@+id/color_picker_view"

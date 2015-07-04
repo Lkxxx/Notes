@@ -1,4 +1,4 @@
-package com.lk.notes.receiver;
+package com.lk.notes.Receiver;
 
 import android.app.Notification;
 import android.app.NotificationManager;

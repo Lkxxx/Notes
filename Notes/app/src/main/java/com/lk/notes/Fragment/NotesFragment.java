@@ -22,7 +22,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.TranslateAnimation;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ImageView;
@@ -58,7 +57,7 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Dat
     private static final int Edit = 1;
     private static final int Change = 1;
     private static final int Refresh = 2;
-    private static final int EYES = 3;
+
 
     private static int SET = 11;
     private static int CANCEL = 12;
@@ -70,8 +69,8 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Dat
     private List<NotesInfo> mNotesInfos;
     private String id, text, title;
     private FragmentActivity myContext;
-    private TranslateAnimation translateAnimation;
     private ImageView iv_none;
+
     int[] date = new EditNoteActivity().getDate();
 
     private Handler handler = new Handler() {
@@ -98,8 +97,10 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Dat
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_notes, container, false);
-        initView();
+
+
         initData();
+        initView();
         return view;
     }
 
@@ -111,7 +112,10 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Dat
 
     @Override
     public void onResume() {
-        setRefresh();
+        if (list_view != null){
+            setRefresh();
+        }
+
         super.onResume();
     }
 
@@ -134,18 +138,17 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Dat
     }
 
     private void initView() {
-
+        Log.e("HANDLER","view");
         ll_none = (LinearLayout) view.findViewById(R.id.ll_none);
         iv_none = (ImageView) view.findViewById(R.id.iv_none);
         iv_none.setBackgroundResource(R.drawable.eyes);
-        AnimationDrawable ad =  (AnimationDrawable)iv_none.getBackground();
+        AnimationDrawable ad = (AnimationDrawable) iv_none.getBackground();
         ad.start();
         if (getNone()) {
             ll_none.setVisibility(View.VISIBLE);
         } else {
             ll_none.setVisibility(View.GONE);
         }
-
 
         ll_none.setOnClickListener(this);
 
@@ -195,15 +198,17 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Dat
 
     public String getDataLastPath() {
         String path = null;
-        NotesOpenHelper notesOpenHelper;
-        notesOpenHelper = new NotesOpenHelper(getActivity());
-        SQLiteDatabase db = notesOpenHelper.getReadableDatabase();
-        Cursor c = db.query("notes", new String[]{"title", "text", "time", "id"}, null, null, null, null, "_id DESC");
-        if (c.moveToFirst()) {
-            path = Environment.getExternalStorageDirectory() + "/Notes/image/" + c.getString(3);
+        if (getActivity()!=null){
+            NotesOpenHelper notesOpenHelper = new NotesOpenHelper(getActivity());
+            SQLiteDatabase db = notesOpenHelper.getReadableDatabase();
+            Cursor c = db.query("notes", new String[]{"title", "text", "time", "id"}, null, null, null, null, "_id DESC");
+            if (c.moveToFirst()) {
+                path = Environment.getExternalStorageDirectory() + "/Notes/image/" + c.getString(3);
+            }
+            c.close();
+            db.close();
+
         }
-        c.close();
-        db.close();
         return path;
     }
 

@@ -39,7 +39,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fourmob.datetimepicker.date.DatePickerDialog;
-import com.lk.notes.receiver.ClockReceiver;
+import com.lk.notes.Receiver.ClockReceiver;
 import com.sleepbot.datetimepicker.time.RadialPickerLayout;
 import com.sleepbot.datetimepicker.time.TimePickerDialog;
 
@@ -61,6 +61,10 @@ public class EditNoteActivity extends ActionBarActivity implements View.OnClickL
     private LinearLayout ll_remind, ll_date;
     private TextView tv_date, tv_time;
     private Button bt_delete;
+    public String str_id;
+    private ProgressDialog progressDialog;
+
+    private static final int STOP = 1;
     private static int SET = 11;
     private static int CANCEL = 12;
 
@@ -212,9 +216,6 @@ public class EditNoteActivity extends ActionBarActivity implements View.OnClickL
     }
 
 
-    public String str_id;
-    private ProgressDialog progressDialog;
-    private static final int STOP = 1;
 
 
     private Handler handler = new Handler() {
@@ -315,12 +316,9 @@ public class EditNoteActivity extends ActionBarActivity implements View.OnClickL
             case android.R.id.home:
                 String str_title = et_title.getText().toString().trim();
                 String str_text = et_text.getText().toString().trim();
-
                 if (TextUtils.isEmpty(str_title) && TextUtils.isEmpty(str_text)) {
                     setResult(10000);
                     finish();
-
-
                 } else {
                     AlertDialog.Builder alertDialog = new AlertDialog.Builder(EditNoteActivity.this);
                     alertDialog.setTitle("提示");

@@ -7,6 +7,8 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -15,11 +17,14 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,21 +35,29 @@ import com.lk.notes.Fragment.NotesFragment;
 import com.lk.notes.Fragment.SettingFragment;
 import com.lk.notes.UI.ScrimInsetsFrameLayout;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 
 public class NotesActivity extends ActionBarActivity implements View.OnClickListener {
 
     private static final int Change = 1;
+    private static final int PROGREE = 3;
+    private static final int ADD = 4;
+    private static final int REMIND = 5;
     public static Activity finish;
     private FloatingActionButton fab;
     private Toolbar toolbar;
-
+    private FrameLayout sticky_content;
     private RotateAnimation ra;
     private LinearLayout ll_notes, ll_label, ll_remind, ll_theme, ll_setting, ll_message, ll_suggest;
     private DrawerLayout drawerLayout;
     private ImageView iv_fab_shadow;
     private TextView tv_notes, tv_message, tv_label, tv_remind, tv_setting;
     private ImageView iv_notes, iv_message, iv_label, iv_remind, iv_setting;
+    private ProgressBar progressBar;
     private long exitTime = 0;
+    int d = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +76,8 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
     }
 
     private void intiview() {
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        sticky_content = (FrameLayout) findViewById(R.id.sticky_content);
         SharedPreferences sharedPreferences = getSharedPreferences("color", MODE_PRIVATE);
         int r = sharedPreferences.getInt("r", 0);
         int g = sharedPreferences.getInt("g", 172);
@@ -156,8 +171,15 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
         return true;
     }
 
-    int d = 0;
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_menu:
 
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     public void onClick(View view) {
@@ -168,13 +190,11 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
                     @Override
                     public void onAnimationStart(Animation animation) {
                     }
-
                     @Override
                     public void onAnimationEnd(Animation animation) {
                         Intent intent = new Intent(NotesActivity.this, EditNoteActivity.class);
                         startActivityForResult(intent, Change);
                     }
-
                     @Override
                     public void onAnimationRepeat(Animation animation) {
                     }
@@ -197,26 +217,37 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
                 if (d == 1) {
                     drawerLayout.closeDrawer(Gravity.LEFT);
                 } else {
-                    d = 1;
-                    drawerLayout.closeDrawer(Gravity.LEFT);
                     LabelFragment labelFragment = new LabelFragment();
                     labelFragment.setArguments(getIntent().getExtras());
                     getSupportFragmentManager().beginTransaction().replace(R.id.sticky_content, labelFragment).commit();
+                    d = 1;
+                    drawerLayout.closeDrawer(Gravity.LEFT);
                     iv_fab_shadow.setVisibility(View.GONE);
                     fab.setVisibility(View.GONE);
                     toolbar.setTitle("标签");
                     setDrawerBackground(ll_label, tv_label, iv_label);
+
                 }
                 break;
             case R.id.ll_remind:
                 if (d == 2) {
                     drawerLayout.closeDrawer(Gravity.LEFT);
                 } else {
+                    sticky_content.removeAllViews();
+                    progressBar.setVisibility(View.VISIBLE);
+                    Timer timer = new Timer();
+                    timer.schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            Message message = new Message();
+                            message.what = PROGREE;
+                            message.arg1 = REMIND;
+                            handler.sendMessage(message);
+
+                        }
+                    }, 400);
                     d = 2;
                     drawerLayout.closeDrawer(Gravity.LEFT);
-                    ClockFragment clockFragment = new ClockFragment();
-                    clockFragment.setArguments(getIntent().getExtras());
-                    getSupportFragmentManager().beginTransaction().replace(R.id.sticky_content, clockFragment).commit();
                     iv_fab_shadow.setVisibility(View.GONE);
                     fab.setVisibility(View.GONE);
                     toolbar.setTitle("提醒");
@@ -263,20 +294,47 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
                 data.setData(Uri.parse("mailto:luoshuidao@gmail.com"));
                 startActivity(data);
                 break;
-
         }
     }
 
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            if (msg.what == PROGREE) {
+                if (msg.arg1 == ADD) {
+                    NotesFragment notesFragment = new NotesFragment();
+                    notesFragment.setArguments(getIntent().getExtras());
+                    getSupportFragmentManager().beginTransaction().replace(R.id.sticky_content, notesFragment).commit();
+                    progressBar.setVisibility(View.GONE);
+                } else if (msg.arg1 == REMIND) {
+                    ClockFragment clockFragment = new ClockFragment();
+                    clockFragment.setArguments(getIntent().getExtras());
+                    getSupportFragmentManager().beginTransaction().replace(R.id.sticky_content, clockFragment).commit();
+                    progressBar.setVisibility(View.GONE);
+                }
+            }
+        }
+    };
+
     private void addNotes() {
+        sticky_content.removeAllViews();
         drawerLayout.closeDrawer(Gravity.LEFT);
-        NotesFragment notesFragment = new NotesFragment();
-        notesFragment.setArguments(getIntent().getExtras());
-        getSupportFragmentManager().beginTransaction().replace(R.id.sticky_content, notesFragment).commit();
+        progressBar.setVisibility(View.VISIBLE);
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                Message message = new Message();
+                message.what = PROGREE;
+                message.arg1 = ADD;
+                handler.sendMessage(message);
+
+            }
+        }, 400);
+
         fab.setVisibility(View.VISIBLE);
         iv_fab_shadow.setVisibility(View.VISIBLE);
         toolbar.setTitle("笔记");
-
-
     }
 
     public void setDrawerBackground(LinearLayout ll, TextView textView, ImageView imageView) {

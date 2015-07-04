@@ -33,7 +33,7 @@
             android:name=".ThemeActivity"
             android:label="@string/title_activity_theme" />
 
-        <receiver android:name=".NotesWidget" >
+        <receiver android:name=".UI.Widget.NotesWidget" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -48,17 +48,9 @@
             android:label="@string/title_activity_first_in"
             android:theme="@style/WaveTheme" >
         </activity>
-        <activity
-            android:name=".SettingActivity"
-            android:label="@string/title_activity_setting" >
-        </activity>
-        <activity
-            android:name=".MessageActivity"
-            android:label="@string/title_activity_message" >
-        </activity>
 
         <receiver
-            android:name=".receiver.ClockReceiver"
+            android:name=".Receiver.ClockReceiver"
              >
            <intent-filter>
             <action android:name="android.provider.Telephony.SMS_RECEIVED" />

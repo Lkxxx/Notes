@@ -16,6 +16,7 @@ import android.view.Window;
 import android.view.animation.Animation;
 import android.widget.Button;
 
+import com.lk.notes.UI.ColorPickView;
 import com.lk.notes.anim.ScaleAnim;
 
 

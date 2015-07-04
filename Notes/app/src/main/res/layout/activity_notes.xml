@@ -13,7 +13,12 @@
 
         <include layout="@layout/toolbar" />
 
-
+        <ProgressBar
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/progressBar"
+            android:layout_marginTop="70dp"/>
         <FrameLayout
             android:id="@+id/sticky_content"
             android:layout_width="match_parent"
