@@ -30,7 +30,7 @@ import android.widget.Toast;
 
 import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.lk.notes.EditNoteActivity;
-import com.lk.notes.NotesAdapter;
+import com.lk.notes.Adapter.NotesAdapter;
 import com.lk.notes.NotesChangeActivity;
 import com.lk.notes.NotesDao;
 import com.lk.notes.NotesInfo;
@@ -66,7 +66,7 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Dat
     private PullToZoomListViewEx list_view;
     private LinearLayout ll_none;
     private NotesAdapter adapter;
-    private List<NotesInfo> mNotesInfos;
+    private List<NotesInfo> mNotesInfo;
     private String id, text, title;
     private FragmentActivity myContext;
     private ImageView iv_none;
@@ -123,11 +123,11 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Dat
         dao = new NotesDao(getActivity());
         new Thread() {
             public void run() {
-                mNotesInfos = dao.findNotes();
+                mNotesInfo = dao.findNotes();
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        adapter = new NotesAdapter(getActivity(), mNotesInfos, dao);
+                        adapter = new NotesAdapter(getActivity(), mNotesInfo, dao);
                         list_view.setAdapter(adapter);
 
                     }
@@ -163,9 +163,9 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Dat
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 NotesInfo notesInfo = null;
                 if (i >= 1) {
-                    notesInfo = mNotesInfos.get(i - 1);
+                    notesInfo = mNotesInfo.get(i - 1);
                 } else if (i == 0) {
-                    notesInfo = mNotesInfos.get(i);
+                    notesInfo = mNotesInfo.get(i);
                 }
                 Intent intent = new Intent();
                 intent.putExtra("title", notesInfo.getTitle());
@@ -245,7 +245,7 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Dat
         } else if (selectedPosition == 0) {
             i = selectedPosition;
         }
-        final NotesInfo notesInfo = mNotesInfos.get(i);
+        final NotesInfo notesInfo = mNotesInfo.get(i);
         id = notesInfo.getId();
         String clock = notesInfo.getClock();
         title = notesInfo.getTitle();
@@ -305,7 +305,7 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Dat
                 File f = new File(Environment.getExternalStorageDirectory() + "/Notes/image/" + id);
                 dao.delete(id);
                 Toast.makeText(getActivity(), "删除成功", Toast.LENGTH_SHORT).show();
-                mNotesInfos.remove(notesInfo);
+                mNotesInfo.remove(notesInfo);
                 adapter.notifyDataSetChanged();
                 if (getNone()) {
                     ll_none.setVisibility(View.VISIBLE);
@@ -438,7 +438,7 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Dat
         } else if (selectedPosition == 0) {
             i = selectedPosition;
         }
-        String clock = mNotesInfos.get(i).getClock();
+        String clock = mNotesInfo.get(i).getClock();
         if (clock != null) {
             menu.add(0, 4, 0, "修改闹钟");
             menu.add(0, 5, 0, "删除闹钟");

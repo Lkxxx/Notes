@@ -28,7 +28,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.lk.notes.Fragment.ClockFragment;
+import com.lk.notes.Fragment.RemindFragment;
 import com.lk.notes.Fragment.LabelFragment;
 import com.lk.notes.Fragment.MessageFragment;
 import com.lk.notes.Fragment.NotesFragment;
@@ -307,9 +307,9 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
                     getSupportFragmentManager().beginTransaction().replace(R.id.sticky_content, notesFragment).commit();
                     progressBar.setVisibility(View.GONE);
                 } else if (msg.arg1 == REMIND) {
-                    ClockFragment clockFragment = new ClockFragment();
-                    clockFragment.setArguments(getIntent().getExtras());
-                    getSupportFragmentManager().beginTransaction().replace(R.id.sticky_content, clockFragment).commit();
+                    RemindFragment remindFragment = new RemindFragment();
+                    remindFragment.setArguments(getIntent().getExtras());
+                    getSupportFragmentManager().beginTransaction().replace(R.id.sticky_content, remindFragment).commit();
                     progressBar.setVisibility(View.GONE);
                 }
             }
