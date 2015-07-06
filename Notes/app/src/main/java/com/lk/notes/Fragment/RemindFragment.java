@@ -6,14 +6,15 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.lk.notes.Adapter.RemindAdater;
+import com.lk.notes.EditNoteActivity;
 import com.lk.notes.NotesChangeActivity;
 import com.lk.notes.NotesDao;
 import com.lk.notes.NotesInfo;
@@ -29,10 +30,11 @@ public class RemindFragment extends Fragment {
     private static final int Edit = 1;
     private ListView listview;
     private RemindAdater adapter;
-     private List<NotesInfo> mNotesInfo;
+    private List<NotesInfo> mNotesInfo;
     private NotesDao dao;
-
+    private LinearLayout ll_none;
     private View view;
+
     public RemindFragment() {
         // Required empty public constructor
     }
@@ -43,20 +45,31 @@ public class RemindFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_clock, container, false);
-
         initView();
         initData();
-
         return view;
     }
 
     private void initView() {
-        listview = (ListView) view.findViewById(R.id.listview);
-        if (getNone()){
-            listview.setVisibility(View.GONE);
-        }else {
-            listview.setVisibility(View.VISIBLE);
+
+        ll_none = (LinearLayout) view.findViewById(R.id.ll_none);
+        if (getNone()) {
+            ll_none.setVisibility(View.VISIBLE);
+        } else {
+            ll_none.setVisibility(View.GONE);
         }
+        ll_none.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), EditNoteActivity.class);
+                startActivityForResult(intent, 1);
+            }
+        });
+
+
+
+        listview = (ListView) view.findViewById(R.id.listview);
+        listview.setVisibility(View.VISIBLE);
         registerForContextMenu(listview);
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -67,7 +80,6 @@ public class RemindFragment extends Fragment {
                 intent.putExtra("text", notesInfo.getText());
                 intent.putExtra("id", notesInfo.getId());
                 intent.putExtra("clock", notesInfo.getClock());
-                Log.e("id", notesInfo.getId());
                 intent.setClass(getActivity(), NotesChangeActivity.class);
                 startActivityForResult(intent, Edit);
             }
@@ -78,7 +90,7 @@ public class RemindFragment extends Fragment {
         dao = new NotesDao(getActivity());
         new Thread() {
             public void run() {
-                mNotesInfo = dao.findNotes();
+                mNotesInfo = dao.findNotesC();
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -89,16 +101,20 @@ public class RemindFragment extends Fragment {
                 });
             }
         }.start();
-
     }
+
     public boolean getNone() {
         boolean none = true;
-        NotesOpenHelper notesOpenHelper;
-        notesOpenHelper = new NotesOpenHelper(getActivity());
+        NotesOpenHelper notesOpenHelper = new NotesOpenHelper(getActivity());
         SQLiteDatabase db = notesOpenHelper.getReadableDatabase();
         Cursor c = db.query("notes", new String[]{"clock"}, null, null, null, null, "_id DESC");
         if (c.getCount() != 0) {
             none = false;
+        }
+        while (c.moveToNext()){
+            if (c.getString(0) ==null){
+                none =true;
+            }
         }
         c.close();
         db.close();

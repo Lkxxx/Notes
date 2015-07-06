@@ -3,12 +3,14 @@ package com.lk.notes.Fragment;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.AnimationDrawable;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -29,8 +31,8 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.fourmob.datetimepicker.date.DatePickerDialog;
-import com.lk.notes.EditNoteActivity;
 import com.lk.notes.Adapter.NotesAdapter;
+import com.lk.notes.EditNoteActivity;
 import com.lk.notes.NotesChangeActivity;
 import com.lk.notes.NotesDao;
 import com.lk.notes.NotesInfo;
@@ -127,7 +129,7 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Dat
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        adapter = new NotesAdapter(getActivity(), mNotesInfo, dao);
+                        adapter = new NotesAdapter(getActivity(), mNotesInfo, dao,themeColor());
                         list_view.setAdapter(adapter);
 
                     }
@@ -138,12 +140,9 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Dat
     }
 
     private void initView() {
-        Log.e("HANDLER","view");
         ll_none = (LinearLayout) view.findViewById(R.id.ll_none);
         iv_none = (ImageView) view.findViewById(R.id.iv_none);
-        iv_none.setBackgroundResource(R.drawable.eyes);
-        AnimationDrawable ad = (AnimationDrawable) iv_none.getBackground();
-        ad.start();
+
         if (getNone()) {
             ll_none.setVisibility(View.VISIBLE);
         } else {
@@ -446,5 +445,17 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Dat
             menu.add(0, 4, 0, "增加闹钟");
         }
 
+    }
+
+    public int themeColor(){
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("color", Context.MODE_PRIVATE);
+        int r = sharedPreferences.getInt("r", 0);
+        int g = sharedPreferences.getInt("g", 172);
+        int b = sharedPreferences.getInt("b", 193);
+        if (r ==0&&g == 172&&b==193){
+            return Color.rgb(40, 190, 120);
+        }else {
+            return Color.rgb(r, g, b);
+        }
     }
 }

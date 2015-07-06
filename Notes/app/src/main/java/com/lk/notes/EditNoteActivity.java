@@ -280,6 +280,7 @@ public class EditNoteActivity extends ActionBarActivity implements View.OnClickL
             }
         });
         thread.start();
+        setResult(1);
     }
 
     public void setClock(String title, String str_text, String str_id, Context context, int SETorCANCEL, int date[]) {

@@ -2,13 +2,42 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.lk.notes.Fragment.RemindFragment">
+    tools:context="com.lk.notes.Fragment.RemindFragment"
+    android:background="#fff">
 
    <ListView
        android:layout_width="match_parent"
        android:layout_height="match_parent"
-       android:id="@+id/listview">
+       android:id="@+id/listview"
+       android:divider="#00000000">
 
    </ListView>
+
+    <LinearLayout
+        android:id="@+id/ll_none"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="visible"
+        android:layout_gravity="center"
+        android:layout_marginTop="-20dp">
+
+        <ImageView
+            android:layout_width="159dp"
+            android:layout_height="159dp"
+            android:layout_gravity="center"
+            android:id="@+id/iv_none"
+            android:layout_marginBottom="10dp"
+            android:background="@mipmap/remind_none"
+            />
+
+        <TextView
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="现在并没有提醒哦～～"
+            android:textColor="#ff696969" />
+    </LinearLayout>
+
 
 </FrameLayout>

@@ -3,6 +3,7 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:id="@+id/ll_remind"
     >
 
 
@@ -31,14 +32,14 @@
             android:id="@+id/tv_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
+            android:layout_marginTop="12dp"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="10dp"
-            android:layout_marginTop="10dp"
+
             android:ellipsize="end"
             android:maxLines="3"
             android:text="Title"
-            android:textColor="#ff1d0009"
+            android:textColor="#d4232323"
             android:textSize="20sp" />
 
 

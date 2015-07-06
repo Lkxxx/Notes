@@ -3,7 +3,8 @@
     android:id="@+id/sticky_content"
     android:layout_width="match_parent"
     android:layout_height="fill_parent"
-    android:layout_below="@+id/tl_custom">
+    android:layout_below="@+id/tl_custom"
+    android:background="#fff">
 
 
     <com.lk.notes.PullToZoom.PullToZoomListViewEx
@@ -20,18 +21,19 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:visibility="visible"
-        android:layout_gravity="center">
+        android:layout_gravity="center"
+        android:layout_marginTop="-20dp">
 
         <ImageView
             android:layout_width="159dp"
-            android:layout_height="126dp"
+            android:layout_height="159dp"
             android:layout_gravity="center"
             android:id="@+id/iv_none"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="10dp"
+            android:background="@mipmap/notes_none"
              />
 
         <TextView
-
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="还没有笔记，快来创建吧～"

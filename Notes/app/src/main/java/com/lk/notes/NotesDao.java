@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,15 +22,15 @@ public class NotesDao {
 
     }
 
-    public boolean add(String title, String text, String time, String id,String year,String clock) {
+    public boolean add(String title, String text, String time, String id, String year, String clock) {
         SQLiteDatabase db = notesOpenHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("title", title);
         values.put("text", text);
         values.put("time", time);
         values.put("id", id);
-        values.put("year",year);
-        values.put("clock",clock);
+        values.put("year", year);
+        values.put("clock", clock);
 
         long rowID = db.insert("notes", null, values);
 
@@ -65,7 +66,8 @@ public class NotesDao {
             return true;
         }
     }
-    public boolean changeClock(String id,String clock) {
+
+    public boolean changeClock(String id, String clock) {
         SQLiteDatabase db = notesOpenHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("clock", clock);
@@ -93,13 +95,11 @@ public class NotesDao {
     }
 
 
-
-
     public List<NotesInfo> findNotes() {
         SQLiteDatabase db = notesOpenHelper.getReadableDatabase();
 
         List<NotesInfo> lists = new ArrayList<NotesInfo>();
-        Cursor c = db.query("notes", new String[]{"title", "text", "time", "id","year","clock"}, null, null, null, null, "_id DESC");
+        Cursor c = db.query("notes", new String[]{"title", "text", "time", "id", "year", "clock"}, null, null, null, null, "_id DESC");
         while (c.moveToNext()) {
             NotesInfo info = new NotesInfo();
             info.setTitle(c.getString(0));
@@ -116,5 +116,40 @@ public class NotesDao {
         c.close();
         db.close();
         return lists;
+    }
+
+    public List<NotesInfo> findNotesC() {
+        SQLiteDatabase db = notesOpenHelper.getReadableDatabase();
+
+        List<NotesInfo> lists = new ArrayList<NotesInfo>();
+        Cursor c = db.query("notes", new String[]{"title", "text", "time", "id", "year", "clock"}, null, null, null, null, "_id DESC");
+        while (c.moveToNext()) {
+            if (c.getString(5) != null) {
+                NotesInfo info = new NotesInfo();
+                info.setTitle(c.getString(0));
+                info.setText(c.getString(1));
+                info.setTime(c.getString(2));
+                info.setId(c.getString(3));
+                info.setYear(c.getString(4));
+                info.setClock(c.getString(5));
+                lists.add(info);
+                Log.e("c", c.getString(5));
+            }
+        }
+        c.close();
+        db.close();
+        return lists;
+    }
+
+    public boolean findNoneC() {
+        boolean none = true;
+        SQLiteDatabase db = notesOpenHelper.getReadableDatabase();
+        Cursor c = db.query("notes", new String[]{"clock"}, null, null, null, null, "_id DESC");
+        if (c.getCount() != 0) {
+            none = false;
+        }
+        c.close();
+        db.close();
+        return none;
     }
 }

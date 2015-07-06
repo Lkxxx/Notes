@@ -114,43 +114,43 @@ public class ThemeActivity extends ActionBarActivity implements View.OnClickList
     public void onClick(final View view) {
         switch (view.getId()) {
             case R.id.bt_red:
-                color(255, 0, 0);
+                color(243, 66, 52);
                 break;
             case R.id.bt_orange:
-                color(255, 128, 0);
+                color(255, 151, 0);
                 break;
             case R.id.bt_yellow:
-                color(255, 225, 0);
+                color(255, 193, 6);
                 break;
             case R.id.bt_charttreuse:
-                color(128, 255, 0);
+                color(255, 235, 58);
                 break;
             case R.id.bt_lime:
-                color(0, 255, 0);
+                color(205, 219, 56);
                 break;
             case R.id.bt_springgreen:
-                color(0, 255, 128);
+                color(139, 195 , 72);
                 break;
             case R.id.bt_aquamarine:
-                color(102, 255, 179);
+                color(74, 175, 78);
                 break;
             case R.id.bt_cyan:
-                color(0, 255, 255);
+                color(0, 149, 135);
                 break;
             case R.id.bt_royalblue:
-                color(0, 127, 255);
+                color(32, 149, 243);
                 break;
             case R.id.bt_darkviolet:
-                color(127, 0, 255);
+                color(62, 80, 181);
                 break;
             case R.id.bt_magenta:
-                color(255, 0, 255);
+                color(155, 38, 175);
                 break;
             case R.id.bt_mediumvioletred:
-                color(255, 0, 128);
+                color(233, 28, 98);
                 break;
             case R.id.bt_black:
-                color(15, 15, 15);
+                color(94, 124, 139);
                 break;
             case R.id.bt_restore:
 
@@ -161,7 +161,7 @@ public class ThemeActivity extends ActionBarActivity implements View.OnClickList
                 iview.setVisibility(View.VISIBLE);
                 //ScaleAnimation sa = new ScaleAnimation(1, 30, 1, 30, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
                 ScaleAnim sa = new ScaleAnim();
-                sa.setDuration(500);
+                sa.setDuration(300);
 
 
                 sa.setAnimationListener(new Animation.AnimationListener() {

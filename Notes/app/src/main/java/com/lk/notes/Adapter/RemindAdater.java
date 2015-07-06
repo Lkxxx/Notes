@@ -47,7 +47,7 @@ public class RemindAdater extends BaseAdapter {
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-       ViewHolder holder;
+        ViewHolder holder;
         if (view == null) {
             view = inflater.inflate(R.layout.item_remind, viewGroup, false);
             holder = new ViewHolder();
@@ -55,13 +55,13 @@ public class RemindAdater extends BaseAdapter {
             holder.tv_title = (TextView) view.findViewById(R.id.tv_title);
             view.setTag(holder);
         } else {
-           holder = (ViewHolder)view.getTag();
+            holder = (ViewHolder) view.getTag();
         }
-        if (mNotesInfos.get(i).getClock() != null) {
         holder.tv_time.setText(ConvertTime.convertClock(mNotesInfos.get(i).getClock()));
         holder.tv_title.setText(mNotesInfos.get(i).getTitle());
-        }
         return view;
+
+
     }
 
     static class ViewHolder {

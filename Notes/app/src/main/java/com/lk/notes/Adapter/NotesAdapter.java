@@ -2,7 +2,6 @@ package com.lk.notes.Adapter;
 
 import android.content.Context;
 import android.os.Environment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,12 +26,14 @@ public class NotesAdapter extends BaseAdapter {
     private Context context;
     private NotesDao dao;
     private LayoutInflater inflater;
+    int color;
 
-    public NotesAdapter(Context context, List<NotesInfo> mNotesInfos, NotesDao dao) {
+    public NotesAdapter(Context context, List<NotesInfo> mNotesInfos, NotesDao dao, int i) {
         inflater = LayoutInflater.from(context);
         this.mNotesInfos = mNotesInfos;
         this.context = context;
         this.dao = dao;
+        this.color = i ;
     }
 
 
@@ -68,6 +69,7 @@ public class NotesAdapter extends BaseAdapter {
             holder.tv_title = (TextView) view.findViewById(R.id.tv_title);
             holder.tv_text = (TextView) view.findViewById(R.id.tv_text);
             holder.tv_time = (TextView) view.findViewById(R.id.tv_time);
+            holder.tv_time.setTextColor(color);
             holder.tv_text.setVisibility(View.VISIBLE);
 
             holder.ll_clock = (LinearLayout) view.findViewById(R.id.ll_clock);
@@ -76,7 +78,6 @@ public class NotesAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) view.getTag();
         }
-        Log.e("getview", mNotesInfos.get(i).getTitle());
         holder.ll_clock.setVisibility(View.VISIBLE);
         holder.tv_text.setVisibility(View.VISIBLE);
         holder.iv_text.setVisibility(View.GONE);
@@ -107,7 +108,6 @@ public class NotesAdapter extends BaseAdapter {
         LinearLayout ll_clock;
         TextView tv_clock;
     }
-
 
 
 }

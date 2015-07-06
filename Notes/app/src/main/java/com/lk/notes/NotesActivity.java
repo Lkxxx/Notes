@@ -21,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
+import android.view.animation.TranslateAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -52,7 +53,7 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
     private RotateAnimation ra;
     private LinearLayout ll_notes, ll_label, ll_remind, ll_theme, ll_setting, ll_message, ll_suggest;
     private DrawerLayout drawerLayout;
-    private ImageView iv_fab_shadow;
+    private ImageView iv_fab_shadow,iv_bg;
     private TextView tv_notes, tv_message, tv_label, tv_remind, tv_setting;
     private ImageView iv_notes, iv_message, iv_label, iv_remind, iv_setting;
     private ProgressBar progressBar;
@@ -111,9 +112,14 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
         final ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.abc_action_bar_home_description, R.string.abc_action_bar_home_description_format);
         mDrawerToggle.syncState();
         drawerLayout.setDrawerListener(mDrawerToggle);
+        if (r == 0 && g == 172 && b == 193) {
+            fab.setColorNormal(Color.rgb(76, 175, 80));
+            fab.setColorPressed(Color.rgb((int) (76 * 0.8), (int) (175 * 0.8), (int) (80 * 0.8)));
+        } else {
+            fab.setColorNormal(Color.rgb(r, g, b));
+            fab.setColorPressed(Color.rgb((int) (r * 0.8), (int) (g * 0.8), (int) (b * 0.8)));
+        }
 
-        fab.setColorNormal(Color.rgb(76, 175, 80));
-        fab.setColorPressed(Color.rgb((int) (76 * 0.8), (int) (175 * 0.8), (int) (80 * 0.8)));
         fab.setOnClickListener(this);
 
         ll_notes = (LinearLayout) findViewById(R.id.ll_notes);
@@ -190,11 +196,13 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
                     @Override
                     public void onAnimationStart(Animation animation) {
                     }
+
                     @Override
                     public void onAnimationEnd(Animation animation) {
                         Intent intent = new Intent(NotesActivity.this, EditNoteActivity.class);
                         startActivityForResult(intent, Change);
                     }
+
                     @Override
                     public void onAnimationRepeat(Animation animation) {
                     }
@@ -210,6 +218,7 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
                 } else {
                     d = 0;
                     addNotes();
+                    fab(1);
                     setDrawerBackground(ll_notes, tv_notes, iv_notes);
                 }
                 break;
@@ -222,11 +231,9 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
                     getSupportFragmentManager().beginTransaction().replace(R.id.sticky_content, labelFragment).commit();
                     d = 1;
                     drawerLayout.closeDrawer(Gravity.LEFT);
-                    iv_fab_shadow.setVisibility(View.GONE);
-                    fab.setVisibility(View.GONE);
+
                     toolbar.setTitle("标签");
                     setDrawerBackground(ll_label, tv_label, iv_label);
-
                 }
                 break;
             case R.id.ll_remind:
@@ -248,8 +255,7 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
                     }, 400);
                     d = 2;
                     drawerLayout.closeDrawer(Gravity.LEFT);
-                    iv_fab_shadow.setVisibility(View.GONE);
-                    fab.setVisibility(View.GONE);
+                    fab(1);
                     toolbar.setTitle("提醒");
                     setDrawerBackground(ll_remind, tv_remind, iv_remind);
                 }
@@ -268,8 +274,7 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
                     SettingFragment settingFragment = new SettingFragment();
                     settingFragment.setArguments(getIntent().getExtras());
                     getSupportFragmentManager().beginTransaction().replace(R.id.sticky_content, settingFragment).commit();
-                    iv_fab_shadow.setVisibility(View.GONE);
-                    fab.setVisibility(View.GONE);
+                    fab(2);
                     toolbar.setTitle("设置");
                     setDrawerBackground(ll_setting, tv_setting, iv_setting);
                 }
@@ -283,8 +288,7 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
                     messageFragment.setArguments(getIntent().getExtras());
                     getSupportFragmentManager().beginTransaction().replace(R.id.sticky_content, messageFragment).commit();
                     drawerLayout.closeDrawer(Gravity.LEFT);
-                    fab.setVisibility(View.GONE);
-                    iv_fab_shadow.setVisibility(View.GONE);
+                    fab(2);
                     toolbar.setTitle("关于");
                     setDrawerBackground(ll_message, tv_message, iv_message);
                 }
@@ -294,6 +298,57 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
                 data.setData(Uri.parse("mailto:luoshuidao@gmail.com"));
                 startActivity(data);
                 break;
+        }
+    }
+
+    public void fab(int i) {
+
+        if (i == 1) {
+            TranslateAnimation translateAnimation = new TranslateAnimation(0, 0, 200, 0);
+            translateAnimation.setDuration(300);
+            translateAnimation.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    fab.setVisibility(View.VISIBLE);
+                    iv_fab_shadow.setVisibility(View.VISIBLE);
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+            fab.startAnimation(translateAnimation);
+            iv_fab_shadow.startAnimation(translateAnimation);
+        } else {
+
+            TranslateAnimation translateAnimation = new TranslateAnimation(0, 0, 0, 200);
+            translateAnimation.setDuration(300);
+            translateAnimation.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    fab.setVisibility(View.GONE);
+                    iv_fab_shadow.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+
+            fab.startAnimation(translateAnimation);
+            iv_fab_shadow.startAnimation(translateAnimation);
         }
     }
 
@@ -331,9 +386,6 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
 
             }
         }, 400);
-
-        fab.setVisibility(View.VISIBLE);
-        iv_fab_shadow.setVisibility(View.VISIBLE);
         toolbar.setTitle("笔记");
     }
 
@@ -363,7 +415,7 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
                 iv_label.setImageResource(R.mipmap.ic_label_grey600_48dp_press);
                 break;
             case 2:
-                iv_remind.setImageResource(R.mipmap.ic_clock_grey600_48dp_press);
+                iv_remind.setImageResource(R.mipmap.ic_material_reminder_finger_dark_press);
                 break;
             case 3:
                 iv_setting.setImageResource(R.mipmap.ic_settings_grey600_48dp_press);
@@ -388,12 +440,14 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == Change) {
-            Log.e("result", "Change");
-            if (resultCode != 10000) {
-                Log.e("result", "10000");
-
+            if (d != 0) {
+                d = 0;
+                addNotes();
+                fab(1);
+                setDrawerBackground(ll_notes, tv_notes, iv_notes);
             }
         }
     }
+
 
 }

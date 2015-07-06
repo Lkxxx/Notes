@@ -37,10 +37,8 @@ public class ConvertTime {
                     if (hournow - hour <= 1) {
                         if (minutenow - minute == 0) {
                             outputTime = "刚刚";
-                        } else if (hournow - hour == 1 && minutenow - minute < 0) {
-                            outputTime = (60 + minutenow - minute) + "分钟前";
                         } else {
-                            outputTime = (minutenow - minute) + "分钟前";
+                            outputTime = (60*(hournow - hour)+minutenow - minute) + "分钟前";
                         }
                     } else {
                         outputTime = (hournow - hour) + "小时前";

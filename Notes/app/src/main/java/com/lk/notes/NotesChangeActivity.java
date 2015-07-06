@@ -301,6 +301,7 @@ public class NotesChangeActivity extends ActionBarActivity implements View.OnCli
 
             new File(Environment.getExternalStorageDirectory() + "/Notes/image/cache/cache.jpg").delete();
             Toast.makeText(NotesChangeActivity.this, "修改已经保存", Toast.LENGTH_SHORT).show();
+            setResult(1);
         }
 
 

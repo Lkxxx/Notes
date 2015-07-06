@@ -17,7 +17,8 @@
             android:id="@+id/iv_background"
             android:layout_width="304dp"
             android:layout_height="171dp"
-            android:background="@mipmap/background" />
+            android:background="@mipmap/background"
+            />
 
         <LinearLayout
             android:id="@+id/ll_notes"
