@@ -35,7 +35,7 @@ public class FirstInActivity extends ActionBarActivity {
         public void handleMessage(Message msg) {
             if (msg.what == FIRSTIN) {
                 startActivity(new Intent(FirstInActivity.this, NotesActivity.class));
-
+				finish();
             } else if (msg.what == WAVE) {
                 TIME = TIME + 5;
                 waveView.clearAnimation();
