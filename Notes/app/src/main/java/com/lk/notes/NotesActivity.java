@@ -75,6 +75,9 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
             finish();
         } else {
             intiview();
+            SharedPreferences.Editor editor = sp.edit();
+            editor.putBoolean("isFirstInWith1.16", false);
+            editor.commit();
         }
     }
 

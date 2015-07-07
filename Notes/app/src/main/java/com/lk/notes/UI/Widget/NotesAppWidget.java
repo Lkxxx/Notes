@@ -48,6 +48,12 @@ public class NotesAppWidget extends AppWidgetProvider {
                                 int appWidgetId, String[] str) {
 
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.notes_app_widget);
+        if (str[0]  == null){
+            str[0]  = "标题";
+        }
+        if (str[1]  == null){
+            str[1]  = "内容";
+        }
         views.setTextViewText(R.id.widget_title, str[0]);
         views.setTextViewText(R.id.widget_text, str[1]);
         Intent intent = new Intent(context, NotesChangeActivity.class);
@@ -65,17 +71,17 @@ public class NotesAppWidget extends AppWidgetProvider {
         NotesOpenHelper notesOpenHelper = new NotesOpenHelper(context);
         SQLiteDatabase db = notesOpenHelper.getReadableDatabase();
         Cursor c = db.query("notes", new String[]{"title", "text", "id", "clock"}, null, null, null, null, "_id DESC");
-        c.moveToFirst();
-        String[] str = new String[0];
-        str[0] = c.getString(0);
-        str[1] = c.getString(1);
-        str[2] = c.getString(2);
-        str[3] = c.getString(3);
+        String[] str = new String[4];
+        if (c.moveToFirst()) {
+            str[0] = c.getString(0);
+            str[1] = c.getString(1);
+            str[2] = c.getString(2);
+            str[3] = c.getString(3);
+        }
         db.close();
         c.close();
         return str;
     }
-
 
 
     @Override

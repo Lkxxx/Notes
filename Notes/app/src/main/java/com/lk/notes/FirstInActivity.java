@@ -35,8 +35,6 @@ public class FirstInActivity extends ActionBarActivity {
         public void handleMessage(Message msg) {
             if (msg.what == FIRSTIN) {
                 startActivity(new Intent(FirstInActivity.this, NotesActivity.class));
-                editor.putBoolean("isFirstInWith1.16", false);
-                editor.commit();
                 finish();
             } else if (msg.what == WAVE) {
                 TIME = TIME + 5;
@@ -54,14 +52,16 @@ public class FirstInActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_first_in);
-        SharedPreferences sp = getSharedPreferences("isFirstIn", NotesActivity.MODE_PRIVATE);
+
+        SharedPreferences sp = getSharedPreferences("isFirstIn", getApplicationContext().MODE_PRIVATE);
         boolean isFirstIn = sp.getBoolean("isFirstInWith1.16", true);
-        editor = sp.edit();
         if (isFirstIn) {
             thread.start();
-
+            editor = sp.edit();
+            editor.putBoolean("isFirstInWith1.16", false);
+            editor.commit();
         } else {
+            setContentView(R.layout.activity_first_in);
             initView();
         }
     }
@@ -69,8 +69,6 @@ public class FirstInActivity extends ActionBarActivity {
     public Thread thread = new Thread(new Runnable() {
         @Override
         public void run() {
-
-
             Log.e("path", Environment.getExternalStorageDirectory() + "/Notes/firstIn.db");
             try {
                 deleteOldData();
@@ -258,7 +256,7 @@ public class FirstInActivity extends ActionBarActivity {
         if (Path.exists()) {
             return SQLiteDatabase.openOrCreateDatabase(Path, null);
         } else {
-            return SQLiteDatabase.openOrCreateDatabase(Path, null);
+            return null;
         }
     }
 

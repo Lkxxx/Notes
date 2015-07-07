@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.lk.notes"
-    android:versionCode="8"
-    android:versionName="1.15" >
+    android:versionCode="10"
+    android:versionName="1.17" >
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.VIBRATE" />
@@ -63,6 +63,7 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/notes_app_widget_info" />
         </receiver>
+
     </application>
 
 </manifest>

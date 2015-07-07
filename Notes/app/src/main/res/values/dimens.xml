@@ -16,4 +16,8 @@ http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
     <dimen name="tool_bar_top_padding">0dp</dimen>
     <dimen name="text_margin_top">22dp</dimen>
 
+
+    <dimen name="title">9dp</dimen>
+
+
 </resources>

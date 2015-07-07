@@ -49,7 +49,6 @@ public class ThemeActivity extends ActionBarActivity implements View.OnClickList
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window.setStatusBarColor(Color.rgb((int) (r * 0.9), (int) (g * 0.9), (int) (b * 0.9)));
 
-
         }
         setSupportActionBar(toolbar);
 
