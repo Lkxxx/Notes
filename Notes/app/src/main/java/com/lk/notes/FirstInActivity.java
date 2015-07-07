@@ -27,7 +27,7 @@ public class FirstInActivity extends ActionBarActivity {
     private static final int FIRSTIN = 1;
     private static final int WAVE = 2;
     private double TIME = 20;
-
+    private SharedPreferences.Editor editor;
 
     private WaveView waveView;
     private Handler handler = new Handler() {
@@ -35,7 +35,9 @@ public class FirstInActivity extends ActionBarActivity {
         public void handleMessage(Message msg) {
             if (msg.what == FIRSTIN) {
                 startActivity(new Intent(FirstInActivity.this, NotesActivity.class));
-				finish();
+                editor.putBoolean("isFirstInWith1.16", false);
+                editor.commit();
+                finish();
             } else if (msg.what == WAVE) {
                 TIME = TIME + 5;
                 waveView.clearAnimation();
@@ -54,12 +56,11 @@ public class FirstInActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_first_in);
         SharedPreferences sp = getSharedPreferences("isFirstIn", NotesActivity.MODE_PRIVATE);
-        boolean isFirstIn = sp.getBoolean("isFirstInWith1.15", true);
-        final SharedPreferences.Editor editor = sp.edit();
+        boolean isFirstIn = sp.getBoolean("isFirstInWith1.16", true);
+        editor = sp.edit();
         if (isFirstIn) {
             thread.start();
-            editor.putBoolean("isFirstInWith1.15", false);
-            editor.commit();
+
         } else {
             initView();
         }
@@ -68,13 +69,16 @@ public class FirstInActivity extends ActionBarActivity {
     public Thread thread = new Thread(new Runnable() {
         @Override
         public void run() {
+
+
+            Log.e("path", Environment.getExternalStorageDirectory() + "/Notes/firstIn.db");
             try {
                 deleteOldData();
             } catch (IOException e) {
                 e.printStackTrace();
             }
             re();
-            new File(Environment.getExternalStorageDirectory() + "/Notes/backup/firstIn.db").delete();
+            new File(Environment.getExternalStorageDirectory() + "/Notes/firstIn.db").delete();
             Message msg = new Message();
             msg.what = FIRSTIN;
             handler.sendMessage(msg);
@@ -246,11 +250,10 @@ public class FirstInActivity extends ActionBarActivity {
         database.close();
     }
 
-    File Path = new File(Environment.getExternalStorageDirectory() + "/Notes/backup/firstIn.db");
+    File Path = new File(Environment.getExternalStorageDirectory() + "/Notes/firstIn.db");
 
     public SQLiteDatabase op() {
 
-        Log.e("path", Environment.getExternalStorageDirectory() + "/Notes/backup/firstIn.db");
 
         if (Path.exists()) {
             return SQLiteDatabase.openOrCreateDatabase(Path, null);
@@ -280,7 +283,7 @@ public class FirstInActivity extends ActionBarActivity {
         File dbFile = getApplicationContext().getDatabasePath("notes.db");
         new BackupTask(this).fileCopy(dbFile, Path);
         dbFile.delete();
-
+        Log.e("olddata","olddata");
     }
 
 

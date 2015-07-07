@@ -31,10 +31,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.lk.notes.Fragment.RemindFragment;
 import com.lk.notes.Fragment.LabelFragment;
 import com.lk.notes.Fragment.MessageFragment;
 import com.lk.notes.Fragment.NotesFragment;
+import com.lk.notes.Fragment.RemindFragment;
 import com.lk.notes.Fragment.SettingFragment;
 import com.lk.notes.UI.ScrimInsetsFrameLayout;
 
@@ -66,11 +66,9 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notes);
-
         finish = this;
         SharedPreferences sp = getSharedPreferences("isFirstIn", NotesActivity.MODE_PRIVATE);
-        boolean isFirstIn = sp.getBoolean("isFirstInWith1.15", true);
-        SharedPreferences.Editor editor = sp.edit();
+        boolean isFirstIn = sp.getBoolean("isFirstInWith1.16", true);
         if (isFirstIn && getApplicationContext().getDatabasePath("notes.db").exists()) {
             Log.e("dbpath", String.valueOf(getDatabasePath("notes.db")));
             startActivity(new Intent(this, FirstInActivity.class));
@@ -79,6 +77,8 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
             intiview();
         }
     }
+
+
 
     private void intiview() {
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
