@@ -99,10 +99,10 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Dat
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_notes, container, false);
-
-
-        initData();
-        initView();
+        if (getActivity() != null) {
+            initView();
+            initData();
+        }
         return view;
     }
 
@@ -114,7 +114,7 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Dat
 
     @Override
     public void onResume() {
-        if (list_view != null){
+        if (list_view != null) {
             setRefresh();
         }
 
@@ -129,7 +129,7 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Dat
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        adapter = new NotesAdapter(getActivity(), mNotesInfo, dao,themeColor());
+                        adapter = new NotesAdapter(getActivity(), mNotesInfo, dao, themeColor());
                         list_view.setAdapter(adapter);
 
                     }
@@ -148,7 +148,6 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Dat
         } else {
             ll_none.setVisibility(View.GONE);
         }
-
         ll_none.setOnClickListener(this);
 
         list_view = (PullToZoomListViewEx) view.findViewById(R.id.listview);
@@ -197,7 +196,7 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Dat
 
     public String getDataLastPath() {
         String path = null;
-        if (getActivity()!=null){
+        if (getActivity() != null) {
             NotesOpenHelper notesOpenHelper = new NotesOpenHelper(getActivity());
             SQLiteDatabase db = notesOpenHelper.getReadableDatabase();
             Cursor c = db.query("notes", new String[]{"title", "text", "time", "id"}, null, null, null, null, "_id DESC");
@@ -206,7 +205,6 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Dat
             }
             c.close();
             db.close();
-
         }
         return path;
     }
@@ -219,7 +217,6 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Dat
         Cursor c = db.query("notes", new String[]{"title", "text", "time", "id"}, null, null, null, null, "_id DESC");
         if (c.getCount() != 0) {
             none = false;
-
         }
         c.close();
         db.close();
@@ -257,13 +254,10 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Dat
                 intent.putExtra("text", notesInfo.getText());
                 intent.putExtra("id", id);
                 intent.putExtra("clock", notesInfo.getClock());
-
                 intent.setClass(getActivity(), NotesChangeActivity.class);
                 startActivityForResult(intent, Change);
                 break;
             case R.id.menuDelete:
-
-
                 dao.deleteClock(id);
                 date = new EditNoteActivity().getDate();
                 new EditNoteActivity().setClock(null, null, id, getActivity(), CANCEL, date);
@@ -274,19 +268,18 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Dat
                 Intent sendIntent = new Intent().setAction(Intent.ACTION_SEND);
                 sendIntent.setType("text/plain");
                 sendIntent.putExtra(Intent.EXTRA_SUBJECT, notesInfo.getTitle());
-                sendIntent.putExtra(Intent.EXTRA_TEXT, notesInfo.getText());
+                sendIntent.putExtra(Intent.EXTRA_TEXT, notesInfo.getTitle()+"\n"+notesInfo.getText());
                 startActivity(sendIntent.createChooser(sendIntent, notesInfo.getTitle()));
                 break;
             case 4:
                 addOrChange(clock);
-
                 break;
             case 5:
                 dao.deleteClock(id);
                 date = new EditNoteActivity().getDate();
                 new EditNoteActivity().setClock(null, null, id, getActivity(), CANCEL, date);
                 setRefresh();
-
+                new EditNoteActivity().updateWidget(getActivity());
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -319,6 +312,7 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Dat
                         list_view.setHeaderLayoutParams(localObject(getDataLastPath()));
                     }
                 }
+                new EditNoteActivity().updateWidget(getActivity());
             }
         });
         alertDialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -330,7 +324,7 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Dat
         alertDialog.show();
     }
 
-    private void addOrChange(String clock) {
+    public void addOrChange(String clock) {
         Calendar now = Calendar.getInstance();
         now.setTimeInMillis(System.currentTimeMillis());
         if (clock != null) {
@@ -422,6 +416,7 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Dat
             }
         }
         Log.e("TAG", "setRefresh");
+        new EditNoteActivity().updateWidget(getActivity());
     }
 
 
@@ -447,14 +442,15 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Dat
 
     }
 
-    public int themeColor(){
+    public int themeColor() {
+
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("color", Context.MODE_PRIVATE);
         int r = sharedPreferences.getInt("r", 0);
         int g = sharedPreferences.getInt("g", 172);
         int b = sharedPreferences.getInt("b", 193);
-        if (r ==0&&g == 172&&b==193){
+        if (r == 0 && g == 172 && b == 193) {
             return Color.rgb(40, 190, 120);
-        }else {
+        } else {
             return Color.rgb(r, g, b);
         }
     }

@@ -67,14 +67,11 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
         translateAnimation.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
-
             }
-
             @Override
             public void onAnimationEnd(Animation animation) {
                 initView();
             }
-
             @Override
             public void onAnimationRepeat(Animation animation) {
 
@@ -118,9 +115,11 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
 
     private void suggest() {
 
-        Intent data = new Intent(Intent.ACTION_SENDTO);
-        data.setData(Uri.parse("mailto:luoshuidao@gmail.com"));
-        startActivity(data);
+        Uri uri = Uri.parse("market://details?id="+getActivity().getPackageName());
+        Intent intent = new Intent(Intent.ACTION_VIEW,uri);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+
     }
 
     public void backup() {
@@ -154,13 +153,12 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
                 }
             }
         });
-        alertDialog.setNegativeButton("合并", new DialogInterface.OnClickListener() {
+        alertDialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 return;
             }
         });
-
         alertDialog.show();
     }
 
@@ -190,7 +188,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
             year = c.getString(4);
             clock = c.getString(5);
             if (idNotExist(id)) {
-                dao.add(title, text, time, id, year, clock);
+                dao.add(title, text, time, id, year, null);
             }
 
         }

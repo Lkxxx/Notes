@@ -4,10 +4,14 @@ import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -35,11 +39,13 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.RemoteViews;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.lk.notes.Receiver.ClockReceiver;
+import com.lk.notes.UI.Widget.NotesAppWidget;
 import com.sleepbot.datetimepicker.time.RadialPickerLayout;
 import com.sleepbot.datetimepicker.time.TimePickerDialog;
 
@@ -216,8 +222,6 @@ public class EditNoteActivity extends ActionBarActivity implements View.OnClickL
     }
 
 
-
-
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -225,6 +229,7 @@ public class EditNoteActivity extends ActionBarActivity implements View.OnClickL
                 progressDialog.dismiss();
                 Toast.makeText(EditNoteActivity.this, "保存成功", Toast.LENGTH_SHORT).show();
                 finish();
+                updateWidget(getApplicationContext());
             }
         }
     };
@@ -241,6 +246,8 @@ public class EditNoteActivity extends ActionBarActivity implements View.OnClickL
                 dao = new NotesDao(EditNoteActivity.this);
                 String str_title = et_title.getText().toString().trim();
                 String str_text = et_text.getText().toString().trim();
+
+
                 long timeGetTime = new Date().getTime();
                 SimpleDateFormat sdf = new SimpleDateFormat("MM月dd日HH时mm分",
                         Locale.getDefault());
@@ -260,9 +267,7 @@ public class EditNoteActivity extends ActionBarActivity implements View.OnClickL
                     new ImageProcessing().saveScalePhoto(bitmap, str_id, EditNoteActivity.this);
                     file.delete();
                 }
-                Message msg = new Message();
-                msg.what = STOP;
-                handler.sendMessage(msg);
+
                 info.setTitle(str_title);
                 info.setText(str_text);
                 info.setTime(str_time);
@@ -276,11 +281,15 @@ public class EditNoteActivity extends ActionBarActivity implements View.OnClickL
                     setClock(str_title, str_text, str_id, EditNoteActivity.this, CANCEL, date);
                     dao.add(str_title, str_text, str_time, str_id, String.valueOf(c.get(Calendar.YEAR)), null);
                 }
-
+                Message msg = new Message();
+                msg.what = STOP;
+                handler.sendMessage(msg);
             }
         });
-        thread.start();
+
         setResult(1);
+
+        thread.start();
     }
 
     public void setClock(String title, String str_text, String str_id, Context context, int SETorCANCEL, int date[]) {
@@ -306,7 +315,7 @@ public class EditNoteActivity extends ActionBarActivity implements View.OnClickL
         } else if (SETorCANCEL == CANCEL) {
             Intent intent1 = new Intent(context, ClockReceiver.class);
             PendingIntent piC = PendingIntent.getBroadcast(context, requestCode, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
-           am.cancel(piC);
+            am.cancel(piC);
         }
 
     }
@@ -594,5 +603,33 @@ public class EditNoteActivity extends ActionBarActivity implements View.OnClickL
 
     }
 
+    public void updateWidget(Context context) {
+        Log.e("updateWidget","update");
+        NotesOpenHelper notesOpenHelper = new NotesOpenHelper(context);
+        SQLiteDatabase db = notesOpenHelper.getReadableDatabase();
+        Cursor c = db.query("notes", new String[]{"title", "text","id","clock"}, null, null, null, null, "_id DESC");
+        if (c.getCount()!=0){
+
+
+        c.moveToFirst();
+        String str_title = c.getString(0);
+        String str_text = c.getString(1);
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.notes_app_widget);
+        views.setTextViewText(R.id.widget_title, str_title);
+        views.setTextViewText(R.id.widget_text, str_text);
+        Intent intent = new Intent(context, NotesChangeActivity.class);
+        intent.putExtra("title", c.getString(0));
+        intent.putExtra("text", c.getString(1));
+        intent.putExtra("id", c.getString(2));
+        intent.putExtra("clock",c.getString(3));
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+        views.setOnClickPendingIntent(R.id.ll_widget, pendingIntent);
+        ComponentName componentName = new ComponentName(context, NotesAppWidget.class);
+        appWidgetManager.updateAppWidget(componentName, views);
+        db.close();
+        c.close();
+        }
+    }
 
 }

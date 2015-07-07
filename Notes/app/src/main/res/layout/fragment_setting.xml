@@ -142,7 +142,7 @@
                 android:layout_height="wrap_content"
                 android:paddingLeft="15dp"
                 android:layout_marginTop="15dp"
-                android:text="反馈建议"
+                android:text="给予评分"
                 android:textSize="16sp"
                 android:textColor="@color/textcolor_light"/>
 
@@ -152,7 +152,7 @@
                 android:layout_marginBottom="15dp"
                 android:paddingRight="10dp"
                 android:layout_marginTop="6dp"
-                android:text="尽情吐槽，改变你的不爽！！"
+                android:text="感谢您对应用的支持，评分的同时希望能提出宝贵的建议"
                 android:textSize="14sp"
                 android:paddingLeft="15dp"
                 android:textColor="@color/textcolor_light"/>

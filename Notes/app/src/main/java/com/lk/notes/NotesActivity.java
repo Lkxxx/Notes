@@ -1,6 +1,8 @@
 package com.lk.notes;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -53,7 +55,7 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
     private RotateAnimation ra;
     private LinearLayout ll_notes, ll_label, ll_remind, ll_theme, ll_setting, ll_message, ll_suggest;
     private DrawerLayout drawerLayout;
-    private ImageView iv_fab_shadow,iv_bg;
+    private ImageView iv_fab_shadow, iv_bg;
     private TextView tv_notes, tv_message, tv_label, tv_remind, tv_setting;
     private ImageView iv_notes, iv_message, iv_label, iv_remind, iv_setting;
     private ProgressBar progressBar;
@@ -64,15 +66,17 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notes);
-        intiview();
+
         finish = this;
         SharedPreferences sp = getSharedPreferences("isFirstIn", NotesActivity.MODE_PRIVATE);
-        boolean isFirstIn = sp.getBoolean("isFirstInWith1.14", true);
+        boolean isFirstIn = sp.getBoolean("isFirstInWith1.15", true);
         SharedPreferences.Editor editor = sp.edit();
         if (isFirstIn && getApplicationContext().getDatabasePath("notes.db").exists()) {
             Log.e("dbpath", String.valueOf(getDatabasePath("notes.db")));
             startActivity(new Intent(this, FirstInActivity.class));
             finish();
+        } else {
+            intiview();
         }
     }
 
@@ -149,7 +153,9 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
         iv_setting = (ImageView) findViewById(R.id.iv_setting);
         iv_message = (ImageView) findViewById(R.id.iv_message);
 
-        addNotes();
+        NotesFragment notesFragment = new NotesFragment();
+        notesFragment.setArguments(getIntent().getExtras());
+        getSupportFragmentManager().beginTransaction().replace(R.id.sticky_content, notesFragment).commit();
         fisrtDrawerBackground();
     }
 
@@ -181,8 +187,17 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_menu:
-
-
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+                alertDialog.setTitle("提示");
+                alertDialog.setMessage("敬请期待");
+                alertDialog.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        return;
+                    }
+                });
+                alertDialog.show();
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -266,9 +281,11 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
                 finish();
                 break;
             case R.id.ll_setting:
+                progressBar.setVisibility(View.GONE);
                 if (d == 3) {
                     drawerLayout.closeDrawer(Gravity.LEFT);
                 } else {
+
                     d = 3;
                     drawerLayout.closeDrawer(Gravity.LEFT);
                     SettingFragment settingFragment = new SettingFragment();
@@ -280,6 +297,7 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
                 }
                 break;
             case R.id.ll_message:
+                progressBar.setVisibility(View.GONE);
                 if (d == 4) {
                     drawerLayout.closeDrawer(Gravity.LEFT);
                 } else {

@@ -22,7 +22,7 @@
             android:ellipsize="end"
             android:maxLines="2"
             android:text="今天9:00"
-            android:textColor="#d4232323"
+            android:textColor="#c3232323"
             android:textSize="20sp"
 
             />
@@ -37,9 +37,9 @@
             android:layout_marginRight="10dp"
 
             android:ellipsize="end"
-            android:maxLines="3"
+            android:maxLines="1"
             android:text="Title"
-            android:textColor="#d4232323"
+            android:textColor="#c3232323"
             android:textSize="20sp" />
 
 

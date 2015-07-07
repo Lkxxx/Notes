@@ -304,7 +304,7 @@ public class NotesChangeActivity extends ActionBarActivity implements View.OnCli
             setResult(1);
         }
 
-
+        new EditNoteActivity().updateWidget(getApplicationContext());
     }
 
 

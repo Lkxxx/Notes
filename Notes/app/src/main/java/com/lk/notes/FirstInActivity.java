@@ -54,18 +54,18 @@ public class FirstInActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_first_in);
         SharedPreferences sp = getSharedPreferences("isFirstIn", NotesActivity.MODE_PRIVATE);
-        boolean isFirstIn = sp.getBoolean("isFirstInWith1.14", true);
+        boolean isFirstIn = sp.getBoolean("isFirstInWith1.15", true);
         final SharedPreferences.Editor editor = sp.edit();
         if (isFirstIn) {
             thread.start();
-            editor.putBoolean("isFirstInWith1.14", false);
+            editor.putBoolean("isFirstInWith1.15", false);
             editor.commit();
         } else {
             initView();
         }
     }
 
-    Thread thread = new Thread(new Runnable() {
+    public Thread thread = new Thread(new Runnable() {
         @Override
         public void run() {
             try {
