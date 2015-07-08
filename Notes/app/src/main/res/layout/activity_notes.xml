@@ -39,7 +39,8 @@
             android:id="@+id/iv_fab_shadow"
             android:src="@drawable/fab_bg_normal" />
 
-        <com.lk.notes.FloatingActionButton xmlns:fab="http://schemas.android.com/apk/res-auto"
+        <com.lk.notes.FloatingActionButton
+            xmlns:fab="http://schemas.android.com/apk/res-auto"
             android:id="@+id/fab"
             android:layout_width="72dp"
             android:layout_height="72dp"

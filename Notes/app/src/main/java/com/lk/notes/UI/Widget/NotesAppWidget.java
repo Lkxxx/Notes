@@ -48,12 +48,7 @@ public class NotesAppWidget extends AppWidgetProvider {
                                 int appWidgetId, String[] str) {
 
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.notes_app_widget);
-        if (str[0]  == null){
-            str[0]  = "标题";
-        }
-        if (str[1]  == null){
-            str[1]  = "内容";
-        }
+
         views.setTextViewText(R.id.widget_title, str[0]);
         views.setTextViewText(R.id.widget_text, str[1]);
         Intent intent = new Intent(context, NotesChangeActivity.class);
@@ -61,7 +56,7 @@ public class NotesAppWidget extends AppWidgetProvider {
         intent.putExtra("text", str[1]);
         intent.putExtra("id", str[2]);
         intent.putExtra("clock", str[3]);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         views.setOnClickPendingIntent(R.id.ll_widget, pendingIntent);
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);

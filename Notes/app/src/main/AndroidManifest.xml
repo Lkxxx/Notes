@@ -25,7 +25,11 @@
         </activity>
         <activity
             android:name=".EditNoteActivity"
-            android:label="新建" />
+            android:label="新建" >
+            <intent-filter>
+                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".NotesChangeActivity"
             android:label="title_activity_notes_change" />
@@ -57,6 +61,7 @@
         <receiver android:name=".UI.Widget.NotesAppWidget" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
 
             <meta-data
@@ -64,6 +69,10 @@
                 android:resource="@xml/notes_app_widget_info" />
         </receiver>
 
+        <activity
+            android:name=".PreviewActivity"
+            android:label="@string/title_activity_preview" >
+        </activity>
     </application>
 
 </manifest>

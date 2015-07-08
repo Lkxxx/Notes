@@ -37,6 +37,7 @@ import com.lk.notes.NotesChangeActivity;
 import com.lk.notes.NotesDao;
 import com.lk.notes.NotesInfo;
 import com.lk.notes.NotesOpenHelper;
+import com.lk.notes.PreviewActivity;
 import com.lk.notes.PullToZoom.PullToZoomListViewEx;
 import com.lk.notes.R;
 import com.sleepbot.datetimepicker.time.RadialPickerLayout;
@@ -170,8 +171,9 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Dat
                 intent.putExtra("text", notesInfo.getText());
                 intent.putExtra("id", notesInfo.getId());
                 intent.putExtra("clock", notesInfo.getClock());
+                intent.putExtra("time", notesInfo.getTime());
                 Log.e("id", notesInfo.getId());
-                intent.setClass(getActivity(), NotesChangeActivity.class);
+                intent.setClass(getActivity(), PreviewActivity.class);
                 startActivityForResult(intent, Edit);
 
             }
