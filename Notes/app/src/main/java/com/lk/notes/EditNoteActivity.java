@@ -15,7 +15,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -32,7 +31,9 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -63,7 +64,7 @@ public class EditNoteActivity extends ActionBarActivity implements View.OnClickL
     private Toolbar toolbar;
     private EditText et_title, et_text;
     private NotesDao dao;
-    private ImageView iv_image;
+    private ImageView iv_image,shadowToolbar,gradual;
     private LinearLayout ll_remind, ll_date;
     private TextView tv_date, tv_time;
     private Button bt_delete;
@@ -122,12 +123,27 @@ public class EditNoteActivity extends ActionBarActivity implements View.OnClickL
         toolbar.setTitleTextColor(Color.rgb(238, 238, 238));
         setcolor();
 
-
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.mipmap.ic_back);
 
-
+        shadowToolbar = (ImageView)findViewById(R.id.shadowToolbar);
+        gradual =(ImageView)findViewById(R.id.gradual);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
+                    | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(Color.alpha(20));
+            window.setNavigationBarColor(Color.TRANSPARENT);
+        }
+        iv_image.setMinimumHeight((int) (80 * getApplicationContext().getResources().getDisplayMetrics().density + 0.5f));
+        shadowToolbar.setVisibility(View.GONE);
+        gradual.setVisibility(View.GONE);
+        setcolor();
     }
 
     public void setcolor() {
@@ -177,8 +193,14 @@ public class EditNoteActivity extends ActionBarActivity implements View.OnClickL
                 break;
             case R.id.menuDelete:
                 setcolor();
+                ViewGroup.LayoutParams params = iv_image.getLayoutParams();
+                params.height = toolbar.getHeight()+getStatusBarHeight();
+                iv_image.setLayoutParams(params);
                 iv_image.setImageResource(R.drawable.mini);
+
                 new File(Environment.getExternalStorageDirectory() + "/Notes/image/cache/cache").delete();
+                gradual.setVisibility(View.GONE);
+                shadowToolbar.setVisibility(View.GONE);
                 break;
         }
 
@@ -192,13 +214,14 @@ public class EditNoteActivity extends ActionBarActivity implements View.OnClickL
         //拍照
         if (requestCode == 100) {
             if (resultCode == RESULT_OK) {
-                Window window = getWindow();
+;
                 iv_image.setVisibility(View.VISIBLE);
                 new ImageProcessing().getPhotoCache(Environment.getExternalStorageDirectory() + "/Notes/image/cache/camera", getWindowManager());
-                Bitmap bitmap = new ImageProcessing().setPhoto(getWindowManager(), new ImageProcessing().getPhotopath());
-                iv_image.setImageBitmap(bitmap);
+                new ImageProcessing().imagePreview(iv_image, this, "cache");
+                getWindow().setStatusBarColor(Color.alpha(0));
                 toolbar.setBackgroundColor(Color.alpha(0));
-                new ImageProcessing().getPhotoRgb(window, bitmap);
+                shadowToolbar.setVisibility(View.VISIBLE);
+                gradual.setVisibility(View.VISIBLE);
 
             } else if (resultCode == RESULT_CANCELED) {
             }
@@ -210,13 +233,14 @@ public class EditNoteActivity extends ActionBarActivity implements View.OnClickL
                 Uri uri = data.getData();
                 String path = new ImageProcessing().uri2path(uri, this);
                 Bitmap bitmap = new ImageProcessing().getPhotoCache(path, getWindowManager());
-                iv_image.setImageBitmap(bitmap);
+                /*iv_image.setImageBitmap(bitmap);
                 toolbar.setBackgroundColor(Color.alpha(0));
-                new ImageProcessing().getPhotoRgb(getWindow(), bitmap);
-
-                Rect frame = new Rect();
-                getWindow().getDecorView().getWindowVisibleDisplayFrame(frame);
-
+                new ImageProcessing().getPhotoRgb(getWindow(), bitmap);*/
+                toolbar.setBackgroundColor(Color.alpha(0));
+                getWindow().setStatusBarColor(Color.alpha(0));
+                new ImageProcessing().imagePreview(iv_image, this, "cache");
+                shadowToolbar.setVisibility(View.VISIBLE);
+                gradual.setVisibility(View.VISIBLE);
             }
         }
     }
@@ -629,5 +653,13 @@ public class EditNoteActivity extends ActionBarActivity implements View.OnClickL
             c.close();
         }
     }
+    public int getStatusBarHeight() {
+        int result =0;
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = getResources().getDimensionPixelSize(resourceId);
+        }
 
+        return result;
+    }
 }

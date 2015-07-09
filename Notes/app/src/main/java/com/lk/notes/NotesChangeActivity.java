@@ -24,7 +24,9 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -58,12 +60,16 @@ public class NotesChangeActivity extends ActionBarActivity implements View.OnCli
     private String id;
     private String str_title;
     private String str_text;
-    private ImageView iv_image;
+    private ImageView iv_image,gradual,shadowToolbar;
     private ProgressDialog progressDialog;
     private static final int STOP = 1;
     private static int SET = 11;
     private static int CANCEL = 12;
     private ScrollView scrollView;
+    private LinearLayout ll_remind, ll_date;
+    private TextView tv_date, tv_time;
+    private Button bt_delete;
+    int[] date = new int[5];
 
     private Handler handler = new Handler() {
         @Override
@@ -74,12 +80,6 @@ public class NotesChangeActivity extends ActionBarActivity implements View.OnCli
             }
         }
     };
-
-    private LinearLayout ll_remind, ll_date;
-    private TextView tv_date, tv_time;
-    private Button bt_delete;
-
-    int[] date = new int[5];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,10 +102,9 @@ public class NotesChangeActivity extends ActionBarActivity implements View.OnCli
         tv_date.setOnClickListener(this);
         tv_time.setOnClickListener(this);
         bt_delete.setOnClickListener(this);
-
-
+        shadowToolbar = (ImageView)findViewById(R.id.shadowToolbar);
+        gradual =(ImageView)findViewById(R.id.gradual);
         scrollView = (ScrollView) findViewById(R.id.scrollView);
-
 
         et_text = (EditText) findViewById(R.id.et_text);
         et_title = (EditText) findViewById(R.id.et_title);
@@ -117,7 +116,8 @@ public class NotesChangeActivity extends ActionBarActivity implements View.OnCli
         String clock = intent.getStringExtra("clock");
 
 
-        Log.e("changetext", "title:" + title + "    text:" + text);
+
+
         et_title.setText(title);
         et_text.setText(text);
         et_title.setSelection(title.length());
@@ -130,13 +130,10 @@ public class NotesChangeActivity extends ActionBarActivity implements View.OnCli
         toolbar = (Toolbar) findViewById(R.id.tl_custom);
         toolbar.setTitle("编辑");
         toolbar.setTitleTextColor(Color.rgb(238, 238, 238));
-        setcolor();
+        //setcolor();
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         getSupportActionBar().setHomeAsUpIndicator(R.mipmap.ic_back);
-
-
         if (clock != null) {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy年MM月dd日HH时mm分");
             try {
@@ -168,6 +165,17 @@ public class NotesChangeActivity extends ActionBarActivity implements View.OnCli
         new File(Environment.getExternalStorageDirectory() + "/Notes/image/cache/cache").delete();
         String idurl = Environment.getExternalStorageDirectory() + "/Notes/image/" + id;
         final File file = new File(idurl);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
+                    | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(Color.alpha(20));
+            window.setNavigationBarColor(Color.TRANSPARENT);
+        }
         if (file.exists()) {
             toolbar.setBackgroundColor(Color.alpha(0));
             File newFile = new File(new ImageProcessing().getPhotopath());
@@ -186,11 +194,14 @@ public class NotesChangeActivity extends ActionBarActivity implements View.OnCli
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            Bitmap bitmap = new ImageProcessing().setPhoto(getWindowManager(), idurl);
-
-            new ImageProcessing().getPhotoRgb(getWindow(), bitmap);
-
-            iv_image.setImageBitmap(bitmap);
+            new ImageProcessing().imagePreview(iv_image,this, id);
+            gradual.setVisibility(View.VISIBLE);
+            shadowToolbar.setVisibility(View.VISIBLE);
+            //iv_image.setImageBitmap(bitmap);
+        }else {
+            iv_image.setMinimumHeight((int) (80 * getApplicationContext().getResources().getDisplayMetrics().density + 0.5f));
+            shadowToolbar.setVisibility(View.GONE);
+            setcolor();
         }
 
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
@@ -373,14 +384,18 @@ public class NotesChangeActivity extends ActionBarActivity implements View.OnCli
                 Intent intent = new Intent();
                 intent.setAction(android.content.Intent.ACTION_VIEW);
                 intent.setDataAndType(Uri.fromFile(file), "image/*");
-                Log.e("a", new ImageProcessing().getPhotopath());
                 startActivity(intent);
                 break;
             case R.id.menuDelete:
                 setcolor();
+                ViewGroup.LayoutParams params = iv_image.getLayoutParams();
+                params.height = toolbar.getHeight()+getStatusBarHeight();
+                iv_image.setLayoutParams(params);
                 iv_image.setImageResource(R.drawable.mini);
                 new File(Environment.getExternalStorageDirectory() + "/Notes/image/" + id).delete();
                 new File(Environment.getExternalStorageDirectory() + "/Notes/image/cache/cache").delete();
+                gradual.setVisibility(View.GONE);
+                shadowToolbar.setVisibility(View.GONE);
                 break;
         }
 
@@ -392,14 +407,15 @@ public class NotesChangeActivity extends ActionBarActivity implements View.OnCli
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 100) {
             if (resultCode == RESULT_OK) {
-                Window window = getWindow();
                 iv_image.setVisibility(View.VISIBLE);
                 new ImageProcessing().getPhotoCache(Environment.getExternalStorageDirectory() + "/Notes/image/cache/camera", getWindowManager());
-                Bitmap bitmap = new ImageProcessing().setPhoto(getWindowManager(), new ImageProcessing().getPhotopath());
-                iv_image.setImageBitmap(bitmap);
+
+                new ImageProcessing().imagePreview(iv_image, this, "cache");
                 new File(Environment.getExternalStorageDirectory() + "/Notes/image/" + id).delete();
                 toolbar.setBackgroundColor(Color.alpha(0));
-                new ImageProcessing().getPhotoRgb(window, bitmap);
+                getWindow().setStatusBarColor(Color.alpha(0));
+                shadowToolbar.setVisibility(View.VISIBLE);
+                gradual.setVisibility(View.VISIBLE);
             } else if (resultCode == RESULT_CANCELED) {
                 Toast.makeText(this, "取消", Toast.LENGTH_SHORT).show();
             }
@@ -411,10 +427,14 @@ public class NotesChangeActivity extends ActionBarActivity implements View.OnCli
                 new File(Environment.getExternalStorageDirectory() + "/Notes/image/" + id).delete();
                 String path = new ImageProcessing().uri2path(data.getData(), this);
                 new ImageProcessing().getPhotoCache(path, getWindowManager());
-                Bitmap bitmap = new ImageProcessing().setPhoto(getWindowManager(), path);
+               /*Bitmap bitmap = new ImageProcessing().setPhoto(getWindowManager(), path);
                 iv_image.setImageBitmap(bitmap);
+                new ImageProcessing().getPhotoRgb(getWindow(), bitmap);*/
                 toolbar.setBackgroundColor(Color.alpha(0));
-                new ImageProcessing().getPhotoRgb(getWindow(), bitmap);
+                getWindow().setStatusBarColor(Color.alpha(0));
+                new ImageProcessing().imagePreview(iv_image, this, "cache");
+                shadowToolbar.setVisibility(View.VISIBLE);
+                gradual.setVisibility(View.VISIBLE);
             }
         }
 
@@ -623,5 +643,14 @@ public class NotesChangeActivity extends ActionBarActivity implements View.OnCli
         return mWay;
     }
 
+    public int getStatusBarHeight() {
+        int result =0;
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = getResources().getDimensionPixelSize(resourceId);
+        }
+
+        return result;
+    }
 }
 

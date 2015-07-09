@@ -24,6 +24,7 @@ import com.lk.notes.NotesChangeActivity;
 import com.lk.notes.NotesDao;
 import com.lk.notes.NotesInfo;
 import com.lk.notes.NotesOpenHelper;
+import com.lk.notes.PreviewActivity;
 import com.lk.notes.R;
 
 import java.util.List;
@@ -81,9 +82,10 @@ public class RemindFragment extends Fragment {
                 Intent intent = new Intent();
                 intent.putExtra("title", notesInfo.getTitle());
                 intent.putExtra("text", notesInfo.getText());
+                intent.putExtra("time",notesInfo.getTime());
                 intent.putExtra("id", notesInfo.getId());
                 intent.putExtra("clock", notesInfo.getClock());
-                intent.setClass(getActivity(), NotesChangeActivity.class);
+                intent.setClass(getActivity(), PreviewActivity.class);
                 startActivityForResult(intent, Edit);
             }
         });

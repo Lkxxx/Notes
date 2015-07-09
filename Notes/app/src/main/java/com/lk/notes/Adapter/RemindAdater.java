@@ -1,6 +1,8 @@
 package com.lk.notes.Adapter;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,6 +56,11 @@ public class RemindAdater extends BaseAdapter {
             holder.tv_time = (TextView) view.findViewById(R.id.tv_time);
             holder.tv_title = (TextView) view.findViewById(R.id.tv_title);
             view.setTag(holder);
+            SharedPreferences sharedPreferences = context.getSharedPreferences("color", context.MODE_PRIVATE);
+            int r = sharedPreferences.getInt("r", 0);
+            int g = sharedPreferences.getInt("g", 172);
+            int b = sharedPreferences.getInt("b", 193);
+            holder.tv_time.setTextColor(Color.rgb(r, g, b));
         } else {
             holder = (ViewHolder) view.getTag();
         }

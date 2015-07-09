@@ -1,5 +1,4 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rl_edit"
     android:layout_width="match_parent"
@@ -33,7 +32,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:minHeight="55dp"
-                android:scaleType="center"
+                android:scaleType="fitXY"
 
                 />
 
@@ -63,8 +62,10 @@
                 android:layout_height="match_parent"
                 android:layout_marginLeft="11dp"
                 android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp"
                 android:background="#eee"
                 android:gravity="top"
+                android:lineSpacingExtra="4dp"
                 android:hint="写下你的笔记"
                 android:imeOptions="flagNoExtractUi"
                 android:minLines="5"
@@ -85,7 +86,6 @@
                 <ImageView
                     android:layout_width="33dp"
                     android:layout_height="33dp"
-
                     android:background="@mipmap/ic_material_reminder" />
 
                 <TextView
@@ -176,8 +176,23 @@
 
         </LinearLayout>
     </ScrollView>
+    <ImageView
+        android:id="@+id/gradual"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="@drawable/gradual"
+        android:visibility="gone" />
 
-
-    <include layout="@layout/toolbar" />
+    <ImageView
+        android:id="@+id/shadowToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="24dp"
+        android:background="#33000000"
+        android:scaleType="fitCenter"
+        android:visibility="gone" />
+    <include layout="@layout/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/edit_toolbar_top_margin"/>
 
 </FrameLayout>

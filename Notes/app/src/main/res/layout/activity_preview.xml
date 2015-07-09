@@ -1,102 +1,107 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-
     android:id="@+id/frameLayout"
->
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <LinearLayout android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#ffffffff"
-      >
-
-        <ImageView
-            android:scaleType="fitXY"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/photo"
-            android:adjustViewBounds="true"/>
-
-
-    <TextView
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginLeft="16dp"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Just One Last Dance"
-        android:id="@+id/tv_title"
-        android:textColor="#de000000"
-        android:textSize="24sp"
-        android:maxLines="2"
-        android:lineSpacingExtra="6dp"/>
-
-
-    <LinearLayout
-        android:layout_marginTop="24dp"
-        android:id="@+id/ll_time"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_title"
-        android:orientation="horizontal">
-        <ImageView
-            android:layout_gravity="center"
-            android:layout_width="18dp"
-            android:layout_height="18dp"
-            android:background="@mipmap/ic_clock_grey600_48dp"
-            android:layout_marginLeft="16dp" />
-
-        <TextView
-            android:textSize="15sp"
-            android:id="@+id/tv_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="20dp"
-            android:text="8小时前"
-            android:textColor="#8a000000" />
-
+        android:layout_height="match_parent"
+        android:background="#ffffffff"
+        android:scrollbars="none">
 
         <LinearLayout
-            android:id="@+id/ll_clock"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:orientation="horizontal"
-
-            >
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#ffffffff"
+            android:orientation="vertical">
 
             <ImageView
-                android:layout_width="18dp"
-                android:layout_height="18dp"
-                android:background="@mipmap/ic_clock_grey600_48dp" />
+                android:id="@+id/photo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:background="#eee"
+                android:minHeight="80dp"
+                android:scaleType="fitXY" />
 
             <TextView
-                android:id="@+id/tv_clock"
-                android:layout_width="wrap_content"
+                android:id="@+id/tv_title"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginLeft="5dp"
-                android:text="未知"
-                android:textSize="15sp"
-                android:textColor="#8a000000" />
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="24dp"
+                android:lineSpacingExtra="6dp"
+                android:maxLines="2"
+                android:text="Just One Last Dance"
+                android:textColor="#de000000"
+                android:textSize="24sp" />
 
-        </LinearLayout>
-    </LinearLayout>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginRight="20dp"
-        android:id="@+id/tv_text"
-        android:lineSpacingExtra="6dp"
-        android:textSize="15sp"
-        android:textColor="#de000000"
-        android:text="Just one last dance....oh baby...just one last dance
+
+            <LinearLayout
+                android:id="@+id/ll_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_title"
+                android:layout_marginTop="24dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="16dp"
+                    android:background="@mipmap/ic_clock_grey600_48dp" />
+
+                <TextView
+                    android:id="@+id/tv_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="20dp"
+                    android:text="8小时前"
+                    android:textColor="#8a000000"
+                    android:textSize="15sp" />
+
+
+                <LinearLayout
+                    android:id="@+id/ll_clock"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:orientation="horizontal"
+
+                    >
+
+                    <ImageView
+                        android:layout_gravity="center"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:background="@mipmap/ic_material_reminder_big" />
+
+                    <TextView
+                        android:id="@+id/tv_clock"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="5dp"
+                        android:text="未知"
+                        android:textColor="#8a000000"
+                        android:textSize="15sp" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="15dp"
+                android:lineSpacingExtra="6dp"
+                android:text="Just one last dance....oh baby...just one last dance
 最后一支舞噢 宝贝最后一支舞
 We meet in the night in the Spanish café
 那夜 我们相遇在西班牙咖啡馆
@@ -119,24 +124,33 @@ Just one last dance
 before we say goodbye
 在我们离别之前
 when we sway and turn round and round and round
-当我们一次次挥手转身旋转"/>
-</LinearLayout>
+当我们一次次挥手转身旋转"
+                android:textColor="#de000000"
+                android:textSize="15sp" />
+        </LinearLayout>
+    </ScrollView>
 
     <ImageView
-        android:scaleType="fitCenter"
+        android:id="@+id/shadowToolbar"
         android:layout_width="match_parent"
         android:layout_height="24dp"
-        android:background="#33000000"/>
+        android:background="#33000000"
+        android:scaleType="fitCenter"
+        android:visibility="gone" />
 
 
     <ImageView
+        android:id="@+id/gradual"
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:background="@drawable/gradual"/>
-    <LinearLayout
+        android:background="@drawable/gradual"
+        android:visibility="gone" />
+
+
+    <include
+        layout="@layout/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp">
-        <include layout="@layout/toolbar" />
-    </LinearLayout>
+        android:layout_marginTop="24dp" />
+
 </FrameLayout>

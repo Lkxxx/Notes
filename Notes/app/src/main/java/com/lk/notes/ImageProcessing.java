@@ -14,8 +14,11 @@ import android.provider.MediaStore;
 import android.support.v7.graphics.Palette;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -78,7 +81,7 @@ public class ImageProcessing {
     public Bitmap setPhoto(WindowManager m, String path) {
 
         BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true; // 设置了此属性一定要记得将值设置为false
+        options.inJustDecodeBounds = true;
         Bitmap bitmap = BitmapFactory.decodeFile(path);
         options.inJustDecodeBounds = false;
         int mWidth = bitmap.getWidth();
@@ -88,8 +91,7 @@ public class ImageProcessing {
         m.getDefaultDisplay().getMetrics(localDisplayMetrics);
         int mScreenWidth = localDisplayMetrics.widthPixels;
         int mScreenHeight = localDisplayMetrics.heightPixels;
-        Log.e("Screenwidgh+height", mScreenWidth + "宽高" + mScreenHeight);
-        Log.e("widgh+height", bitmap.getWidth() + "宽高" + bitmap.getHeight());
+
 
         Bitmap newBitmap;
         newBitmap = Bitmap.createScaledBitmap(bitmap, mScreenWidth, mScreenWidth * mHeight / mWidth, true);
@@ -196,8 +198,55 @@ public class ImageProcessing {
             }
         });
     }
+    public int getScreenWidth(Activity activity) {
+        DisplayMetrics localDisplayMetrics = new DisplayMetrics();
+        activity.getWindowManager().getDefaultDisplay().getMetrics(localDisplayMetrics);
+        int mScreenWidth = localDisplayMetrics.widthPixels;
+        return mScreenWidth;
+    }
 
+    public void  imagePreview(ImageView imageView ,Activity activity,String id){
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        Bitmap bitmap;
+        if (id=="cache"){
+            bitmap = BitmapFactory.decodeFile(getPhotopath());
+        }else {
+            bitmap = BitmapFactory.decodeFile(Environment.getExternalStorageDirectory() + "/Notes/image/" + id);
+        }
 
+        options.inJustDecodeBounds = false;
 
+        ViewGroup.LayoutParams params = imageView.getLayoutParams();
+        params.height = getScreenWidth(activity) / 3 * 2;
+        imageView.setLayoutParams(params);
+        if (bitmap !=null){
+            float x = bitmap.getWidth();
+        float y = bitmap.getHeight();
+        Bitmap newBitmap;
+        if ((x / y) <= ((float) 3 / 2)) {
+            Log.e("xy", "(x / y) <= (3 / 2)");
+            int y1 = (int) ((y - x * 2 / 3) / 2);
+            int y2 = (int) (y - 2 * y1);
+            newBitmap = Bitmap.createBitmap(bitmap, 0, y1, (int) x, y2);
+            imageView.setImageBitmap(newBitmap);
+        } else {
+            Log.e("xy", "(x / y) > (3 / 2)");
+            int x1 = (int) ((x - y * 3 / 2) / 2);
+            int x2 = (int) (x - 2 * x1);
+
+            Log.e("x", String.valueOf(x));
+            Log.e("y", String.valueOf(y));
+            Log.e("x1", String.valueOf(x1));
+            Log.e("x2", String.valueOf(x2));
+            Log.e("x/y", String.valueOf(x / y));
+            newBitmap = Bitmap.createBitmap(bitmap, x1, 0, x2, (int) y);
+            imageView.setImageBitmap(newBitmap);
+        }
+
+        }else {
+            Toast.makeText(activity.getApplicationContext(),"无法获取图片",Toast.LENGTH_SHORT).show();
+        }
+    }
 
 }
