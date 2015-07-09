@@ -7,7 +7,7 @@
     <item
         android:id="@+id/action_photo"
         android:orderInCategory="120"
-        android:icon="@mipmap/ic_photo"
+        android:icon="@mipmap/ic_image_white_48dp"
         app:showAsAction="ifRoom"
         android:title="照片"/>
 
@@ -16,7 +16,7 @@
         android:id="@+id/action_camera"
         android:title="拍照"
         android:orderInCategory="180"
-        android:icon="@mipmap/ic_camera"
+        android:icon="@mipmap/ic_camera_alt_white_48dp"
         app:showAsAction="ifRoom"
         />
 
