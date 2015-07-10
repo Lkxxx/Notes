@@ -2,12 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.lk.notes"
-    android:versionCode="10"
-    android:versionName="1.17" >
+    android:versionCode="11"
+    android:versionName="1.20" >
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.VIBRATE" />
-
+    <data android:scheme="mailto"/>
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -32,7 +32,7 @@
         </activity>
         <activity
             android:name=".NotesChangeActivity"
-            android:label="title_activity_notes_change" />
+            android:label="编辑" />
         <activity
             android:name=".ThemeActivity"
             android:label="@string/title_activity_theme" />

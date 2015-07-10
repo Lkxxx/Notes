@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -39,7 +40,7 @@ public class PreviewActivity extends ActionBarActivity {
         toolbar = (Toolbar) findViewById(R.id.tl_custom);
         toolbar.setTitle("");
         toolbar.setTitleTextColor(Color.rgb(238, 238, 238));
-        toolbar.setElevation(8);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {toolbar.setElevation(8);}
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.mipmap.ic_close_white_48dp);
@@ -56,7 +57,7 @@ public class PreviewActivity extends ActionBarActivity {
         time = intent.getStringExtra("time");
         id = intent.getStringExtra("id");
         clock = intent.getStringExtra("clock");
-
+        Log.e("duan","duan");
         tv_title.setText(title);
         tv_text.setText(text);
         tv_time.setText(ConvertTime.convertTime(time, id));
@@ -65,6 +66,7 @@ public class PreviewActivity extends ActionBarActivity {
             ll_clock.setVisibility(View.VISIBLE);
             tv_clock.setText(ConvertTime.convertClock(clock));
         }
+        Log.e("duan","duan");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
@@ -74,22 +76,34 @@ public class PreviewActivity extends ActionBarActivity {
                     | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(Color.alpha(20));
-            window.setNavigationBarColor(Color.TRANSPARENT);
+            window.setNavigationBarColor(Color.argb(51, 0, 0, 0));
         }
 
 
         ImageView photo = (ImageView) findViewById(R.id.photo);
         ImageView shadowToolbar = (ImageView) findViewById(R.id.shadowToolbar);
         ImageView gradual = (ImageView) findViewById(R.id.gradual);
-
+        if(Build.VERSION.SDK_INT<=Build.VERSION_CODES.KITKAT){
+            gradual.setVisibility(View.GONE);
+        }
         if (new File(Environment.getExternalStorageDirectory() + "/Notes/image/" + id).exists()) {
             new ImageProcessing().imagePreview(photo,this,id);
-            shadowToolbar.setVisibility(View.VISIBLE);
+
             toolbar.setBackgroundColor(Color.alpha(0));
-            toolbar.setElevation(0);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                toolbar.setElevation(0);
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+
+                shadowToolbar.setVisibility(View.VISIBLE);
+            }else {
+                shadowToolbar.setVisibility(View.GONE);
+            }
+
         } else {
             setcolor();
         }
+
         photo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -101,7 +115,7 @@ public class PreviewActivity extends ActionBarActivity {
 
             }
         });
-
+        Log.e("duan", "duan");
     }
 
     @Override

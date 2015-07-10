@@ -91,6 +91,13 @@ public class RemindFragment extends Fragment {
         });
     }
 
+
+    @Override
+    public void onResume() {
+        initData();
+        super.onResume();
+    }
+
     private void initData() {
         dao = new NotesDao(getActivity());
         new Thread() {

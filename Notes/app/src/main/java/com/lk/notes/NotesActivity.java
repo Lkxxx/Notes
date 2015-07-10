@@ -93,8 +93,8 @@ public class NotesActivity extends ActionBarActivity implements View.OnClickList
         fab = (FloatingActionButton) findViewById(R.id.fab);
         iv_fab_shadow = (ImageView) findViewById(R.id.iv_fab_shadow);
 
-        ra = new RotateAnimation(0, 180, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        ra.setDuration(200);
+        ra = new RotateAnimation(0, 90, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        ra.setDuration(150);
 
         toolbar = (Toolbar) findViewById(R.id.tl_custom);
         toolbar.setTitle("简记");

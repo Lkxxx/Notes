@@ -138,7 +138,7 @@ public class EditNoteActivity extends ActionBarActivity implements View.OnClickL
                     | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(Color.alpha(20));
-            window.setNavigationBarColor(Color.TRANSPARENT);
+            window.setNavigationBarColor(Color.argb(51, 0, 0, 0));
         }
         iv_image.setMinimumHeight((int) (80 * getApplicationContext().getResources().getDisplayMetrics().density + 0.5f));
         shadowToolbar.setVisibility(View.GONE);
@@ -218,11 +218,14 @@ public class EditNoteActivity extends ActionBarActivity implements View.OnClickL
                 iv_image.setVisibility(View.VISIBLE);
                 new ImageProcessing().getPhotoCache(Environment.getExternalStorageDirectory() + "/Notes/image/cache/camera", getWindowManager());
                 new ImageProcessing().imagePreview(iv_image, this, "cache");
-                getWindow().setStatusBarColor(Color.alpha(0));
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    getWindow().setStatusBarColor(Color.alpha(0));
+                }
                 toolbar.setBackgroundColor(Color.alpha(0));
-                shadowToolbar.setVisibility(View.VISIBLE);
-                gradual.setVisibility(View.VISIBLE);
-
+                if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.KITKAT){
+                    shadowToolbar.setVisibility(View.VISIBLE);
+                    gradual.setVisibility(View.VISIBLE);
+                }
             } else if (resultCode == RESULT_CANCELED) {
             }
         }
@@ -237,10 +240,13 @@ public class EditNoteActivity extends ActionBarActivity implements View.OnClickL
                 toolbar.setBackgroundColor(Color.alpha(0));
                 new ImageProcessing().getPhotoRgb(getWindow(), bitmap);*/
                 toolbar.setBackgroundColor(Color.alpha(0));
-                getWindow().setStatusBarColor(Color.alpha(0));
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                getWindow().setStatusBarColor(Color.alpha(0));}
                 new ImageProcessing().imagePreview(iv_image, this, "cache");
-                shadowToolbar.setVisibility(View.VISIBLE);
-                gradual.setVisibility(View.VISIBLE);
+                if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.KITKAT){
+                    shadowToolbar.setVisibility(View.VISIBLE);
+                    gradual.setVisibility(View.VISIBLE);
+                }
             }
         }
     }
@@ -281,7 +287,7 @@ public class EditNoteActivity extends ActionBarActivity implements View.OnClickL
                 String str_time = sdf.format(timeGetTime);
                 Log.e("a", str_title + str_text + str_time);
                 if (TextUtils.isEmpty(str_title) && TextUtils.isEmpty(str_text)) {
-                    str_title = "标题";
+                    str_title = "记得加标题哦～";
 
                 }
                 String idurl = Environment.getExternalStorageDirectory() + "/Notes/image/cache/cache";

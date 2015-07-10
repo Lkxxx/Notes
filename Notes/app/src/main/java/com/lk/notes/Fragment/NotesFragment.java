@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
@@ -28,6 +27,7 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.fourmob.datetimepicker.date.DatePickerDialog;
@@ -38,8 +38,9 @@ import com.lk.notes.NotesDao;
 import com.lk.notes.NotesInfo;
 import com.lk.notes.NotesOpenHelper;
 import com.lk.notes.PreviewActivity;
-import com.lk.notes.PullToZoom.PullToZoomListViewEx;
 import com.lk.notes.R;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.sleepbot.datetimepicker.time.RadialPickerLayout;
 import com.sleepbot.datetimepicker.time.TimePickerDialog;
 
@@ -66,7 +67,7 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Dat
     private static int CANCEL = 12;
     private NotesDao dao;
     private View view;
-    private PullToZoomListViewEx list_view;
+    private ListView list_view;
     private LinearLayout ll_none;
     private NotesAdapter adapter;
     private List<NotesInfo> mNotesInfo;
@@ -80,10 +81,9 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Dat
         @Override
         public void handleMessage(Message msg) {
             if (msg.what == Refresh) {
-                ImageView imageView = (ImageView) list_view.getZoomView();
+
                 if (getDataLastPath() != null) {
-                    imageView.setImageBitmap(BitmapFactory.decodeFile(getDataLastPath()));
-                    list_view.setHeaderLayoutParams(localObject(getDataLastPath()));
+
                 }
 
             }
@@ -151,21 +151,17 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Dat
         }
         ll_none.setOnClickListener(this);
 
-        list_view = (PullToZoomListViewEx) view.findViewById(R.id.listview);
-        if (getDataLastPath() != null) {
-            list_view.setHeaderLayoutParams(localObject(getDataLastPath()));
-        }
+        list_view = (ListView) view.findViewById(R.id.listview);
+
         list_view.setVerticalScrollBarEnabled(true);
-        registerForContextMenu(list_view.getPullRootView());
+        registerForContextMenu(list_view);
         list_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 NotesInfo notesInfo = null;
-                if (i >= 1) {
-                    notesInfo = mNotesInfo.get(i - 1);
-                } else if (i == 0) {
-                    notesInfo = mNotesInfo.get(i);
-                }
+
+                notesInfo = mNotesInfo.get(i);
+
                 Intent intent = new Intent();
                 intent.putExtra("title", notesInfo.getTitle());
                 intent.putExtra("text", notesInfo.getText());
@@ -236,13 +232,9 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Dat
     @Override
     public boolean onContextItemSelected(MenuItem item) {
 
-        final int selectedPosition = ((AdapterView.AdapterContextMenuInfo) item.getMenuInfo()).position;
-        int i = 0;
-        if (selectedPosition >= 1) {
-            i = selectedPosition - 1;
-        } else if (selectedPosition == 0) {
-            i = selectedPosition;
-        }
+        final int i = ((AdapterView.AdapterContextMenuInfo) item.getMenuInfo()).position;
+
+
         final NotesInfo notesInfo = mNotesInfo.get(i);
         id = notesInfo.getId();
         String clock = notesInfo.getClock();
@@ -263,14 +255,13 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Dat
                 dao.deleteClock(id);
                 date = new EditNoteActivity().getDate();
                 new EditNoteActivity().setClock(null, null, id, getActivity(), CANCEL, date);
-                menuDelete(notesInfo, selectedPosition);
-
+                menuDelete(notesInfo, i);
                 break;
             case R.id.menuShare:
                 Intent sendIntent = new Intent().setAction(Intent.ACTION_SEND);
                 sendIntent.setType("text/plain");
                 sendIntent.putExtra(Intent.EXTRA_SUBJECT, notesInfo.getTitle());
-                sendIntent.putExtra(Intent.EXTRA_TEXT, notesInfo.getTitle()+"\n"+notesInfo.getText());
+                sendIntent.putExtra(Intent.EXTRA_TEXT, notesInfo.getTitle() + "\n" + notesInfo.getText());
                 startActivity(sendIntent.createChooser(sendIntent, notesInfo.getTitle()));
                 break;
             case 4:
@@ -308,11 +299,7 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Dat
                 }
                 if (f.exists()) {
                     f.delete();
-                    ImageView imageView = (ImageView) list_view.getZoomView();
-                    if (selectedPosition == 0 || selectedPosition == 1) {
-                        imageView.setImageBitmap(BitmapFactory.decodeFile(getDataLastPath()));
-                        list_view.setHeaderLayoutParams(localObject(getDataLastPath()));
-                    }
+
                 }
                 new EditNoteActivity().updateWidget(getActivity());
             }
@@ -397,11 +384,9 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Dat
 
     private void setRefresh() {
 
-        ImageView imageView = (ImageView) list_view.getZoomView();
+        initData();
         if (getDataLastPath() != null) {
-            imageView.setImageBitmap(BitmapFactory.decodeFile(getDataLastPath()));
-            list_view.setHeaderLayoutParams(localObject(getDataLastPath()));
-            initData();
+
             Timer timer = new Timer();
             timer.schedule(new TimerTask() {
                 @Override
@@ -417,7 +402,6 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Dat
                 ll_none.setVisibility(View.GONE);
             }
         }
-        Log.e("TAG", "setRefresh");
         new EditNoteActivity().updateWidget(getActivity());
     }
 
@@ -427,13 +411,8 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Dat
         super.onCreateContextMenu(menu, v, menuInfo);
         myContext.getMenuInflater().inflate(R.menu.context, menu);
 
-        final int selectedPosition = ((AdapterView.AdapterContextMenuInfo) menuInfo).position;
-        int i = 0;
-        if (selectedPosition >= 1) {
-            i = selectedPosition - 1;
-        } else if (selectedPosition == 0) {
-            i = selectedPosition;
-        }
+        final int i = ((AdapterView.AdapterContextMenuInfo) menuInfo).position;
+
         String clock = mNotesInfo.get(i).getClock();
         if (clock != null) {
             menu.add(0, 4, 0, "修改闹钟");

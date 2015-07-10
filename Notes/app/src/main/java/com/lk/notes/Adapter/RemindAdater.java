@@ -55,6 +55,7 @@ public class RemindAdater extends BaseAdapter {
             holder = new ViewHolder();
             holder.tv_time = (TextView) view.findViewById(R.id.tv_time);
             holder.tv_title = (TextView) view.findViewById(R.id.tv_title);
+            holder.tv_text = (TextView)view.findViewById(R.id.tv_text);
             view.setTag(holder);
             SharedPreferences sharedPreferences = context.getSharedPreferences("color", context.MODE_PRIVATE);
             int r = sharedPreferences.getInt("r", 0);
@@ -66,6 +67,11 @@ public class RemindAdater extends BaseAdapter {
         }
         holder.tv_time.setText(ConvertTime.convertClock(mNotesInfos.get(i).getClock()));
         holder.tv_title.setText(mNotesInfos.get(i).getTitle());
+        if (mNotesInfos.get(i).getText() == null){
+            holder.tv_text.setVisibility(View.GONE);
+        }else {
+            holder.tv_text.setText(mNotesInfos.get(i).getText());
+        }
         return view;
 
 
@@ -74,5 +80,6 @@ public class RemindAdater extends BaseAdapter {
     static class ViewHolder {
         TextView tv_time;
         TextView tv_title;
+        TextView tv_text;
     }
 }

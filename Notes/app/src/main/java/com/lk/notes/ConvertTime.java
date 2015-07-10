@@ -86,18 +86,36 @@ public class ConvertTime {
         if (clock[0] == now[0]) {
             if (clock[1] == c.get(Calendar.MONTH)) {
                 if (clock[2] == c.get(Calendar.DAY_OF_MONTH)) {
-                    outputTime = "今天" + clock[3] + ":" + clock[4];
+                    if (clock[4]==0){
+                        outputTime = "今天" + clock[3] + ":" + clock[4]+"0";
+                    }else {
+                        outputTime = "今天" + clock[3] + ":" + clock[4];
+                    }
+
                 } else {
                     c.setTimeInMillis(System.currentTimeMillis());
                     c.add(Calendar.DATE, 1);
                     if (clock[2] == c.get(Calendar.DAY_OF_MONTH)) {
-                        outputTime = "明天" + clock[3] + ":" + clock[4];
+                        if (clock[4]==0){
+                            outputTime = "明天" + clock[3] + ":" + clock[4]+"0";
+                        }else {
+                            outputTime = "明天" + clock[3] + ":" + clock[4];
+                        }
                     } else {
-                        outputTime = clock[1] + "月" + clock[2] + "日" + clock[3] + ":" + clock[4];
+                        if (clock[4]==0){
+                            outputTime = clock[1] + "月" + clock[2] + "日" + clock[3] + ":" + clock[4]+"0";
+                        }else {
+                            outputTime = clock[1] + "月" + clock[2] + "日" + clock[3] + ":" + clock[4];
+                        }
+
                     }
                 }
             }else {
-                outputTime = clock[1] + "月" + clock[2] + "日" + clock[3] + ":" + clock[4];
+                if (clock[4]==0){
+                    outputTime = clock[1] + "月" + clock[2] + "日" + clock[3] + ":" + clock[4]+"0";
+                }else {
+                    outputTime = clock[1] + "月" + clock[2] + "日" + clock[3] + ":" + clock[4];
+                }
             }
         } else {
             outputTime = clock[0] + "年" + clock[1] + "月" + clock[2] + "日";

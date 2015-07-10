@@ -198,6 +198,7 @@ public class ImageProcessing {
             }
         });
     }
+
     public int getScreenWidth(Activity activity) {
         DisplayMetrics localDisplayMetrics = new DisplayMetrics();
         activity.getWindowManager().getDefaultDisplay().getMetrics(localDisplayMetrics);
@@ -205,48 +206,77 @@ public class ImageProcessing {
         return mScreenWidth;
     }
 
-    public void  imagePreview(ImageView imageView ,Activity activity,String id){
+    public void imagePreview(ImageView imageView, Activity activity, String id) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
         Bitmap bitmap;
-        if (id=="cache"){
+        if (id == "cache") {
             bitmap = BitmapFactory.decodeFile(getPhotopath());
-        }else {
+        } else {
             bitmap = BitmapFactory.decodeFile(Environment.getExternalStorageDirectory() + "/Notes/image/" + id);
         }
 
         options.inJustDecodeBounds = false;
-
         ViewGroup.LayoutParams params = imageView.getLayoutParams();
         params.height = getScreenWidth(activity) / 3 * 2;
         imageView.setLayoutParams(params);
-        if (bitmap !=null){
+        if (bitmap != null) {
             float x = bitmap.getWidth();
-        float y = bitmap.getHeight();
-        Bitmap newBitmap;
-        if ((x / y) <= ((float) 3 / 2)) {
-            Log.e("xy", "(x / y) <= (3 / 2)");
-            int y1 = (int) ((y - x * 2 / 3) / 2);
-            int y2 = (int) (y - 2 * y1);
-            newBitmap = Bitmap.createBitmap(bitmap, 0, y1, (int) x, y2);
-            imageView.setImageBitmap(newBitmap);
+            float y = bitmap.getHeight();
+            Bitmap newBitmap;
+            if ((x / y) <= ((float) 3 / 2)) {
+                Log.e("xy", "(x / y) <= (3 / 2)");
+                int y1 = (int) ((y - x * 2 / 3) / 2);
+                int y2 = (int) (y - 2 * y1);
+                newBitmap = Bitmap.createBitmap(bitmap, 0, y1, (int) x, y2);
+                imageView.setImageBitmap(newBitmap);
+            } else {
+                Log.e("xy", "(x / y) > (3 / 2)");
+                int x1 = (int) ((x - y * 3 / 2) / 2);
+                int x2 = (int) (x - 2 * x1);
+
+                newBitmap = Bitmap.createBitmap(bitmap, x1, 0, x2, (int) y);
+                imageView.setImageBitmap(newBitmap);
+            }
+
         } else {
-            Log.e("xy", "(x / y) > (3 / 2)");
-            int x1 = (int) ((x - y * 3 / 2) / 2);
-            int x2 = (int) (x - 2 * x1);
-
-            Log.e("x", String.valueOf(x));
-            Log.e("y", String.valueOf(y));
-            Log.e("x1", String.valueOf(x1));
-            Log.e("x2", String.valueOf(x2));
-            Log.e("x/y", String.valueOf(x / y));
-            newBitmap = Bitmap.createBitmap(bitmap, x1, 0, x2, (int) y);
-            imageView.setImageBitmap(newBitmap);
-        }
-
-        }else {
-            Toast.makeText(activity.getApplicationContext(),"无法获取图片",Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity.getApplicationContext(), "无法获取图片", Toast.LENGTH_SHORT).show();
         }
     }
 
+
+    public Bitmap listImage(Bitmap  bitmap) {
+        /*BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        Bitmap bitmap = BitmapFactory.decodeFile(path);
+        options.inJustDecodeBounds = false;*/
+        Bitmap newBitmap = null;
+        if (bitmap != null){
+            float x =bitmap.getWidth();
+            float y = bitmap.getHeight();
+            if (x> y){
+                int x1 = (int) ((x-y)/2);
+                int x2 = (int)(x-2*x1);
+                newBitmap = Bitmap.createBitmap(bitmap,x1,0,x2,(int)y);
+                Log.e("x/y", String.valueOf((float)newBitmap.getHeight() / newBitmap.getWidth()));
+            }else if (y>x){
+                int y1 =(int)((y-x)/2);
+                int y2 =(int)(y-2*y1);
+                Log.e("x", String.valueOf(x));
+                Log.e("y", String.valueOf(y));
+                Log.e("y1", String.valueOf(y1));
+                Log.e("y2", String.valueOf(y2));
+
+                newBitmap = Bitmap.createBitmap(bitmap,0,y1,(int)x,y2);
+                Log.e("x/y", String.valueOf((float)newBitmap.getHeight() / newBitmap.getWidth()));
+            }else {
+                newBitmap = bitmap;
+                Log.e("x/y", String.valueOf((float)newBitmap.getHeight() / newBitmap.getWidth()));
+            }
+
+
+
+        }
+        return newBitmap;
+    }
 }

@@ -114,7 +114,6 @@ public class NotesDao {
 
 
         c.close();
-        db.close();
         return lists;
     }
 

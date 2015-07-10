@@ -1,107 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    >
+    android:layout_height="fill_parent">
 
+    <LinearLayout
+        android:id="@+id/ll_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
-    <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
+        <ImageView
+            android:layout_width="84dp"
+            android:layout_height="84dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="20dp"
+            android:background="#00000000"
+            android:id="@+id/imageView"
+            android:scaleType="fitXY"
+            android:visibility="gone"/>
 
-        <TextView
-            android:id="@+id/tv_title"
+        <RelativeLayout
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="12dp"
-            android:ellipsize="end"
-            android:maxLines="2"
-            android:text="123"
-            android:textColor="#d4232323"
-            android:textSize="20sp"
+            android:layout_marginTop="16dp"
+            android:gravity="end">
 
-            />
 
-        <LinearLayout
-            android:id="@+id/ll_time"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_title"
-            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="70dp"
+                android:layout_marginTop="4dp"
+                android:maxLines="1"
+                android:text="123"
+                android:textColor="#de000000"
+                android:textSize="16sp"
 
+                />
 
             <TextView
                 android:id="@+id/tv_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="20dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="7dp"
+                android:gravity="end"
                 android:text="8小时前"
-                android:textColor="#ff2ebe78" />
+                android:textColor="#ff2ebe78"
+                android:textSize="12sp"
 
-            <ImageView
-                android:id="@+id/iv_text"
-                android:layout_width="20dp"
-                android:layout_height="17dp"
-                android:layout_gravity="center"
-                android:layout_marginRight="20dp"
-                android:background="@mipmap/ic_photo_placeholder_dark" />
+                />
 
-            <LinearLayout
-                android:id="@+id/ll_clock"
-                android:layout_width="wrap_content"
+            <TextView
+                android:id="@+id/tv_text"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:orientation="horizontal"
+                android:layout_below="@+id/tv_title"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="8dp"
+                android:ellipsize="end"
+                android:gravity="left"
+                android:lineSpacingExtra="6dp"
+                android:maxLines="3"
+                android:text="all"
+                android:textColor="#de000000"
+                android:textSize="12sp" />
 
-                >
+        </RelativeLayout>
+    </LinearLayout>
 
-                <ImageView
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
-                    android:background="@mipmap/ic_clock_grey600_48dp" />
-
-                <TextView
-                    android:id="@+id/tv_clock"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="5dp"
-                    android:text="未知"
-
-                    android:textColor="#e5636363" />
-
-            </LinearLayout>
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/tv_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/ll_time"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="5dp"
-            android:ellipsize="end"
-            android:maxLines="3"
-            android:text="all"
-            android:textColor="#d4232323"
-            android:textSize="13sp" />
-
-
-        <View
-            android:id="@+id/list_line"
-            android:layout_width="wrap_content"
-
-            android:layout_height="0.5dp"
-            android:layout_below="@+id/tv_text"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="7dp"
-            android:background="#67000000" />
-    </RelativeLayout>
-
-
+    <View
+        android:id="@+id/list_line"
+        android:layout_width="wrap_content"
+        android:layout_height="0.5dp"
+        android:layout_below="@+id/ll_title"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="16dp"
+        android:background="#20000000" />
 </RelativeLayout>
+
+
+

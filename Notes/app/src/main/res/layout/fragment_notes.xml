@@ -1,5 +1,5 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:custom="http://schemas.android.com/apk/res-auto"
+
     android:id="@+id/sticky_content"
     android:layout_width="match_parent"
     android:layout_height="fill_parent"
@@ -7,12 +7,11 @@
     android:background="#fff">
 
 
-    <com.lk.notes.PullToZoom.PullToZoomListViewEx
+    <ListView
         android:id="@+id/listview"
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
         android:divider="#00000000"
-        custom:zoomView="@layout/list_head_zoom_view"
         />
 
     <LinearLayout

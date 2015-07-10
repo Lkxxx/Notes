@@ -37,6 +37,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fourmob.datetimepicker.date.DatePickerDialog;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.sleepbot.datetimepicker.time.RadialPickerLayout;
 import com.sleepbot.datetimepicker.time.TimePickerDialog;
 
@@ -174,7 +176,7 @@ public class NotesChangeActivity extends ActionBarActivity implements View.OnCli
                     | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(Color.alpha(20));
-            window.setNavigationBarColor(Color.TRANSPARENT);
+            window.setNavigationBarColor(Color.argb(51, 0, 0, 0));
         }
         if (file.exists()) {
             toolbar.setBackgroundColor(Color.alpha(0));
@@ -194,10 +196,12 @@ public class NotesChangeActivity extends ActionBarActivity implements View.OnCli
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            new ImageProcessing().imagePreview(iv_image,this, id);
-            gradual.setVisibility(View.VISIBLE);
-            shadowToolbar.setVisibility(View.VISIBLE);
-            //iv_image.setImageBitmap(bitmap);
+            new ImageProcessing().imagePreview(iv_image, this, id);
+            if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.KITKAT){
+                gradual.setVisibility(View.VISIBLE);
+                shadowToolbar.setVisibility(View.VISIBLE);
+            }
+
         }else {
             iv_image.setMinimumHeight((int) (80 * getApplicationContext().getResources().getDisplayMetrics().density + 0.5f));
             shadowToolbar.setVisibility(View.GONE);
@@ -273,6 +277,9 @@ public class NotesChangeActivity extends ActionBarActivity implements View.OnCli
             Thread thread = new Thread(new Runnable() {
                 @Override
                 public void run() {
+                    ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(getApplicationContext()));
+                    ImageLoader.getInstance().clearDiskCache();
+                    ImageLoader.getInstance().clearMemoryCache();
                     File IdFile = new File(Environment.getExternalStorageDirectory() + "/Notes/image/" + id);
                     if (!IdFile.exists()) {
                         File cacheFile = new File(Environment.getExternalStorageDirectory() + "/Notes/image/cache/cache");
@@ -413,9 +420,13 @@ public class NotesChangeActivity extends ActionBarActivity implements View.OnCli
                 new ImageProcessing().imagePreview(iv_image, this, "cache");
                 new File(Environment.getExternalStorageDirectory() + "/Notes/image/" + id).delete();
                 toolbar.setBackgroundColor(Color.alpha(0));
-                getWindow().setStatusBarColor(Color.alpha(0));
-                shadowToolbar.setVisibility(View.VISIBLE);
-                gradual.setVisibility(View.VISIBLE);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    getWindow().setStatusBarColor(Color.alpha(0));
+                }
+                if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.KITKAT){
+                    shadowToolbar.setVisibility(View.VISIBLE);
+                    gradual.setVisibility(View.VISIBLE);
+                }
             } else if (resultCode == RESULT_CANCELED) {
                 Toast.makeText(this, "取消", Toast.LENGTH_SHORT).show();
             }
@@ -431,10 +442,13 @@ public class NotesChangeActivity extends ActionBarActivity implements View.OnCli
                 iv_image.setImageBitmap(bitmap);
                 new ImageProcessing().getPhotoRgb(getWindow(), bitmap);*/
                 toolbar.setBackgroundColor(Color.alpha(0));
-                getWindow().setStatusBarColor(Color.alpha(0));
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                getWindow().setStatusBarColor(Color.alpha(0));}
                 new ImageProcessing().imagePreview(iv_image, this, "cache");
-                shadowToolbar.setVisibility(View.VISIBLE);
-                gradual.setVisibility(View.VISIBLE);
+                if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.KITKAT){
+                    shadowToolbar.setVisibility(View.VISIBLE);
+                    gradual.setVisibility(View.VISIBLE);
+                }
             }
         }
 
