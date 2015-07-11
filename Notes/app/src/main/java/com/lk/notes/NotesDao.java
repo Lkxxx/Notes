@@ -136,7 +136,7 @@ public class NotesDao {
             }
         }
         c.close();
-        db.close();
+
         return lists;
     }
 
@@ -148,7 +148,7 @@ public class NotesDao {
             none = false;
         }
         c.close();
-        db.close();
+
         return none;
     }
 }

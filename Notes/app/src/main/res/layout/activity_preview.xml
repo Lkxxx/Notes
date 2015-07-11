@@ -2,9 +2,7 @@
     android:id="@+id/frameLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
     >
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -31,7 +29,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
-                android:layout_marginRight="20dp"
+                android:layout_marginRight="16dp"
                 android:layout_marginTop="24dp"
                 android:lineSpacingExtra="6dp"
                 android:maxLines="2"
@@ -99,8 +97,8 @@
                 android:id="@+id/tv_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
                 android:layout_marginTop="15dp"
                 android:lineSpacingExtra="6dp"
                 android:layout_marginBottom="50dp"

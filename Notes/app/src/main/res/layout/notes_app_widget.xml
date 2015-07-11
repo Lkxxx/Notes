@@ -1,34 +1,66 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#18121212"
+    android:background="#ffffffff"
     android:orientation="vertical"
-    android:padding="@dimen/widget_margin"
+    android:padding="@dimen/widget_margin">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@color/colorMain">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="16dp"
+            android:text="简记"
+            android:textColor="#fff"
+            android:textSize="20sp" />
+
+        <ImageView
+            android:id="@+id/iv_edit"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignParentRight="true"
+            android:scaleType="fitXY"
+            android:layout_marginRight="14dp"
+            android:layout_centerVertical="true"
+            android:background="@mipmap/ic_pencil_white_24dp" />
+    </RelativeLayout>
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="#ffffffff"
     android:id="@+id/ll_widget">
 
     <TextView
         android:id="@+id/widget_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         android:layout_marginTop="10dp"
-        android:text="title"
         android:maxLines="2"
-        android:textSize="20sp"
-        android:textColor="#c3ffffff"/>
+        android:text="title"
+        android:textColor="#de000000"
+        android:textSize="20sp" />
 
     <TextView
+
         android:id="@+id/widget_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="3dp"
         android:layout_marginBottom="10dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="3dp"
+        android:maxLines="5"
         android:text="text "
-        android:maxLines="8"
-        android:textSize="15sp"
-        android:textColor="#c3ffffff"/>
-
+        android:textColor="#de000000"
+        android:textSize="15sp" />
+</LinearLayout>
 </LinearLayout>

@@ -11,6 +11,7 @@ import android.widget.RemoteViews;
 
 import com.lk.notes.NotesChangeActivity;
 import com.lk.notes.NotesOpenHelper;
+import com.lk.notes.PreviewActivity;
 import com.lk.notes.R;
 
 /**
@@ -48,16 +49,27 @@ public class NotesAppWidget extends AppWidgetProvider {
                                 int appWidgetId, String[] str) {
 
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.notes_app_widget);
-
         views.setTextViewText(R.id.widget_title, str[0]);
         views.setTextViewText(R.id.widget_text, str[1]);
-        Intent intent = new Intent(context, NotesChangeActivity.class);
+        Intent intent = new Intent(context, PreviewActivity.class);
         intent.putExtra("title", str[0]);
         intent.putExtra("text", str[1]);
         intent.putExtra("id", str[2]);
         intent.putExtra("clock", str[3]);
+        intent.putExtra("time", str[4]);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         views.setOnClickPendingIntent(R.id.ll_widget, pendingIntent);
+        // Instruct the widget manager to update the widget
+
+
+        Intent intent1 = new Intent(context, NotesChangeActivity.class);
+        intent1.putExtra("title", str[0]);
+        intent1.putExtra("text", str[1]);
+        intent1.putExtra("id", str[2]);
+        intent1.putExtra("clock", str[3]);
+        intent1.putExtra("time", str[4]);
+        PendingIntent pendingIntent1 = PendingIntent.getActivity(context, 0, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
+        views.setOnClickPendingIntent(R.id.iv_edit, pendingIntent1);
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
@@ -65,13 +77,14 @@ public class NotesAppWidget extends AppWidgetProvider {
     private String[] strFirst(Context context) {
         NotesOpenHelper notesOpenHelper = new NotesOpenHelper(context);
         SQLiteDatabase db = notesOpenHelper.getReadableDatabase();
-        Cursor c = db.query("notes", new String[]{"title", "text", "id", "clock"}, null, null, null, null, "_id DESC");
-        String[] str = new String[4];
+        Cursor c = db.query("notes", new String[]{"title", "text", "id", "clock","time"}, null, null, null, null, "_id DESC");
+        String[] str = new String[5];
         if (c.moveToFirst()) {
             str[0] = c.getString(0);
             str[1] = c.getString(1);
             str[2] = c.getString(2);
             str[3] = c.getString(3);
+            str[4]  = c.getString(4);
         }
         db.close();
         c.close();

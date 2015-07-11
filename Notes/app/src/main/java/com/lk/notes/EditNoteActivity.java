@@ -637,7 +637,7 @@ public class EditNoteActivity extends ActionBarActivity implements View.OnClickL
         Log.e("updateWidget", "update");
         NotesOpenHelper notesOpenHelper = new NotesOpenHelper(context);
         SQLiteDatabase db = notesOpenHelper.getReadableDatabase();
-        Cursor c = db.query("notes", new String[]{"title", "text", "id", "clock"}, null, null, null, null, "_id DESC");
+        Cursor c = db.query("notes", new String[]{"title", "text", "id", "clock","time"}, null, null, null, null, "_id DESC");
         if (c.getCount() != 0) {
             c.moveToFirst();
             String str_title = c.getString(0);
@@ -646,13 +646,24 @@ public class EditNoteActivity extends ActionBarActivity implements View.OnClickL
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.notes_app_widget);
             views.setTextViewText(R.id.widget_title, str_title);
             views.setTextViewText(R.id.widget_text, str_text);
-            Intent intent = new Intent(context, NotesChangeActivity.class);
+            Intent intent = new Intent(context, PreviewActivity.class);
             intent.putExtra("title", c.getString(0));
             intent.putExtra("text", c.getString(1));
             intent.putExtra("id", c.getString(2));
             intent.putExtra("clock", c.getString(3));
+            intent.putExtra("time", c.getString(4));
             PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             views.setOnClickPendingIntent(R.id.ll_widget, pendingIntent);
+
+
+            Intent intent1 = new Intent(context, NotesChangeActivity.class);
+            intent1.putExtra("title", c.getString(0));
+            intent1.putExtra("text", c.getString(1));
+            intent1.putExtra("id", c.getString(2));
+            intent1.putExtra("clock", c.getString(3));
+            intent1.putExtra("time", c.getString(4));
+            PendingIntent pendingIntent1 = PendingIntent.getActivity(context, 0, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
+            views.setOnClickPendingIntent(R.id.iv_edit, pendingIntent1);
             ComponentName componentName = new ComponentName(context, NotesAppWidget.class);
             appWidgetManager.updateAppWidget(componentName, views);
             db.close();
